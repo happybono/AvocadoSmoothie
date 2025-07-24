@@ -1,6 +1,6 @@
 # AvocadoSmoothie
 ## AvocadoSmoothie : The Art of Data Refinement That Preserves Only the Core
-**AvocadoSmoothie** captures the essence of nature's avocado and the softness of a smoothie. Built on the RunningMedian algorithm, this project carefully extracts true signals from noisy data : just as only the pit remains at the center of a ripe avocado, leaving behind rough skins and excess in the blender.
+**AvocadoSmoothie** captures the essence of nature's avocado and the softness of a smoothie. Built on the running median algorithm, this project carefully extracts true signals from noisy data : just as only the pit remains at the center of a ripe avocado, leaving behind rough skins and excess in the blender.
 
 **Key components**
 - **Avocado** : Symbolizes a careful approach that targets only the central values of data, much like the dense seed hidden deep inside the fruit.
@@ -20,7 +20,7 @@ Like a well-balanced smoothie in taste and texture, this project aims to respond
 By removing noise, AvocadoSmoothie breathes clarity and energy into your analysis : leading to better decisions and deeper insights, all through a nutritious blending process.
 
 ## Project Overview
-This AvocadoSmoothie project delivers a highly optimized running-median filter on numeric data held in a `ListBox`. Users pick a `kernel width` and `border count`, then choose between two modes :<br><br>
+This AvocadoSmoothie project delivers a highly optimized running median filter on numeric data held in a `ListBox`. Users pick a `kernel width` and `border count`, then choose between two modes :<br><br>
 
 - **AllMedian** : applies the median filter at every index, clamping the window at the ends for out-of-range safety.<br>
 - **MiddleMedian** : preserves the specified number of leading and trailing values, filtering only the central section.<br><br>
@@ -104,7 +104,7 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 
 ## Features
 - Import numeric data effortlessly via copy / paste or drag-and-drop from Excel and other spreadsheet apps (HTML / text parsing built-in).
-- Choose kernel width and border count, then click `Calculate` button to apply the running-median filter.
+- Choose kernel width and border count, then click `Calculate` button to apply the running median filter.
 - Two filter modes : **MiddleMedian** (preserve first / last values) or **AllMedian** (full-range smoothing).
 - High-performance parallel processing with a thread-local buffer and recursive `QuickSort`.
 - Real-time `ProgressBar` feedback and flicker-free UI updates using `BeginUpdate` / `EndUpdate.`
@@ -262,14 +262,14 @@ End Sub
 ```
 
 ### Data Handling and Processing
-- Efficiently processes numeric data for running-median calculations
+- Efficiently processes numeric data for running median calculations
 - Supports data input via :
   - Direct entry
   - Clipboard paste
   - Drag-and-drop
 - Validates numeric values using regular expressions
 - Stores data as a list of doubles for high-precision calculations
-- Provides two types of running-median filters :
+- Provides two types of running median filters :
   - `AllMedian`:
     - Calculates median at every position using a sliding window
     - Automatically adjusts at dataset boundaries
@@ -298,12 +298,12 @@ End Sub
 - All settings applied instantly for immediate data visualization and experimentation
 
 ## Conclusion
-This AvocadoSmoothie application combines robust data handling, a user-friendly interface, and flexible configuration options to deliver fast and accurate median filtering for numeric datasets. Its support for large-scale data, parallel processing, and real-time feedback makes it suitable for a wide range of data analysis and preprocessing tasks. Whether for exploratory analysis or as part of a larger workflow, this AvocadoSmoothie project provides a reliable and efficient solution for running-median calculations.
+This AvocadoSmoothie application combines robust data handling, a user-friendly interface, and flexible configuration options to deliver fast and accurate median filtering for numeric datasets. Its support for large-scale data, parallel processing, and real-time feedback makes it suitable for a wide range of data analysis and preprocessing tasks. Whether for exploratory analysis or as part of a larger workflow, this AvocadoSmoothie project provides a reliable and efficient solution for running median calculations.
 
 ## Principle Demonstration
 <div align="center">
-  <a href="https://vimeo.com/693794659" title="Data Calibration Demo Using the Running-Median Method - Click to Watch">
-    <img src="https://videoapi-muybridge.vimeocdn.com/animated-thumbnails/image/2dbb2e91-d9c1-4799-beea-9b1e6a9e6a85.gif?ClientID=vimeo-core-prod&Date=1648603639&Signature=a785b7936ee37beb6a0e010ae71a8215ae16bdf9" alt="Data Calibration Demo Using the Running-Median Method.">
+  <a href="https://vimeo.com/693794659" title="Data Calibration Demo Using the running median Method - Click to Watch">
+    <img src="https://videoapi-muybridge.vimeocdn.com/animated-thumbnails/image/2dbb2e91-d9c1-4799-beea-9b1e6a9e6a85.gif?ClientID=vimeo-core-prod&Date=1648603639&Signature=a785b7936ee37beb6a0e010ae71a8215ae16bdf9" alt="Data Calibration Demo Using the running median Method.">
   </a>
 </div>
 
