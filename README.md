@@ -10,13 +10,13 @@
 - **RunningMedian** : Delivers stability and reliability by maintaining the central tendency, even in the face of abrupt spikes.
 
 **Philosophical Foundation**
-- Gentle Refinement<br>
+- **Gentle Refinement**<br>
 Like living organisms, data requires delicate care. AvocadoSmoothie follows a soft-touch philosophy to ensure vital patterns aren’t damaged by excessive processing.
 
-- Harmony Between Responsiveness and Stability<br>
+- **Harmony Between Responsiveness and Stability**<br>
 Like a well-balanced smoothie in taste and texture, this project aims to respond swiftly while also withstanding sudden fluctuations.
 
-- Clarity Through Vitality<br>
+- **Clarity Through Vitality**<br>
 By removing noise, AvocadoSmoothie breathes clarity and energy into your analysis : leading to better decisions and deeper insights, all through a nutritious blending process.
 
 ## Project Overview
