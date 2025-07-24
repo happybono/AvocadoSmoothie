@@ -1,0 +1,14 @@
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\bin\Debug\AvocadoSmoothie.exe.config
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\bin\Debug\AvocadoSmoothie.exe
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\bin\Debug\AvocadoSmoothie.pdb
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\bin\Debug\AvocadoSmoothie.xml
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Debug\AvocadoSmoothie.vbproj.AssemblyReference.cache
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Debug\AvocadoSmoothie.FrmMain.resources
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Debug\AvocadoSmoothie.Resources.resources
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Debug\AvocadoSmoothie.vbproj.GenerateResource.cache
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Debug\AvocadoSmoothie.vbproj.CoreCompileInputs.cache
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Debug\AvocadoSmoothie.exe
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Debug\AvocadoSmoothie.xml
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Debug\AvocadoSmoothie.pdb
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Debug\AvocadoSmoothie.exe.config
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Debug\AvocadoSmoothie.FrmModify.resources

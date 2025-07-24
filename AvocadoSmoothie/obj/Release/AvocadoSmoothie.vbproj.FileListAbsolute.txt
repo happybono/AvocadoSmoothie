@@ -1,0 +1,13 @@
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\bin\Release\AvocadoSmoothie.exe.config
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\bin\Release\AvocadoSmoothie.exe
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\bin\Release\AvocadoSmoothie.pdb
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\bin\Release\AvocadoSmoothie.xml
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Release\AvocadoSmoothie.vbproj.AssemblyReference.cache
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Release\AvocadoSmoothie.FrmMain.resources
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Release\AvocadoSmoothie.FrmModify.resources
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Release\AvocadoSmoothie.Resources.resources
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Release\AvocadoSmoothie.vbproj.GenerateResource.cache
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Release\AvocadoSmoothie.vbproj.CoreCompileInputs.cache
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Release\AvocadoSmoothie.exe
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Release\AvocadoSmoothie.xml
+D:\My Lifestyle\Products\Workspaces\AvocadoSmoothie\AvocadoSmoothie\obj\Release\AvocadoSmoothie.pdb
