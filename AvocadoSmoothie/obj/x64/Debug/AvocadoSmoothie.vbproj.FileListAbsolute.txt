@@ -11,3 +11,4 @@ C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSm
 C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.exe
 C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.xml
 C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.pdb
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.exe.config

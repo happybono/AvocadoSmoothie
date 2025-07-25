@@ -193,13 +193,17 @@ Public Class FrmMain
         End If
     End Function
 
-
-
     Private Sub addButton_Click(sender As Object, e As EventArgs) Handles addButton.Click
-        ListBox1.Items.Add(Val(TextBox1.Text))
-        TextBox1.Text = String.Empty
-        lblCnt1.Text = "Count : " & ListBox1.Items.Count
-        copyButton1.Enabled = ListBox1.Items.Count > 0
+        Dim inputText = TextBox1.Text
+        Dim v As Double
+
+        If Double.TryParse(inputText, v) Then
+            ListBox1.Items.Add(v)
+            lblCnt1.Text = $"Count : {ListBox1.Items.Count}"
+            copyButton1.Enabled = ListBox1.Items.Count > 0
+        End If
+
+        TextBox1.Clear()
     End Sub
 
     Sub FillTestData()
@@ -386,13 +390,19 @@ Public Class FrmMain
 
     Private Sub TextBox1_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox1.KeyDown
         If e.KeyCode = Keys.Enter Then
-            Dim v = Val(TextBox1.Text)
-            ListBox1.Items.Add(v)
+            Dim inputText = TextBox1.Text
+            Dim v As Double
+
+            If Double.TryParse(inputText, v) Then
+                ListBox1.Items.Add(v)
+                lblCnt1.Text = $"Count : {ListBox1.Items.Count}"
+                copyButton1.Enabled = ListBox1.Items.Count > 0
+            End If
+
             TextBox1.Clear()
             e.SuppressKeyPress = True
-            lblCnt1.Text = $"Count : {ListBox1.Items.Count}"
-            copyButton1.Enabled = ListBox1.Items.Count > 0
         End If
+
     End Sub
 
     Private Sub copyButton1_Click(sender As Object, e As EventArgs) Handles copyButton1.Click
