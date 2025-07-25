@@ -101,9 +101,10 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 > A new GitHub repository named AvocadoSmoothie has been created, and all necessary files have been relocated to it<br><br>
 > The existing [RunningMedian](https://github.com/happybono/RunningMedian/) repository has been set to private.
 
-### v3.0.1.0
+### v3.1.0.0
 #### July 25, 2025
 > Replaced unsafe Val() parsing with Double.TryParse() to prevent overflow and ensure robust input validation.
+> Minor bugs fixed.
 </details>
 
 ## Features
