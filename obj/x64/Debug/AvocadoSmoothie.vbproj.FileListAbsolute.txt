@@ -1,0 +1,14 @@
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\bin\x64\Debug\AvocadoSmoothie.exe.config
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\bin\x64\Debug\AvocadoSmoothie.exe
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\bin\x64\Debug\AvocadoSmoothie.pdb
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\bin\x64\Debug\AvocadoSmoothie.xml
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.vbproj.AssemblyReference.cache
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.FrmMain.resources
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.FrmModify.resources
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.Resources.resources
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.vbproj.GenerateResource.cache
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.vbproj.CoreCompileInputs.cache
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.exe
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.xml
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.pdb
+C:\Users\happybono\Downloads\AvocadoSmoothie-main\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.exe.config
