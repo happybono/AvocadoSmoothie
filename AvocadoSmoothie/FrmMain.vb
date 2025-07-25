@@ -42,17 +42,14 @@ Public Class FrmMain
         Dim n = sourceList.Count
         If n = 0 Then Return
 
-        ' 배열로 복사해 빠른 인덱스 접근
         Dim arr = sourceList.ToArray()
         Dim buffer(n - 1) As Double
 
-        ' 경계 2 개 항목 복사
         buffer(0) = arr(0)
         If n > 1 Then buffer(1) = arr(1)
         If n > 2 Then buffer(n - 2) = arr(n - 2)
         buffer(n - 1) = arr(n - 1)
 
-        ' 내부 인덱스만 Parallel 처리 (i = 2 To n-3)
         Parallel.For(2, n - 2, Sub(i)
                                    Dim win(4) As Double
                                    ' i-2 .. i+2 복사
@@ -63,7 +60,6 @@ Public Class FrmMain
                                    buffer(i) = win(2)
                                End Sub)
 
-        ' 결과 리스트에 원본 순서 그대로 추가
         medianList.Clear()
         medianList.AddRange(buffer)
     End Sub
@@ -93,10 +89,6 @@ Public Class FrmMain
         medianList.AddRange(buffer)
     End Sub
 
-
-    ''' <summary>
-    ''' 5 개 값의 중간값을 7 회 이하 비교 네트워크로 구함
-    ''' </summary>
     Private Function MedianOf5(a As Double, b As Double,
                            c As Double, d As Double, e As Double) As Double
         If a > b Then Swap(a, b)
@@ -109,9 +101,6 @@ Public Class FrmMain
         Return c
     End Function
 
-    ''' <summary>
-    ''' 요소 수가 1 ~ 5인 배열의 중간값을 inseartion-sort 로 구함
-    ''' </summary>
     Private Function MedianOfWindow(w As Double(), length As Integer) As Double
         For i As Integer = 1 To length - 1
             Dim key = w(i), j = i - 1
@@ -129,11 +118,11 @@ Public Class FrmMain
     End Sub
 
     Private Sub ComputeMedians(
-    useMiddle As Boolean,
-    kernelWidth As Integer,
-    borderCount As Integer,
-    progress As IProgress(Of Integer)
-)
+        useMiddle As Boolean,
+        kernelWidth As Integer,
+        borderCount As Integer,
+        progress As IProgress(Of Integer)
+    )
         Dim n = sourceList.Count
         If n = 0 Then
             progress.Report(0)
@@ -143,82 +132,67 @@ Public Class FrmMain
         Dim arr = sourceList.ToArray()
         Dim buffer(n - 1) As Double
 
-        ' kernelWidth 짝/홀수에 따른 오프셋
         Dim offsetLow = (kernelWidth - 1) \ 2
         Dim offsetHigh = (kernelWidth - 1) - offsetLow
 
-        ' 진행률 리포트 준비
         Dim processed As Integer = 0
         Dim reportInterval = Math.Max(1, n \ 200)
         progress.Report(0)
 
-        ' ThreadLocal 윈도우 버퍼 (최대 kernelWidth 크기)
         Dim localWin As New ThreadLocal(Of Double())(
-        Function() New Double(kernelWidth - 1) {})
+            Function() New Double(kernelWidth - 1) {}
+        )
 
         If useMiddle Then
-            ' 경계 borderCount 만큼 그대로 복사
             For i As Integer = 0 To borderCount - 1
                 buffer(i) = arr(i)
                 buffer(n - 1 - i) = arr(n - 1 - i)
                 processed += 2
-                If processed Mod reportInterval = 0 Then progress.Report(processed)
+                If processed Mod reportInterval = 0 Then
+                    progress.Report(processed)
+                End If
             Next
         End If
 
-        ' 중간 구간: borderCount 부터 n-borderCount-1 까지
         Dim startIdx = If(useMiddle, borderCount, 0)
         Dim endIdx = If(useMiddle, n - borderCount - 1, n - 1)
 
         Parallel.For(startIdx, endIdx + 1, Sub(i)
                                                Dim win = localWin.Value
-                                               ' 클램핑된 윈도우 범위 계산
+
                                                Dim iMin = Math.Max(0, i - offsetLow)
                                                Dim iMax = Math.Min(n - 1, i + offsetHigh)
                                                Dim length = iMax - iMin + 1
 
-                                               ' 부분 배열 복사
                                                For k As Integer = 0 To length - 1
                                                    win(k) = arr(iMin + k)
                                                Next
 
-                                               ' 윈도우 중앙값
                                                buffer(i) = GetWindowMedian(win, length)
 
-                                               ' 진행률
                                                Dim cnt = Interlocked.Increment(processed)
                                                If cnt Mod reportInterval = 0 Then
                                                    progress.Report(cnt)
                                                End If
                                            End Sub)
 
-        ' useMiddle = True 일 때 이미 끝 경계 복사했으므로 따로 처리 불필요
-
-        ' 최종 진행률 100%
         progress.Report(n)
 
-        ' 결과 복사
         medianList.Clear()
         medianList.AddRange(buffer)
     End Sub
 
-    Private Function GetWindowMedian(w As Double(), length As Integer) As Double
-        For i As Integer = 1 To length - 1
-            Dim key = w(i), j = i - 1
-            While j >= 0 AndAlso w(j) > key
-                w(j + 1) = w(j)
-                j -= 1
-            End While
-            w(j + 1) = key
-        Next
-
-        If length Mod 2 = 1 Then
-            Return w(length \ 2)
+    Private Function GetWindowMedian(win() As Double, length As Integer) As Double
+        Dim slice = win.Take(length).ToArray()
+        Array.Sort(slice)
+        Dim mid = length \ 2
+        If length Mod 2 = 0 Then
+            Return (slice(mid - 1) + slice(mid)) / 2.0
         Else
-            Dim mid = length \ 2
-            Return (w(mid - 1) + w(mid)) / 2.0
+            Return slice(mid)
         End If
     End Function
+
 
 
     Private Sub addButton_Click(sender As Object, e As EventArgs) Handles addButton.Click
@@ -323,68 +297,91 @@ Public Class FrmMain
     End Sub
 
     Private Async Sub calcButton_Click(sender As Object, e As EventArgs) Handles calcButton.Click
+        If ListBox1.Items.Count = 0 Then
+            Return
+        End If
 
-        If ListBox1.Items.Count = 0 Then Return
+        Dim parsedList As New List(Of Double)
+        For Each item As Object In ListBox1.Items
+            Dim strValue As String = item.ToString()
+            Dim dValue As Double
+            If Double.TryParse(strValue, dValue) Then
+                parsedList.Add(dValue)
+            Else
+                MessageBox.Show(
+                    $"'{strValue}'을(를) 숫자로 변환할 수 없습니다.",
+                    "RunningMedian",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                )
+                Return
+            End If
+        Next
 
-        sourceList = ListBox1.Items.Cast(Of Double)().ToList()
+        sourceList = parsedList
         Dim total = sourceList.Count
         Dim useMiddle = RadioButton1.Checked
 
-        ' kernelWidth, borderCount 읽기
         Dim kernelWidth As Integer
         If Not Integer.TryParse(cbxKernelWidth.Text, kernelWidth) Then
-            MessageBox.Show("Please select a kernel width.", "RunningMedian", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show(
+                "Please select a kernel width.",
+                "RunningMedian",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            )
             Return
         End If
 
         Dim borderCount As Integer
         If Not Integer.TryParse(cbxBorderCount.Text, borderCount) Then
-            MessageBox.Show("Please select a border count.", "RunningMedian", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show(
+                "Please select a border count.",
+                "RunningMedian",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            )
             Return
         End If
 
-        ' ProgressBar 초기화
         progressBar1.Minimum = 0
         progressBar1.Maximum = total
         progressBar1.Value = 0
         Dim progress = New Progress(Of Integer)(
-        Sub(v) progressBar1.Value = Math.Min(v, total)
-    )
+            Sub(v) progressBar1.Value = Math.Min(v, total)
+        )
 
-        ' 중앙 값 계산 (Background)
         Await Task.Run(Sub()
                            ComputeMedians(
-                           useMiddle:=useMiddle,
-                           kernelWidth:=kernelWidth,
-                           borderCount:=borderCount,
-                           progress:=progress)
+                               useMiddle:=useMiddle,
+                               kernelWidth:=kernelWidth,
+                               borderCount:=borderCount,
+                               progress:=progress
+                           )
                        End Sub)
 
-        ' ListBox2 결과 표시
         ListBox2.BeginUpdate()
         ListBox2.Items.Clear()
-        ListBox2.Items.AddRange(medianList.Cast(Of Object)().ToArray())
+        ListBox2.Items.AddRange(medianList.Cast(Of Object).ToArray())
         ListBox2.EndUpdate()
-        ListBox2.TopIndex = ListBox1.Items.Count - 1
+        ListBox2.TopIndex = ListBox2.Items.Count - 1
 
-        ' 상태 Label 갱신
         lblCnt1.Text = $"Count : {total}"
         lblCnt2.Text = $"Count : {medianList.Count}"
         slblCalibratedType.Text = If(useMiddle, "Middle Median", "All Median")
         slblKernelWidth.Text = $"{kernelWidth}"
         slblBorderCount.Text = $"{borderCount}"
 
-        ' borderCount 관련 컨트롤 표시 / 숨김
         slblBorderCount.Visible = useMiddle
         tlblBorderCount.Visible = useMiddle
         slblSeparator2.Visible = useMiddle
 
         copyButton2.Enabled = True
 
-        ' 잠시 대기 후 Progress 초기화
         Await Task.Delay(200)
         progressBar1.Value = 0
     End Sub
+
 
 
     Private Sub TextBox1_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox1.KeyDown
@@ -399,36 +396,32 @@ Public Class FrmMain
     End Sub
 
     Private Sub copyButton1_Click(sender As Object, e As EventArgs) Handles copyButton1.Click
-        Dim values As IEnumerable(Of Double)
+        Dim doubles As New List(Of Double)
+        Dim source = If(ListBox1.SelectedItems.Count > 0, ListBox1.SelectedItems, ListBox1.Items)
 
-        If ListBox1.SelectedItems.Count > 0 Then
-            values = ListBox1.SelectedItems.Cast(Of Double)()
-        Else
-            values = ListBox1.Items.Cast(Of Double)()
-        End If
+        For Each itm As Object In source
+            Dim txt = itm.ToString()
+            Dim num As Double
+            If Double.TryParse(txt, num) Then
+                doubles.Add(num)
+            Else
+                MessageBox.Show($"'{txt}' 값을 숫자로 변환할 수 없습니다.",
+                            "Copy Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+        Next
 
-        If values.Any() Then
-            Clipboard.SetText(String.Join(
-            Environment.NewLine,
-            values))
+        If doubles.Any() Then
+            Clipboard.SetText(String.Join(Environment.NewLine, doubles))
         End If
     End Sub
 
     Private Sub copyButton2_Click(sender As Object, e As EventArgs) Handles copyButton2.Click
-        Dim values As IEnumerable(Of Double)
-
-        If ListBox2.SelectedItems.Count > 0 Then
-            values = ListBox2.SelectedItems.Cast(Of Double)()
-        Else
-            values = ListBox2.Items.Cast(Of Double)()
-        End If
-
-        If values.Any() Then
-            Clipboard.SetText(String.Join(
-            Environment.NewLine,
-            values))
+        If medianList.Count > 0 Then
+            Clipboard.SetText(String.Join(Environment.NewLine, medianList))
         End If
     End Sub
+
 
     Private Sub clearButton1_Click(sender As Object, e As EventArgs) Handles clearButton1.Click
         ListBox1.Items.Clear()
@@ -456,7 +449,6 @@ Public Class FrmMain
         progressBar.Maximum = total
         progressBar.Value = 0
 
-        ' 삭제 이후 선택할 index 를 계산
         Dim newSelections = New List(Of Integer)
         Dim shiftMap = New Dictionary(Of Integer, Boolean)
 
@@ -470,7 +462,6 @@ Public Class FrmMain
         lb.SuspendLayout()
         lb.BeginUpdate()
 
-        ' 삭제 처리
         Dim updateInterval = Math.Max(1, total \ 100)
         For i = 0 To total - 1
             lb.Items.RemoveAt(indices(i))
@@ -483,7 +474,6 @@ Public Class FrmMain
         lb.EndUpdate()
         lb.ResumeLayout()
 
-        ' 선택 여부 복원 (남은 index 에 가능한 한 유지)
         lb.SelectedIndices.Clear()
         For Each idx In newSelections
             If idx < lb.Items.Count Then lb.SelectedIndices.Add(idx)
@@ -495,7 +485,6 @@ Public Class FrmMain
     End Function
 
     Private Async Sub deleteButton1_Click(sender As Object, e As EventArgs) Handles deleteButton1.Click
-        ' 전체 선택된 경우 최적화
         If ListBox1.SelectedIndices.Count = ListBox1.Items.Count Then
             ListBox1.Items.Clear()
             copyButton1.Enabled = False
@@ -505,7 +494,6 @@ Public Class FrmMain
             Return
         End If
 
-        ' 일부만 선택된 경우 기존 방식 사용
         Await DeleteSelectedItemsPreserveSelection(ListBox1, progressBar1, lblCnt1)
         lblCnt1.Text = "Count : " & ListBox1.Items.Count
         ListBox1.Select()
@@ -519,7 +507,6 @@ Public Class FrmMain
         progressBar1.Value = 0
 
         Try
-            ' getDropText 함수와 동일한 로직
             Dim htmlFormat As String = If(e.Data.GetDataPresent("HTML Format"),
             e.Data.GetData("HTML Format").ToString(),
             String.Empty)
@@ -566,7 +553,6 @@ Public Class FrmMain
 
             If parsed.Length = 0 Then Return
 
-            ' 60 ~ 100% 구간에서 진행률 보고
             Dim baseProgress As Integer = 60
             Dim progressReporter As IProgress(Of Integer) = New Progress(Of Integer)(
             Sub(pct)
