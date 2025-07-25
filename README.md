@@ -103,7 +103,7 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 
 ### v3.1.0.0
 #### July 25, 2025
-> Replaced unsafe Val() parsing with Double.TryParse() to prevent overflow and ensure robust input validation.
+> Replaced unsafe Val() parsing with Double.TryParse() to prevent overflow and ensure robust input validation.<br><br>
 > Minor bugs fixed.
 </details>
 
