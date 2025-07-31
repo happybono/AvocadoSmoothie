@@ -47,7 +47,7 @@ Public Class FrmModify
             Return
         End If
 
-        ' 선택된 인덱스 정렬하여 배열로
+        ' 선택된 Index 정렬 후 배열로
         Dim indices = mainForm.ListBox1 _
                         .SelectedIndices _
                         .Cast(Of Integer)() _
@@ -61,23 +61,23 @@ Public Class FrmModify
         ProgressBar1.Maximum = total
         ProgressBar1.Value = 0
 
-        ' 리스트박스 업데이트 일시 중지
+        ' ListBox 업데이트 일시 중지
         Dim lb = mainForm.ListBox1
         lb.BeginUpdate()
 
-        ' 새 값 미리 생성
+        ' 새로운 값 미리 생성
         Dim newValue As String = numericValue.ToString("G")
 
         Const BatchSize As Integer = 1000
         Dim done As Integer = 0
 
-        ' 병렬/비동기 배치 처리 (UI 스레드 안전하게 처리)
+        ' 병렬 / 비동기 Batch 처리
         While done < total
             Dim cnt As Integer = Math.Min(BatchSize, total - done)
             Dim batchIndices = indices.Skip(done).Take(cnt).ToArray()
             Dim batchValues = Enumerable.Repeat(newValue, batchIndices.Length).ToArray()
 
-            ' UI 스레드에서 항목 변경
+            ' UI Thread 에서 항목 변경
             Await Me.InvokeAsync(Sub()
                                      For i = 0 To batchIndices.Length - 1
                                          lb.Items(batchIndices(i)) = batchValues(i)
@@ -89,7 +89,7 @@ Public Class FrmModify
             Await Task.Yield()
         End While
 
-        ' 변경된 항목 재선택 (UI 스레드에서)
+        ' UI Thread 에서 변경된 항목 재선택
         Await Me.InvokeAsync(Sub()
                                  lb.ClearSelected()
                                  For Each idx In indices
