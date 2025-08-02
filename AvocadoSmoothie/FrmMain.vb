@@ -196,7 +196,8 @@ Public Class FrmMain
             lblCnt1.Text = $"Count : {ListBox1.Items.Count}"
         End If
 
-        UpdateListBox1Buttons(Nothing, EventArgs.Empty)
+        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+        UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
         TextBox1.Clear()
     End Sub
 
@@ -363,8 +364,8 @@ Public Class FrmMain
         tlblBorderCount.Visible = useMiddle
         slblSeparator2.Visible = useMiddle
 
-        UpdateListBox1Buttons(Nothing, EventArgs.Empty)
-        UpdateListBox2Buttons(Nothing, EventArgs.Empty)
+        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+        UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
 
         Await Task.Delay(200)
         progressBar1.Value = 0
@@ -382,7 +383,7 @@ Public Class FrmMain
             End If
 
             lblCnt1.Text = $"Count : {ListBox1.Items.Count}"
-            UpdateListBox1Buttons(Nothing, EventArgs.Empty)
+            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
 
             TextBox1.Clear()
             e.SuppressKeyPress = True
@@ -437,9 +438,10 @@ Public Class FrmMain
         Dim itemCount As Integer = ListBox1.Items.Count
 
         Dim result As DialogResult = MessageBox.Show(
-    $"This will delete all {itemCount} item{If(itemCount <> 1, "s", "")} from the Initial Dataset listbox." & vbCrLf & vbCrLf &
-    "Are you sure you want to proceed?",
-    "Delete Confirmation",
+            $"This will delete all {itemCount} item{If(itemCount <> 1, "s", "")} from the Initial Dataset listbox." & vbCrLf &
+            "This will also delete all items from the Refined Dataset listbox." & vbCrLf & vbCrLf &
+            "Are you sure you want to proceed?",
+            "Delete Confirmation",
     MessageBoxButtons.YesNo,
     MessageBoxIcon.Warning
 )
@@ -450,10 +452,17 @@ Public Class FrmMain
 
 
         ListBox1.Items.Clear()
-        UpdateListBox1Buttons(Nothing, EventArgs.Empty)
+        ListBox2.Items.Clear()
+
+        txtExcelTitle.Text = ExcelTitlePlaceholder
+        txtExcelTitle.ForeColor = Color.Gray
+        txtExcelTitle.TextAlign = HorizontalAlignment.Center
+
+        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+        UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
 
         lblCnt1.Text = "Count : " & ListBox1.Items.Count
-        ListBox1.Select()
+        TextBox1.Select()
     End Sub
 
     Private Sub clearButton2_Click(sender As Object, e As EventArgs) Handles clearButton2.Click
@@ -472,7 +481,8 @@ Public Class FrmMain
         End If
 
         ListBox2.Items.Clear()
-        UpdateListBox2Buttons(Nothing, EventArgs.Empty)
+        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+        UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
 
         lblCnt2.Text = "Count : " & ListBox2.Items.Count
         ListBox2.Select()
@@ -532,13 +542,14 @@ Public Class FrmMain
         Dim message As String
 
         If selectedCount = 0 Then
-            UpdateListBox1Buttons(Nothing, EventArgs.Empty)
+            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
             Return
         End If
 
         If selectedCount = totalCount Then
-            message = $"You are about to delete all {totalCount} item{If(totalCount <> 1, "s", "")} from the Initial Dataset listbox." &
-                      vbCrLf & vbCrLf & "Are you sure you want to proceed?"
+            message = $"You are about to delete all {totalCount} item{If(totalCount <> 1, "s", "")} from the Initial Dataset listbox." & vbCrLf &
+                "This will also delete all items from the Refined Dataset listbox." & vbCrLf & vbCrLf &
+                "Are you sure you want to proceed?"
         Else
             message = $"You are about to delete {selectedCount} selected item{If(selectedCount <> 1, "s", "")} from the Initial Dataset listbox." &
                       vbCrLf & vbCrLf & "Are you sure you want to proceed?"
@@ -552,20 +563,29 @@ Public Class FrmMain
 
         If selectedCount = totalCount Then
             ListBox1.Items.Clear()
+            ListBox2.Items.Clear()
             copyButton1.Enabled = False
-            lblCnt1.Text = "Count : 0"
-            ListBox1.Select()
+            lblCnt1.Text = "Count : " & ListBox1.Items.Count
+            lblCnt2.Text = "Count : " & ListBox2.Items.Count
             progressBar1.Value = 0
 
-            UpdateListBox1Buttons(Nothing, EventArgs.Empty)
+            txtExcelTitle.Text = ExcelTitlePlaceholder
+            txtExcelTitle.ForeColor = Color.Gray
+            txtExcelTitle.TextAlign = HorizontalAlignment.Center
+
+            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+
+            TextBox1.Select()
             Return
         End If
 
         Await DeleteSelectedItemsPreserveSelection(ListBox1, progressBar1, lblCnt1)
         lblCnt1.Text = "Count : " & ListBox1.Items.Count
+
         ListBox1.Select()
 
-        UpdateListBox1Buttons(Nothing, EventArgs.Empty)
+        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+        UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
     End Sub
 
     Private Async Sub ListBox1_DragDrop(sender As Object, e As DragEventArgs) Handles ListBox1.DragDrop
@@ -636,7 +656,7 @@ Public Class FrmMain
             lblCnt1.Text = "Count : " & ListBox1.Items.Count
             Await Task.Delay(200)
         Finally
-            UpdateListBox1Buttons(Nothing, EventArgs.Empty)
+            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
 
             progressBar1.Value = 0
             calcButton.Enabled = True
@@ -727,7 +747,8 @@ Public Class FrmMain
             lblCnt1.Text = $"Count : {ListBox1.Items.Count}"
             Await Task.Delay(200)
         Finally
-            UpdateListBox1Buttons(Nothing, EventArgs.Empty)
+            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+            UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
 
             progressBar1.Value = 0
             calcButton.Enabled = True
@@ -777,22 +798,22 @@ Public Class FrmMain
     End Function
 
     Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
-        UpdateListBox1Buttons(Nothing, EventArgs.Empty)
+        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
     End Sub
 
     Private Sub ListBox2_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox2.SelectedIndexChanged
-        UpdateListBox2Buttons(Nothing, EventArgs.Empty)
+        UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
     End Sub
 
     Private Sub ListBox1_KeyDown(sender As Object, e As KeyEventArgs) Handles ListBox1.KeyDown
         If e.KeyData = Keys.Delete Then
             deleteButton1.PerformClick()
-            UpdateListBox1Buttons(Nothing, EventArgs.Empty)
+            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
         End If
 
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.Delete Then
             clearButton1.PerformClick()
-            UpdateListBox1Buttons(Nothing, EventArgs.Empty)
+            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
         End If
 
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.C Then
@@ -801,7 +822,7 @@ Public Class FrmMain
 
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.V Then
             pasteButton.PerformClick()
-            UpdateListBox1Buttons(Nothing, EventArgs.Empty)
+            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
         End If
 
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.A Then
@@ -831,17 +852,17 @@ Public Class FrmMain
 
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.A Then
             e.Handled = True
-            UpdateListBox2Buttons(Nothing, EventArgs.Empty)
+            UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
         End If
 
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.Delete Then
             clearButton2.PerformClick()
-            UpdateListBox2Buttons(Nothing, EventArgs.Empty)
+            UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
         End If
 
         If e.KeyData = Keys.Escape Then
             sClrButton2.PerformClick()
-            UpdateListBox2Buttons(Nothing, EventArgs.Empty)
+            UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
         End If
 
         lblCnt2.Text = "Count : " & ListBox2.Items.Count
@@ -904,17 +925,18 @@ Public Class FrmMain
             txtExcelTitle.ForeColor = Color.Gray
         End If
 
-        AddHandler ListBox1.SelectedIndexChanged, AddressOf UpdateListBox1Buttons
-        AddHandler ListBox2.SelectedIndexChanged, AddressOf UpdateListBox2Buttons
+        AddHandler ListBox1.SelectedIndexChanged, AddressOf UpdateListBox1ButtonsState
+        AddHandler ListBox2.SelectedIndexChanged, AddressOf UpdateListBox2ButtonsState
 
-        UpdateListBox1Buttons(Nothing, EventArgs.Empty)
-        UpdateListBox2Buttons(Nothing, EventArgs.Empty)
+        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+        UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
     End Sub
 
-    Private Sub UpdateListBox1Buttons(s As Object, e As EventArgs)
+    Private Sub UpdateListBox1ButtonsState(s As Object, e As EventArgs)
         Dim hasItems As Boolean = (ListBox1.Items.Count > 0)
         Dim hasSelection As Boolean = (ListBox1.SelectedItems.Count > 0)
         Dim titleValid As Boolean = (txtExcelTitle.TextLength > 0 AndAlso txtExcelTitle.Text <> ExcelTitlePlaceholder)
+        Dim canSync As Boolean = (ListBox1.Items.Count = ListBox2.Items.Count) AndAlso hasSelection
 
         copyButton1.Enabled = hasItems
         editButton.Enabled = hasSelection
@@ -924,15 +946,18 @@ Public Class FrmMain
         clearButton1.Enabled = hasItems
         calcButton.Enabled = hasItems
         btnExport.Enabled = hasItems AndAlso titleValid
+        syncButton1.Enabled = canSync
     End Sub
 
-    Private Sub UpdateListBox2Buttons(s As Object, e As EventArgs)
+    Private Sub UpdateListBox2ButtonsState(s As Object, e As EventArgs)
         Dim hasItems As Boolean = (ListBox2.Items.Count > 0)
         Dim hasSelection As Boolean = (ListBox2.SelectedItems.Count > 0)
+        Dim canSync As Boolean = (ListBox2.Items.Count = ListBox1.Items.Count) AndAlso hasSelection
         copyButton2.Enabled = hasItems
         clearButton2.Enabled = hasItems
         selectAllButton2.Enabled = hasItems
         sClrButton2.Enabled = hasSelection
+        syncButton2.Enabled = canSync
     End Sub
 
 
@@ -1362,12 +1387,53 @@ Public Class FrmMain
     End Sub
 
     Private Sub txtExcelTitle_TextChanged(sender As Object, e As EventArgs) Handles txtExcelTitle.TextChanged
-        UpdateListBox1Buttons(Nothing, EventArgs.Empty)
+        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
 
         If txtExcelTitle.Text = ExcelTitlePlaceholder Then
             txtExcelTitle.TextAlign = HorizontalAlignment.Center
         Else
             txtExcelTitle.TextAlign = HorizontalAlignment.Left
         End If
+    End Sub
+
+    Private Sub syncButton1_Click(sender As Object, e As EventArgs) Handles syncButton1.Click
+        If ListBox1.Items.Count <> ListBox2.Items.Count Then Return
+        If ListBox1.SelectedIndices.Count = 0 Then Return
+
+        ListBox2.BeginUpdate()
+        Try
+            ListBox2.ClearSelected()
+            Dim indices = New Integer(ListBox1.SelectedIndices.Count - 1) {}
+            ListBox1.SelectedIndices.CopyTo(indices, 0)
+            For i As Integer = 0 To indices.Length - 1
+                ListBox2.SetSelected(indices(i), True)
+            Next
+
+            If ListBox1.TopIndex >= 0 Then
+                ListBox2.TopIndex = ListBox1.TopIndex
+            End If
+        Finally
+            ListBox2.EndUpdate()
+        End Try
+    End Sub
+
+    Private Sub syncButton2_Click(sender As Object, e As EventArgs) Handles syncButton2.Click
+        If ListBox2.Items.Count <> ListBox1.Items.Count Then Return
+        If ListBox2.SelectedIndices.Count = 0 Then Return
+
+        ListBox1.BeginUpdate()
+        Try
+            ListBox1.ClearSelected()
+            Dim indices = New Integer(ListBox2.SelectedIndices.Count - 1) {}
+            ListBox2.SelectedIndices.CopyTo(indices, 0)
+            For i As Integer = 0 To indices.Length - 1
+                ListBox1.SetSelected(indices(i), True)
+            Next
+            If ListBox2.TopIndex >= 0 Then
+                ListBox1.TopIndex = ListBox2.TopIndex
+            End If
+        Finally
+            ListBox1.EndUpdate()
+        End Try
     End Sub
 End Class

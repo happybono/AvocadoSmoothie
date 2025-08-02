@@ -69,6 +69,8 @@ Partial Class FrmMain
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.rbtnCSV = New System.Windows.Forms.RadioButton()
         Me.rbtnXLSX = New System.Windows.Forms.RadioButton()
+        Me.syncButton1 = New System.Windows.Forms.Button()
+        Me.syncButton2 = New System.Windows.Forms.Button()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.statusStrip1.SuspendLayout()
@@ -277,6 +279,7 @@ Partial Class FrmMain
         '
         'GroupBox2
         '
+        Me.GroupBox2.Controls.Add(Me.syncButton1)
         Me.GroupBox2.Controls.Add(Me.editButton)
         Me.GroupBox2.Controls.Add(Me.lblCnt1)
         Me.GroupBox2.Controls.Add(Me.sClrButton1)
@@ -334,6 +337,7 @@ Partial Class FrmMain
         '
         'GroupBox3
         '
+        Me.GroupBox3.Controls.Add(Me.syncButton2)
         Me.GroupBox3.Controls.Add(Me.lblCnt2)
         Me.GroupBox3.Controls.Add(Me.sClrButton2)
         Me.GroupBox3.Controls.Add(Me.selectAllButton2)
@@ -596,6 +600,26 @@ Partial Class FrmMain
         Me.rbtnXLSX.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         Me.rbtnXLSX.UseVisualStyleBackColor = True
         '
+        'syncButton1
+        '
+        Me.syncButton1.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.syncButton1.Location = New System.Drawing.Point(307, 270)
+        Me.syncButton1.Name = "syncButton1"
+        Me.syncButton1.Size = New System.Drawing.Size(30, 30)
+        Me.syncButton1.TabIndex = 27
+        Me.syncButton1.Text = ""
+        Me.syncButton1.UseVisualStyleBackColor = True
+        '
+        'syncButton2
+        '
+        Me.syncButton2.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.syncButton2.Location = New System.Drawing.Point(307, 168)
+        Me.syncButton2.Name = "syncButton2"
+        Me.syncButton2.Size = New System.Drawing.Size(30, 30)
+        Me.syncButton2.TabIndex = 28
+        Me.syncButton2.Text = ""
+        Me.syncButton2.UseVisualStyleBackColor = True
+        '
         'FrmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -682,4 +706,6 @@ Partial Class FrmMain
     Private WithEvents GroupBox1 As GroupBox
     Friend WithEvents rbtnCSV As RadioButton
     Friend WithEvents rbtnXLSX As RadioButton
+    Private WithEvents syncButton1 As Button
+    Private WithEvents syncButton2 As Button
 End Class
