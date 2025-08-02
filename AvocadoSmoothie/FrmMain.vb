@@ -12,6 +12,8 @@ Public Class FrmMain
     Dim dpivalue As Double
     Dim borderCount As Integer
 
+    Private Const ExcelTitlePlaceholder As String = "Click here to enter a title for your dataset."
+
     Private sourceList As New List(Of Double)
     Private medianList As New List(Of Double)
 
@@ -897,6 +899,11 @@ Public Class FrmMain
         cbxBorderCount.SelectedIndex = 0
         cbxKernelWidth.SelectedItem = "5"
 
+        If String.IsNullOrWhiteSpace(txtExcelTitle.Text) Then
+            txtExcelTitle.Text = ExcelTitlePlaceholder
+            txtExcelTitle.ForeColor = Color.Gray
+        End If
+
         AddHandler ListBox1.SelectedIndexChanged, AddressOf UpdateListBox1Buttons
         AddHandler ListBox2.SelectedIndexChanged, AddressOf UpdateListBox2Buttons
 
@@ -907,6 +914,7 @@ Public Class FrmMain
     Private Sub UpdateListBox1Buttons(s As Object, e As EventArgs)
         Dim hasItems As Boolean = (ListBox1.Items.Count > 0)
         Dim hasSelection As Boolean = (ListBox1.SelectedItems.Count > 0)
+        Dim titleValid As Boolean = (txtExcelTitle.TextLength > 0 AndAlso txtExcelTitle.Text <> ExcelTitlePlaceholder)
 
         copyButton1.Enabled = hasItems
         editButton.Enabled = hasSelection
@@ -915,7 +923,7 @@ Public Class FrmMain
         sClrButton1.Enabled = hasSelection
         clearButton1.Enabled = hasItems
         calcButton.Enabled = hasItems
-        btnExport.Enabled = hasItems
+        btnExport.Enabled = hasItems AndAlso titleValid
     End Sub
 
     Private Sub UpdateListBox2Buttons(s As Object, e As EventArgs)
@@ -1335,5 +1343,31 @@ Public Class FrmMain
 
     Private Sub btnInfo_Click(sender As Object, e As EventArgs) Handles btnInfo.Click
         AboutBox.ShowDialog()
+    End Sub
+
+    Private Sub txtExcelTitle_Enter(sender As Object, e As EventArgs) Handles txtExcelTitle.Enter
+        If txtExcelTitle.Text = ExcelTitlePlaceholder Then
+            txtExcelTitle.Text = ""
+            txtExcelTitle.ForeColor = Color.Black
+        End If
+        txtExcelTitle.TextAlign = HorizontalAlignment.Left
+    End Sub
+
+    Private Sub txtExcelTitle_Leave(sender As Object, e As EventArgs) Handles txtExcelTitle.Leave
+        If String.IsNullOrWhiteSpace(txtExcelTitle.Text) Then
+            txtExcelTitle.Text = ExcelTitlePlaceholder
+            txtExcelTitle.ForeColor = Color.Gray
+            txtExcelTitle.TextAlign = HorizontalAlignment.Center
+        End If
+    End Sub
+
+    Private Sub txtExcelTitle_TextChanged(sender As Object, e As EventArgs) Handles txtExcelTitle.TextChanged
+        UpdateListBox1Buttons(Nothing, EventArgs.Empty)
+
+        If txtExcelTitle.Text = ExcelTitlePlaceholder Then
+            txtExcelTitle.TextAlign = HorizontalAlignment.Center
+        Else
+            txtExcelTitle.TextAlign = HorizontalAlignment.Left
+        End If
     End Sub
 End Class

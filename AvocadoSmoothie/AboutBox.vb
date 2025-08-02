@@ -5,11 +5,11 @@
     End Sub
 
     Private Sub lblCopyright_Click(sender As Object, e As EventArgs) Handles lblCopyright.Click
-        System.Diagnostics.Process.Start("https://www.github.com/happybono")
+        Process.Start("https://www.github.com/happybono")
     End Sub
 
     Private Sub btnDonation_Click(sender As Object, e As EventArgs) Handles btnDonation.Click
-        System.Diagnostics.Process.Start("https://forms.office.com/r/txTESNvQv7", vbMinimizedNoFocus)
+        Process.Start("https://www.paypal.com/ncp/payment/ZYELY39LHBSUU", vbMinimizedNoFocus)
     End Sub
 
     Private Sub btnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click
