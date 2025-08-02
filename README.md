@@ -1,5 +1,5 @@
 # AvocadoSmoothie
-## AvocadoSmoothie : The Art of Data Refinement That Preserves Only the Core
+## The Art of Data Refinement That Preserves Only the Core
 **AvocadoSmoothie** captures the essence of nature's avocado and the softness of a smoothie. Built on the running median algorithm, this project carefully extracts true signals from noisy data : just as only the pit remains at the center of a ripe avocado, leaving behind rough skins and excess in the blender.
 
 **Key components**
