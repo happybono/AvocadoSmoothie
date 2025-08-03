@@ -107,6 +107,26 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 > Minor bugs fixed.
 </details>
 
+## Required Components & Setup
+### Prerequisites
+- [.NET Framework 4.7.2](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net472) or later ([.NET Framework 4.8](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) recommended)
+- Windows Operating System (Windows 10 or later recommended)
+- [Visual Studio 2019 or newer](https://visualstudio.microsoft.com/) (for development)
+- [Microsoft Office (Excel)](https://www.microsoft.com/en/microsoft-365/) - **Required for Microsoft Excel export functionality** via `Interop`
+
+### Dependencies
+- `System.Windows.Forms`
+- `System.Threading.Tasks`
+- `System.Linq`
+- `Microsoft.Office.Interop.Excel` (for Excel export)
+
+### Initial Setup
+- Clone or download the repository.
+- Open the solution file (`.sln`) in Visual Studio.
+- Add necessary references if required.
+- Build the project.
+- Run the application.
+
 ## Features
 - Import numeric data effortlessly via copy / paste or drag-and-drop from Excel and other spreadsheet apps (HTML / text parsing built-in).
 - Choose kernel width and border count, then click `Calculate` button to apply the running median filter.
