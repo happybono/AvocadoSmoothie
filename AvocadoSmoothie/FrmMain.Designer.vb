@@ -41,10 +41,12 @@ Partial Class FrmMain
         Me.selectAllButton1 = New System.Windows.Forms.Button()
         Me.selectAllButton2 = New System.Windows.Forms.Button()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.syncButton1 = New System.Windows.Forms.Button()
         Me.editButton = New System.Windows.Forms.Button()
         Me.lblCnt1 = New System.Windows.Forms.Label()
         Me.sClrButton1 = New System.Windows.Forms.Button()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.syncButton2 = New System.Windows.Forms.Button()
         Me.lblCnt2 = New System.Windows.Forms.Label()
         Me.sClrButton2 = New System.Windows.Forms.Button()
         Me.progressBar1 = New System.Windows.Forms.ProgressBar()
@@ -69,8 +71,6 @@ Partial Class FrmMain
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.rbtnCSV = New System.Windows.Forms.RadioButton()
         Me.rbtnXLSX = New System.Windows.Forms.RadioButton()
-        Me.syncButton1 = New System.Windows.Forms.Button()
-        Me.syncButton2 = New System.Windows.Forms.Button()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.statusStrip1.SuspendLayout()
@@ -90,7 +90,7 @@ Partial Class FrmMain
         Me.ListBox1.Name = "ListBox1"
         Me.ListBox1.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.ListBox1.Size = New System.Drawing.Size(294, 514)
-        Me.ListBox1.TabIndex = 3
+        Me.ListBox1.TabIndex = 4
         '
         'ListBox2
         '
@@ -102,7 +102,7 @@ Partial Class FrmMain
         Me.ListBox2.Name = "ListBox2"
         Me.ListBox2.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
         Me.ListBox2.Size = New System.Drawing.Size(294, 514)
-        Me.ListBox2.TabIndex = 16
+        Me.ListBox2.TabIndex = 21
         '
         'calcButton
         '
@@ -111,7 +111,7 @@ Partial Class FrmMain
         Me.calcButton.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.calcButton.Name = "calcButton"
         Me.calcButton.Size = New System.Drawing.Size(465, 40)
-        Me.calcButton.TabIndex = 15
+        Me.calcButton.TabIndex = 19
         Me.calcButton.Text = ""
         Me.ToolTip1.SetToolTip(Me.calcButton, "Calibrate")
         Me.calcButton.UseVisualStyleBackColor = True
@@ -124,7 +124,7 @@ Partial Class FrmMain
         Me.RadioButton1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.RadioButton1.Name = "RadioButton1"
         Me.RadioButton1.Size = New System.Drawing.Size(150, 30)
-        Me.RadioButton1.TabIndex = 12
+        Me.RadioButton1.TabIndex = 15
         Me.RadioButton1.Text = "Middle Median"
         Me.RadioButton1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         Me.RadioButton1.UseVisualStyleBackColor = True
@@ -138,7 +138,7 @@ Partial Class FrmMain
         Me.RadioButton2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.RadioButton2.Name = "RadioButton2"
         Me.RadioButton2.Size = New System.Drawing.Size(150, 30)
-        Me.RadioButton2.TabIndex = 11
+        Me.RadioButton2.TabIndex = 14
         Me.RadioButton2.TabStop = True
         Me.RadioButton2.Text = "All Median"
         Me.RadioButton2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -174,7 +174,7 @@ Partial Class FrmMain
         Me.copyButton1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.copyButton1.Name = "copyButton1"
         Me.copyButton1.Size = New System.Drawing.Size(30, 30)
-        Me.copyButton1.TabIndex = 5
+        Me.copyButton1.TabIndex = 6
         Me.copyButton1.Text = ""
         Me.ToolTip1.SetToolTip(Me.copyButton1, "Copy")
         Me.copyButton1.UseVisualStyleBackColor = True
@@ -190,7 +190,7 @@ Partial Class FrmMain
         Me.cbxBorderCount.Location = New System.Drawing.Point(193, 80)
         Me.cbxBorderCount.Name = "cbxBorderCount"
         Me.cbxBorderCount.Size = New System.Drawing.Size(80, 25)
-        Me.cbxBorderCount.TabIndex = 14
+        Me.cbxBorderCount.TabIndex = 18
         '
         'clearButton1
         '
@@ -199,7 +199,7 @@ Partial Class FrmMain
         Me.clearButton1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.clearButton1.Name = "clearButton1"
         Me.clearButton1.Size = New System.Drawing.Size(30, 30)
-        Me.clearButton1.TabIndex = 4
+        Me.clearButton1.TabIndex = 5
         Me.clearButton1.Text = ""
         Me.ToolTip1.SetToolTip(Me.clearButton1, "Clear")
         Me.clearButton1.UseVisualStyleBackColor = True
@@ -211,7 +211,7 @@ Partial Class FrmMain
         Me.clearButton2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.clearButton2.Name = "clearButton2"
         Me.clearButton2.Size = New System.Drawing.Size(30, 30)
-        Me.clearButton2.TabIndex = 17
+        Me.clearButton2.TabIndex = 22
         Me.clearButton2.Text = ""
         Me.ToolTip1.SetToolTip(Me.clearButton2, "Clear")
         Me.clearButton2.UseVisualStyleBackColor = True
@@ -223,7 +223,7 @@ Partial Class FrmMain
         Me.deleteButton1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.deleteButton1.Name = "deleteButton1"
         Me.deleteButton1.Size = New System.Drawing.Size(30, 30)
-        Me.deleteButton1.TabIndex = 8
+        Me.deleteButton1.TabIndex = 9
         Me.deleteButton1.Text = ""
         Me.ToolTip1.SetToolTip(Me.deleteButton1, "Delete")
         Me.deleteButton1.UseVisualStyleBackColor = True
@@ -235,7 +235,7 @@ Partial Class FrmMain
         Me.pasteButton.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.pasteButton.Name = "pasteButton"
         Me.pasteButton.Size = New System.Drawing.Size(30, 30)
-        Me.pasteButton.TabIndex = 6
+        Me.pasteButton.TabIndex = 7
         Me.pasteButton.Text = ""
         Me.ToolTip1.SetToolTip(Me.pasteButton, "Paste")
         Me.pasteButton.UseVisualStyleBackColor = True
@@ -248,7 +248,7 @@ Partial Class FrmMain
         Me.copyButton2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.copyButton2.Name = "copyButton2"
         Me.copyButton2.Size = New System.Drawing.Size(30, 30)
-        Me.copyButton2.TabIndex = 18
+        Me.copyButton2.TabIndex = 23
         Me.copyButton2.Text = ""
         Me.ToolTip1.SetToolTip(Me.copyButton2, "Copy")
         Me.copyButton2.UseVisualStyleBackColor = True
@@ -260,7 +260,7 @@ Partial Class FrmMain
         Me.selectAllButton1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.selectAllButton1.Name = "selectAllButton1"
         Me.selectAllButton1.Size = New System.Drawing.Size(30, 30)
-        Me.selectAllButton1.TabIndex = 9
+        Me.selectAllButton1.TabIndex = 10
         Me.selectAllButton1.Text = ""
         Me.ToolTip1.SetToolTip(Me.selectAllButton1, "Select All")
         Me.selectAllButton1.UseVisualStyleBackColor = True
@@ -272,7 +272,7 @@ Partial Class FrmMain
         Me.selectAllButton2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.selectAllButton2.Name = "selectAllButton2"
         Me.selectAllButton2.Size = New System.Drawing.Size(30, 30)
-        Me.selectAllButton2.TabIndex = 19
+        Me.selectAllButton2.TabIndex = 24
         Me.selectAllButton2.Text = ""
         Me.ToolTip1.SetToolTip(Me.selectAllButton2, "Select All")
         Me.selectAllButton2.UseVisualStyleBackColor = True
@@ -295,9 +295,20 @@ Partial Class FrmMain
         Me.GroupBox2.Name = "GroupBox2"
         Me.GroupBox2.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.GroupBox2.Size = New System.Drawing.Size(344, 586)
-        Me.GroupBox2.TabIndex = 26
+        Me.GroupBox2.TabIndex = 3
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Initial Dataset"
+        '
+        'syncButton1
+        '
+        Me.syncButton1.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.syncButton1.Location = New System.Drawing.Point(307, 270)
+        Me.syncButton1.Name = "syncButton1"
+        Me.syncButton1.Size = New System.Drawing.Size(30, 30)
+        Me.syncButton1.TabIndex = 12
+        Me.syncButton1.Text = ""
+        Me.ToolTip1.SetToolTip(Me.syncButton1, "Match Selection" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "( ▶ Refined Dataset )")
+        Me.syncButton1.UseVisualStyleBackColor = True
         '
         'editButton
         '
@@ -307,7 +318,7 @@ Partial Class FrmMain
         Me.editButton.Margin = New System.Windows.Forms.Padding(2)
         Me.editButton.Name = "editButton"
         Me.editButton.Size = New System.Drawing.Size(30, 30)
-        Me.editButton.TabIndex = 7
+        Me.editButton.TabIndex = 8
         Me.editButton.Text = ""
         Me.ToolTip1.SetToolTip(Me.editButton, "Edit")
         Me.editButton.UseVisualStyleBackColor = True
@@ -330,7 +341,7 @@ Partial Class FrmMain
         Me.sClrButton1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.sClrButton1.Name = "sClrButton1"
         Me.sClrButton1.Size = New System.Drawing.Size(30, 30)
-        Me.sClrButton1.TabIndex = 10
+        Me.sClrButton1.TabIndex = 11
         Me.sClrButton1.Text = ""
         Me.ToolTip1.SetToolTip(Me.sClrButton1, "Deselect All")
         Me.sClrButton1.UseVisualStyleBackColor = True
@@ -350,9 +361,20 @@ Partial Class FrmMain
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.GroupBox3.Size = New System.Drawing.Size(344, 586)
-        Me.GroupBox3.TabIndex = 27
+        Me.GroupBox3.TabIndex = 20
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Refined Dataset"
+        '
+        'syncButton2
+        '
+        Me.syncButton2.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.syncButton2.Location = New System.Drawing.Point(307, 168)
+        Me.syncButton2.Name = "syncButton2"
+        Me.syncButton2.Size = New System.Drawing.Size(30, 30)
+        Me.syncButton2.TabIndex = 26
+        Me.syncButton2.Text = ""
+        Me.ToolTip1.SetToolTip(Me.syncButton2, "Match Selection " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "( ◀ Initial Dataset )")
+        Me.syncButton2.UseVisualStyleBackColor = True
         '
         'lblCnt2
         '
@@ -372,7 +394,7 @@ Partial Class FrmMain
         Me.sClrButton2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.sClrButton2.Name = "sClrButton2"
         Me.sClrButton2.Size = New System.Drawing.Size(30, 30)
-        Me.sClrButton2.TabIndex = 20
+        Me.sClrButton2.TabIndex = 25
         Me.sClrButton2.Text = ""
         Me.ToolTip1.SetToolTip(Me.sClrButton2, "Deselect All")
         Me.sClrButton2.UseVisualStyleBackColor = True
@@ -474,7 +496,7 @@ Partial Class FrmMain
         Me.groupBox5.Location = New System.Drawing.Point(375, 643)
         Me.groupBox5.Name = "groupBox5"
         Me.groupBox5.Size = New System.Drawing.Size(344, 130)
-        Me.groupBox5.TabIndex = 30
+        Me.groupBox5.TabIndex = 16
         Me.groupBox5.TabStop = False
         Me.groupBox5.Text = "Signal Smoothing Parameters"
         '
@@ -502,7 +524,7 @@ Partial Class FrmMain
         Me.cbxKernelWidth.Margin = New System.Windows.Forms.Padding(2)
         Me.cbxKernelWidth.Name = "cbxKernelWidth"
         Me.cbxKernelWidth.Size = New System.Drawing.Size(80, 25)
-        Me.cbxKernelWidth.TabIndex = 13
+        Me.cbxKernelWidth.TabIndex = 17
         '
         'label1
         '
@@ -523,7 +545,7 @@ Partial Class FrmMain
         Me.groupBox4.Location = New System.Drawing.Point(14, 643)
         Me.groupBox4.Name = "groupBox4"
         Me.groupBox4.Size = New System.Drawing.Size(344, 64)
-        Me.groupBox4.TabIndex = 31
+        Me.groupBox4.TabIndex = 13
         Me.groupBox4.TabStop = False
         Me.groupBox4.Text = "Calibration Method"
         '
@@ -533,7 +555,7 @@ Partial Class FrmMain
         Me.btnExport.Location = New System.Drawing.Point(485, 782)
         Me.btnExport.Name = "btnExport"
         Me.btnExport.Size = New System.Drawing.Size(234, 40)
-        Me.btnExport.TabIndex = 33
+        Me.btnExport.TabIndex = 31
         Me.btnExport.Tag = ""
         Me.btnExport.Text = ""
         Me.ToolTip1.SetToolTip(Me.btnExport, "Export")
@@ -547,7 +569,7 @@ Partial Class FrmMain
         Me.btnInfo.Margin = New System.Windows.Forms.Padding(2)
         Me.btnInfo.Name = "btnInfo"
         Me.btnInfo.Size = New System.Drawing.Size(30, 30)
-        Me.btnInfo.TabIndex = 34
+        Me.btnInfo.TabIndex = 32
         Me.btnInfo.Text = ""
         Me.ToolTip1.SetToolTip(Me.btnInfo, "About")
         Me.btnInfo.UseVisualStyleBackColor = True
@@ -558,7 +580,7 @@ Partial Class FrmMain
         Me.txtExcelTitle.Location = New System.Drawing.Point(384, 14)
         Me.txtExcelTitle.Name = "txtExcelTitle"
         Me.txtExcelTitle.Size = New System.Drawing.Size(300, 25)
-        Me.txtExcelTitle.TabIndex = 32
+        Me.txtExcelTitle.TabIndex = 27
         '
         'GroupBox1
         '
@@ -568,7 +590,7 @@ Partial Class FrmMain
         Me.GroupBox1.Location = New System.Drawing.Point(14, 709)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(344, 64)
-        Me.GroupBox1.TabIndex = 32
+        Me.GroupBox1.TabIndex = 28
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Data Export Options"
         '
@@ -580,7 +602,7 @@ Partial Class FrmMain
         Me.rbtnCSV.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.rbtnCSV.Name = "rbtnCSV"
         Me.rbtnCSV.Size = New System.Drawing.Size(150, 30)
-        Me.rbtnCSV.TabIndex = 12
+        Me.rbtnCSV.TabIndex = 30
         Me.rbtnCSV.Text = "Save as CSV"
         Me.rbtnCSV.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         Me.rbtnCSV.UseVisualStyleBackColor = True
@@ -594,31 +616,11 @@ Partial Class FrmMain
         Me.rbtnXLSX.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.rbtnXLSX.Name = "rbtnXLSX"
         Me.rbtnXLSX.Size = New System.Drawing.Size(150, 30)
-        Me.rbtnXLSX.TabIndex = 11
+        Me.rbtnXLSX.TabIndex = 29
         Me.rbtnXLSX.TabStop = True
         Me.rbtnXLSX.Text = "Open in Excel"
         Me.rbtnXLSX.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         Me.rbtnXLSX.UseVisualStyleBackColor = True
-        '
-        'syncButton1
-        '
-        Me.syncButton1.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.syncButton1.Location = New System.Drawing.Point(307, 270)
-        Me.syncButton1.Name = "syncButton1"
-        Me.syncButton1.Size = New System.Drawing.Size(30, 30)
-        Me.syncButton1.TabIndex = 27
-        Me.syncButton1.Text = ""
-        Me.syncButton1.UseVisualStyleBackColor = True
-        '
-        'syncButton2
-        '
-        Me.syncButton2.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.syncButton2.Location = New System.Drawing.Point(307, 168)
-        Me.syncButton2.Name = "syncButton2"
-        Me.syncButton2.Size = New System.Drawing.Size(30, 30)
-        Me.syncButton2.TabIndex = 28
-        Me.syncButton2.Text = ""
-        Me.syncButton2.UseVisualStyleBackColor = True
         '
         'FrmMain
         '

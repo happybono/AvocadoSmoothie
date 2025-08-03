@@ -458,6 +458,8 @@ Public Class FrmMain
         txtExcelTitle.ForeColor = Color.Gray
         txtExcelTitle.TextAlign = HorizontalAlignment.Center
 
+        TextBox1.Text = String.Empty
+
         UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
         UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
 
