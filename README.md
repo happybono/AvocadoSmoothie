@@ -136,11 +136,11 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 | High local variation    | Can suppress trends  | Captures trends well      |
 | Sudden spikes           | Ignores outliers well| May amplify outliers      |
 
-- The **standard median** is great for filtering noise in data with frequent or unpredictable spikes—such as images or sensor readings.
+- The **standard median** is great for filtering noise in data with frequent or unpredictable spikes : such as images or sensor readings.
 - The **Pascal theory based weighted median** shines when the data has meaningful local structure, like time series that need trend preservation.
 
 ### Why Is the Pascal Triangle Weighted Median More Sensitive to Noise?
-A **Pascal triangle–based weighted median** assigns weights to each element—typically giving higher weight to values near the center of the window.
+A **Pascal triangle–based weighted median** assigns weights to each element : typically giving higher weight to values near the center of the window.
 
 - Advantage : Better preserves local trends within the data.
 - Downside : Noisy spikes near the center get too much influence, leading to distortion.
