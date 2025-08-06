@@ -127,6 +127,43 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 - Build the project.
 - Run the application.
 
+## Pascal Weighted Median vs. Standard Median
+### Which Types of Graphs Benefit from Each Method?
+| Graph Type              | Standard Median      | Pascal Weighted Median    |
+|:------------------------|:---------------------|:--------------------------|
+| Occasional Noise        | Effective            | Effective                 |
+| Frequent Noise          | Strong filtering     | Sensitive to distortions  |
+| High local variation    | Can suppress trends  | Captures trends well      |
+| Sudden spikes           | Ignores outliers well| May amplify outliers      |
+
+- The **standard median** is great for filtering noise in data with frequent or unpredictable spikes—such as images or sensor readings.
+- The **Pascal theory based weighted median** shines when the data has meaningful local structure, like time series that need trend preservation.
+
+### Why Is the Pascal Triangle Weighted Median More Sensitive to Noise?
+A **Pascal triangle–based weighted median** assigns weights to each element—typically giving higher weight to values near the center of the window.
+
+- Advantage : Better preserves local trends within the data.
+- Downside : Noisy spikes near the center get too much influence, leading to distortion.
+
+In comparison:
+- A **[standard median](https://github.com/happybono/AvocadoSmoothie/)** simply picks the middle value, so random spikes are more easily ignored.
+- A **[weighted median](https://github.com/happybono/SonataSmooth/)**, especially with Pascal-style weights, might over-represent noisy points if they’re close to the center.
+
+### Which Method Is Commonly Used in Practice?
+Depending on the field, practitioners choose based on context :
+
+- Image processing / video filtering
+  - Standard median is widely used
+  - Removes salt-and-pepper noise effectively
+
+- Time-series smoothing (e.g. stock prices, IoT sensors, EEG signals)
+  - Weighted approaches, including Pascal triangle, are preferred
+  - Smooths data while preserving trends
+
+- Experimental data correction
+  - Often combines both methods
+  - Hybrid strategies handle complex noise patterns more flexibly
+
 ## Features
 - Import numeric data effortlessly via copy / paste or drag-and-drop from Excel and other spreadsheet apps (HTML / text parsing built-in).
 - Choose kernel width and border count, then click `Calculate` button to apply the running median filter.
