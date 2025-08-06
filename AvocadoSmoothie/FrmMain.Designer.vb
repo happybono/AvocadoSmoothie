@@ -67,7 +67,7 @@ Partial Class FrmMain
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.btnExport = New System.Windows.Forms.Button()
         Me.btnInfo = New System.Windows.Forms.Button()
-        Me.txtExcelTitle = New System.Windows.Forms.TextBox()
+        Me.txtDatasetTitle = New System.Windows.Forms.TextBox()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.rbtnCSV = New System.Windows.Forms.RadioButton()
         Me.rbtnXLSX = New System.Windows.Forms.RadioButton()
@@ -301,8 +301,8 @@ Partial Class FrmMain
         '
         'syncButton1
         '
-        Me.syncButton1.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.syncButton1.Location = New System.Drawing.Point(307, 270)
+        Me.syncButton1.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!)
+        Me.syncButton1.Location = New System.Drawing.Point(307, 269)
         Me.syncButton1.Name = "syncButton1"
         Me.syncButton1.Size = New System.Drawing.Size(30, 30)
         Me.syncButton1.TabIndex = 12
@@ -367,8 +367,8 @@ Partial Class FrmMain
         '
         'syncButton2
         '
-        Me.syncButton2.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.syncButton2.Location = New System.Drawing.Point(307, 168)
+        Me.syncButton2.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!)
+        Me.syncButton2.Location = New System.Drawing.Point(307, 167)
         Me.syncButton2.Name = "syncButton2"
         Me.syncButton2.Size = New System.Drawing.Size(30, 30)
         Me.syncButton2.TabIndex = 26
@@ -574,13 +574,13 @@ Partial Class FrmMain
         Me.ToolTip1.SetToolTip(Me.btnInfo, "About")
         Me.btnInfo.UseVisualStyleBackColor = True
         '
-        'txtExcelTitle
+        'txtDatasetTitle
         '
-        Me.txtExcelTitle.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
-        Me.txtExcelTitle.Location = New System.Drawing.Point(384, 14)
-        Me.txtExcelTitle.Name = "txtExcelTitle"
-        Me.txtExcelTitle.Size = New System.Drawing.Size(300, 25)
-        Me.txtExcelTitle.TabIndex = 27
+        Me.txtDatasetTitle.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
+        Me.txtDatasetTitle.Location = New System.Drawing.Point(384, 14)
+        Me.txtDatasetTitle.Name = "txtDatasetTitle"
+        Me.txtDatasetTitle.Size = New System.Drawing.Size(300, 25)
+        Me.txtDatasetTitle.TabIndex = 27
         '
         'GroupBox1
         '
@@ -597,12 +597,14 @@ Partial Class FrmMain
         'rbtnCSV
         '
         Me.rbtnCSV.Appearance = System.Windows.Forms.Appearance.Button
+        Me.rbtnCSV.Checked = True
         Me.rbtnCSV.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
         Me.rbtnCSV.Location = New System.Drawing.Point(175, 24)
         Me.rbtnCSV.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.rbtnCSV.Name = "rbtnCSV"
         Me.rbtnCSV.Size = New System.Drawing.Size(150, 30)
         Me.rbtnCSV.TabIndex = 30
+        Me.rbtnCSV.TabStop = True
         Me.rbtnCSV.Text = "Save as CSV"
         Me.rbtnCSV.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         Me.rbtnCSV.UseVisualStyleBackColor = True
@@ -610,14 +612,12 @@ Partial Class FrmMain
         'rbtnXLSX
         '
         Me.rbtnXLSX.Appearance = System.Windows.Forms.Appearance.Button
-        Me.rbtnXLSX.Checked = True
         Me.rbtnXLSX.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
         Me.rbtnXLSX.Location = New System.Drawing.Point(19, 24)
         Me.rbtnXLSX.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.rbtnXLSX.Name = "rbtnXLSX"
         Me.rbtnXLSX.Size = New System.Drawing.Size(150, 30)
         Me.rbtnXLSX.TabIndex = 29
-        Me.rbtnXLSX.TabStop = True
         Me.rbtnXLSX.Text = "Open in Excel"
         Me.rbtnXLSX.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         Me.rbtnXLSX.UseVisualStyleBackColor = True
@@ -631,7 +631,7 @@ Partial Class FrmMain
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.btnInfo)
         Me.Controls.Add(Me.btnExport)
-        Me.Controls.Add(Me.txtExcelTitle)
+        Me.Controls.Add(Me.txtDatasetTitle)
         Me.Controls.Add(Me.groupBox4)
         Me.Controls.Add(Me.groupBox5)
         Me.Controls.Add(Me.progressBar1)
@@ -702,7 +702,7 @@ Partial Class FrmMain
     Private WithEvents tlblBorderCount As ToolStripStatusLabel
     Private WithEvents slblBorderCount As ToolStripStatusLabel
     Friend WithEvents ToolTip1 As ToolTip
-    Friend WithEvents txtExcelTitle As TextBox
+    Friend WithEvents txtDatasetTitle As TextBox
     Friend WithEvents btnExport As Button
     Private WithEvents btnInfo As Button
     Private WithEvents GroupBox1 As GroupBox

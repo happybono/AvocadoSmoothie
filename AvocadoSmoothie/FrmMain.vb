@@ -454,9 +454,9 @@ Public Class FrmMain
         ListBox1.Items.Clear()
         ListBox2.Items.Clear()
 
-        txtExcelTitle.Text = ExcelTitlePlaceholder
-        txtExcelTitle.ForeColor = Color.Gray
-        txtExcelTitle.TextAlign = HorizontalAlignment.Center
+        txtDatasetTitle.Text = ExcelTitlePlaceholder
+        txtDatasetTitle.ForeColor = Color.Gray
+        txtDatasetTitle.TextAlign = HorizontalAlignment.Center
 
         TextBox1.Text = String.Empty
 
@@ -571,9 +571,9 @@ Public Class FrmMain
             lblCnt2.Text = "Count : " & ListBox2.Items.Count
             progressBar1.Value = 0
 
-            txtExcelTitle.Text = ExcelTitlePlaceholder
-            txtExcelTitle.ForeColor = Color.Gray
-            txtExcelTitle.TextAlign = HorizontalAlignment.Center
+            txtDatasetTitle.Text = ExcelTitlePlaceholder
+            txtDatasetTitle.ForeColor = Color.Gray
+            txtDatasetTitle.TextAlign = HorizontalAlignment.Center
 
             UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
 
@@ -922,9 +922,9 @@ Public Class FrmMain
         cbxBorderCount.SelectedIndex = 0
         cbxKernelWidth.SelectedItem = "5"
 
-        If String.IsNullOrWhiteSpace(txtExcelTitle.Text) Then
-            txtExcelTitle.Text = ExcelTitlePlaceholder
-            txtExcelTitle.ForeColor = Color.Gray
+        If String.IsNullOrWhiteSpace(txtDatasetTitle.Text) Then
+            txtDatasetTitle.Text = ExcelTitlePlaceholder
+            txtDatasetTitle.ForeColor = Color.Gray
         End If
 
         AddHandler ListBox1.SelectedIndexChanged, AddressOf UpdateListBox1ButtonsState
@@ -937,7 +937,7 @@ Public Class FrmMain
     Private Sub UpdateListBox1ButtonsState(s As Object, e As EventArgs)
         Dim hasItems As Boolean = (ListBox1.Items.Count > 0)
         Dim hasSelection As Boolean = (ListBox1.SelectedItems.Count > 0)
-        Dim titleValid As Boolean = (txtExcelTitle.TextLength > 0 AndAlso txtExcelTitle.Text <> ExcelTitlePlaceholder)
+        Dim titleValid As Boolean = (txtDatasetTitle.TextLength > 0 AndAlso txtDatasetTitle.Text <> ExcelTitlePlaceholder)
         Dim canSync As Boolean = (ListBox1.Items.Count = ListBox2.Items.Count) AndAlso hasSelection
 
         copyButton1.Enabled = hasItems
@@ -996,33 +996,33 @@ Public Class FrmMain
         Dim kernelWidth As Integer
         If Not Integer.TryParse(cbxKernelWidth.Text, kernelWidth) Then
             MessageBox.Show("Please select a kernel width.", "Export CSV",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    MessageBoxButtons.OK, MessageBoxIcon.Information)
             Return
         End If
 
         Dim borderCount As Integer
         If Not Integer.TryParse(cbxBorderCount.Text, borderCount) Then
             MessageBox.Show("Please select a border count.", "Export CSV",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    MessageBoxButtons.OK, MessageBoxIcon.Information)
             Return
         End If
 
         ' 원본 데이터 파싱
         Dim initialData = ListBox1.Items.Cast(Of Object)() _
-                        .Select(Function(x)
-                                    Dim d As Double
-                                    Return If(Double.TryParse(x?.ToString(),
-                                                              NumberStyles.Any,
-                                                              CultureInfo.InvariantCulture,
-                                                              d),
-                                              d, Double.NaN)
-                                End Function) _
-                        .Where(Function(d) Not Double.IsNaN(d)) _
-                        .ToArray()
+                    .Select(Function(x)
+                                Dim d As Double
+                                Return If(Double.TryParse(x?.ToString(),
+                                                          NumberStyles.Any,
+                                                          CultureInfo.InvariantCulture,
+                                                          d),
+                                          d, Double.NaN)
+                            End Function) _
+                    .Where(Function(d) Not Double.IsNaN(d)) _
+                    .ToArray()
         Dim n = initialData.Length
         If n = 0 Then
             MessageBox.Show("No data to export.", "Export CSV",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    MessageBoxButtons.OK, MessageBoxIcon.Information)
             Return
         End If
 
@@ -1056,17 +1056,14 @@ Public Class FrmMain
             dlg.Filter = "CSV files (*.csv)|*.csv"
             dlg.DefaultExt = "csv"
             dlg.AddExtension = True
-            If dlg.ShowDialog() <> DialogResult.OK Then Return
+            If dlg.ShowDialog(Me) <> DialogResult.OK Then Return
             basePath = dlg.FileName
         End Using
 
         ' 분할 저장 설정
         Const EXCEL_MAX_ROW As Integer = 1048576
         Const HEADER_LINES As Integer = 10
-        ' Title(1)+blank(1)+SmoothingParams(1)+KWidth(1)+BCount(1)+blank(1)+Generated(1)+blank(1)+컬럼헤더(1)
-        ' (Part x of y는 9줄 안에 포함시키지 않고, 실제 분할 파일명에만 반영)
-
-        Dim maxDataRows = EXCEL_MAX_ROW - HEADER_LINES - 1 ' 마지막 빈줄 제외
+        Dim maxDataRows = EXCEL_MAX_ROW - HEADER_LINES - 1
         Dim partCount = CInt(Math.Ceiling(n / CDbl(maxDataRows)))
 
         Dim dir = Path.GetDirectoryName(basePath)
@@ -1074,6 +1071,8 @@ Public Class FrmMain
         Dim ext = Path.GetExtension(basePath)
 
         ' 파트별 파일 쓰기
+        Dim createdFiles As New List(Of String)()   ' 추가: 생성된 파일 경로 저장용
+
         For part = 0 To partCount - 1
             Dim startIdx = part * maxDataRows
             Dim count = Math.Min(maxDataRows, n - startIdx)
@@ -1089,26 +1088,23 @@ Public Class FrmMain
               sw As New StreamWriter(fs, Encoding.UTF8)
 
                 ' 제목 & Parameters
-                sw.WriteLine(txtExcelTitle.Text)
-                ' Part 정보
+                sw.WriteLine(txtDatasetTitle.Text)
                 sw.WriteLine($"Part {part + 1} of {partCount}")
-                sw.WriteLine()   ' 빈 줄
+                sw.WriteLine()
                 sw.WriteLine("Smoothing Parameters")
                 sw.WriteLine($"Kernel Width : {kernelWidth}")
                 sw.WriteLine($"Border Count : {borderCount}")
-                sw.WriteLine()   ' 빈 줄
+                sw.WriteLine()
                 sw.WriteLine($"Generated : {DateTime.Now.ToString("G", CultureInfo.CurrentCulture)}")
-                sw.WriteLine()   ' 빈 줄
-
-                ' Column Header
+                sw.WriteLine()
                 sw.WriteLine("Initial Data,MiddleMedian,AllMedian")
 
                 ' 데이터 쓰기
                 For i = startIdx To startIdx + count - 1
                     Dim line = String.Join(",",
-                            initialData(i).ToString("G17", CultureInfo.InvariantCulture),
-                            middleMedian(i).ToString("G17", CultureInfo.InvariantCulture),
-                            allMedian(i).ToString("G17", CultureInfo.InvariantCulture))
+                        initialData(i).ToString("G17", CultureInfo.InvariantCulture),
+                        middleMedian(i).ToString("G17", CultureInfo.InvariantCulture),
+                        allMedian(i).ToString("G17", CultureInfo.InvariantCulture))
                     sw.WriteLine(line)
 
                     ' 진행률 업데이트
@@ -1117,12 +1113,25 @@ Public Class FrmMain
                                               Math.Min(pct, progressBar1.Maximum))
                 Next
             End Using
+
+            createdFiles.Add(filePath)   ' 추가
         Next
 
-        ' 마무리
-        progressBar1.Value = 0
-        MessageBox.Show("CSV export completed.", "Export CSV",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information)
+        For Each file In createdFiles
+            Try
+                Process.Start(New ProcessStartInfo(file) With {
+                .UseShellExecute = True
+            })
+            Catch ex As System.ComponentModel.Win32Exception
+                Process.Start(New ProcessStartInfo("rundll32.exe",
+                       $"shell32.dll,OpenAs_RunDLL ""{file}""") With {
+                .UseShellExecute = True
+            })
+            Catch ex As Exception
+                MessageBox.Show($"We're sorry, but the file could not be opened : {file}{vbCrLf}{ex.Message}",
+                "Error Opening File", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        Next
     End Function
 
 
@@ -1259,7 +1268,7 @@ Public Class FrmMain
                 wb = excel.Workbooks.Add()
                 ws = CType(wb.Worksheets(1), Excel.Worksheet)
 
-                ws.Cells(1, 1) = txtExcelTitle.Text
+                ws.Cells(1, 1) = txtDatasetTitle.Text
                 ws.Cells(3, 1) = "Smoothing Parameters"
                 ws.Cells(4, 1) = $"Kernel Width : {kernelWidth}"
                 ws.Cells(5, 1) = $"Border Count  {borderCount}"
@@ -1311,7 +1320,8 @@ Public Class FrmMain
 
                 chart.ChartType = Microsoft.Office.Interop.Excel.XlChartType.xlLine
                 chart.HasTitle = True
-                chart.ChartTitle.Text = "Symphony of Boundaries And Flow : Avocado Smoothie 's All-Median & Middle-Median"
+                ' chart.ChartTitle.Text = "Symphony of Boundaries And Flow : Avocado Smoothie 's All-Median & Middle-Median"
+                chart.ChartTitle.Text = txtDatasetTitle.Text
                 chart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlValue).HasTitle = True
                 chart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlValue).AxisTitle.Text = "Value"
                 chart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlCategory).HasTitle = True
@@ -1372,29 +1382,29 @@ Public Class FrmMain
         AboutBox.ShowDialog()
     End Sub
 
-    Private Sub txtExcelTitle_Enter(sender As Object, e As EventArgs) Handles txtExcelTitle.Enter
-        If txtExcelTitle.Text = ExcelTitlePlaceholder Then
-            txtExcelTitle.Text = ""
-            txtExcelTitle.ForeColor = Color.Black
+    Private Sub txtExcelTitle_Enter(sender As Object, e As EventArgs) Handles txtDatasetTitle.Enter
+        If txtDatasetTitle.Text = ExcelTitlePlaceholder Then
+            txtDatasetTitle.Text = ""
+            txtDatasetTitle.ForeColor = Color.Black
         End If
-        txtExcelTitle.TextAlign = HorizontalAlignment.Left
+        txtDatasetTitle.TextAlign = HorizontalAlignment.Left
     End Sub
 
-    Private Sub txtExcelTitle_Leave(sender As Object, e As EventArgs) Handles txtExcelTitle.Leave
-        If String.IsNullOrWhiteSpace(txtExcelTitle.Text) Then
-            txtExcelTitle.Text = ExcelTitlePlaceholder
-            txtExcelTitle.ForeColor = Color.Gray
-            txtExcelTitle.TextAlign = HorizontalAlignment.Center
+    Private Sub txtExcelTitle_Leave(sender As Object, e As EventArgs) Handles txtDatasetTitle.Leave
+        If String.IsNullOrWhiteSpace(txtDatasetTitle.Text) Then
+            txtDatasetTitle.Text = ExcelTitlePlaceholder
+            txtDatasetTitle.ForeColor = Color.Gray
+            txtDatasetTitle.TextAlign = HorizontalAlignment.Center
         End If
     End Sub
 
-    Private Sub txtExcelTitle_TextChanged(sender As Object, e As EventArgs) Handles txtExcelTitle.TextChanged
+    Private Sub txtExcelTitle_TextChanged(sender As Object, e As EventArgs) Handles txtDatasetTitle.TextChanged
         UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
 
-        If txtExcelTitle.Text = ExcelTitlePlaceholder Then
-            txtExcelTitle.TextAlign = HorizontalAlignment.Center
+        If txtDatasetTitle.Text = ExcelTitlePlaceholder Then
+            txtDatasetTitle.TextAlign = HorizontalAlignment.Center
         Else
-            txtExcelTitle.TextAlign = HorizontalAlignment.Left
+            txtDatasetTitle.TextAlign = HorizontalAlignment.Left
         End If
     End Sub
 
