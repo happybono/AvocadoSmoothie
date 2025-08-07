@@ -127,6 +127,14 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 - Build the project.
 - Run the application.
 
+## Execution Instructions
+1. **Launch the Application** : Run the compiled `.exe` file or start the project from Visual Studio.
+2. **Input Data** : Enter numeric values manually, paste from clipboard, or drag-and-drop text / HTML.
+3. **Select Filter** : Choose a smoothing algorithm and configure kernel width and border count.
+4. **Calibrate** : Click the 'Calibrate' button to apply the selected filter.
+5. **Review Results** : View the smoothed output in the second listbox.
+6. **Export** : Click Export to save results as `.CSV` or `Excel (.xlsx)`, with optional chart visualization.
+
 ## Pascal Weighted Median vs. Standard Median
 ### Which Types of Graphs Benefit from Each Method?
 | Graph Type              | Standard Median      | Pascal Weighted Median    |
