@@ -202,31 +202,6 @@ Public Class FrmMain
         TextBox1.Clear()
     End Sub
 
-    Private Function GetWindowMedian(
-            arr As Double(),
-            startIdx As Integer,
-            endIdx As Integer
-        ) As Double
-
-        Dim length = endIdx - startIdx + 1
-        Dim temp(length - 1) As Double
-        Array.Copy(arr, startIdx, temp, 0, length)
-
-        ' insertion sort (최대 5개)
-        For i As Integer = 1 To length - 1
-            Dim key = temp(i)
-            Dim j = i - 1
-            While j >= 0 AndAlso temp(j) > key
-                temp(j + 1) = temp(j)
-                j -= 1
-            End While
-            temp(j + 1) = key
-        Next
-
-        Return temp(length >> 1)
-    End Function
-
-
     Public Sub Quicksort(ByVal list() As Double, ByVal min As Integer, ByVal max As Integer)
         Dim random_number As New Random
         Dim med_value As Double
@@ -1449,4 +1424,5 @@ Public Class FrmMain
             ListBox1.EndUpdate()
         End Try
     End Sub
+
 End Class
