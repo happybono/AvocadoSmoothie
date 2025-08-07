@@ -1,5 +1,6 @@
 ﻿Imports System.Globalization
 Imports System.IO
+Imports System.Net.Mime.MediaTypeNames
 Imports System.Runtime.InteropServices
 Imports System.Text
 Imports System.Text.RegularExpressions
@@ -293,7 +294,7 @@ Public Class FrmMain
                 parsedList.Add(dValue)
             Else
                 MessageBox.Show(
-                $"Sorry, The value ‘{strValue}’ could not be converted to a number.",
+                $"The value '{strValue}' could not be converted to a number.",
                 "Avocado Smoothie",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Warning
@@ -401,8 +402,8 @@ Public Class FrmMain
             If Double.TryParse(txt, num) Then
                 doubles.Add(num)
             Else
-                MessageBox.Show($"'{txt}' 값을 숫자로 변환할 수 없습니다.",
-                            "Copy Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show($"The value '{txt}' could not be converted to a number.",
+                                "Copy Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return
             End If
         Next
@@ -422,8 +423,8 @@ Public Class FrmMain
             If Double.TryParse(txt, num) Then
                 doubles.Add(num)
             Else
-                MessageBox.Show($"'{txt}' 값을 숫자로 변환할 수 없습니다.",
-                            "Copy Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show($"The value '{txt}' could not be converted to a number.",
+                                "Copy Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return
             End If
         Next
