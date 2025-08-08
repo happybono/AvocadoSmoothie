@@ -390,7 +390,7 @@ Public Class FrmMain
 
     Private Sub copyButton2_Click(sender As Object, e As EventArgs) Handles copyButton2.Click
         Dim doubles As New List(Of Double)
-        Dim source = If(ListBox1.SelectedItems.Count > 0, ListBox1.SelectedItems, ListBox2.Items)
+        Dim source = If(ListBox2.SelectedItems.Count > 0, ListBox2.SelectedItems, ListBox2.Items)
 
         For Each itm As Object In source
             Dim txt = itm.ToString()
@@ -1426,3 +1426,4 @@ Public Class FrmMain
     End Sub
 
 End Class
+
