@@ -381,6 +381,7 @@ This AvocadoSmoothie application combines robust data handling, a user-friendly 
 ![AvocadoSmoothie-AllMedian](AvocadoSmoothie-AllMedian.png)<br><br>
 ![AvocadoSmoothie-MiddleMedian](AvocadoSmoothie-MiddleMedian.png)<br><br>
 ![AvocadoSmoothie-EditEntries](AvocadoSmoothie-EditEntries.png)<br><br>
+![AvocadoSmoothie-MatchSelection](AvocadoSmoothie-MatchSelection.png)<br><br>
 ![Calibrated Results](Before_and_After_Smoothing_with_Avocado_Smoothie.png)
 
 ## License
