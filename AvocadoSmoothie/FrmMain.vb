@@ -1289,7 +1289,7 @@ Public Class FrmMain
 
             Try
                 excel = New Excel.Application()
-                'excel.Visible = True
+                ' excel.Visible = True
                 wb = excel.Workbooks.Add()
                 ws = CType(wb.Worksheets(1), Excel.Worksheet)
 
@@ -1475,3 +1475,4 @@ Public Class FrmMain
     End Sub
 
 End Class
+
