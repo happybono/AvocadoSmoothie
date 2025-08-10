@@ -202,6 +202,31 @@ Public Class FrmMain
         TextBox1.Clear()
     End Sub
 
+    Private Function GetWindowMedian(
+            arr As Double(),
+            startIdx As Integer,
+            endIdx As Integer
+        ) As Double
+
+        Dim length = endIdx - startIdx + 1
+        Dim temp(length - 1) As Double
+        Array.Copy(arr, startIdx, temp, 0, length)
+
+        ' insertion sort (최대 5개)
+        For i As Integer = 1 To length - 1
+            Dim key = temp(i)
+            Dim j = i - 1
+            While j >= 0 AndAlso temp(j) > key
+                temp(j + 1) = temp(j)
+                j -= 1
+            End While
+            temp(j + 1) = key
+        Next
+
+        Return temp(length >> 1)
+    End Function
+
+
     Public Sub Quicksort(ByVal list() As Double, ByVal min As Integer, ByVal max As Integer)
         Dim random_number As New Random
         Dim med_value As Double
@@ -390,7 +415,7 @@ Public Class FrmMain
 
     Private Sub copyButton2_Click(sender As Object, e As EventArgs) Handles copyButton2.Click
         Dim doubles As New List(Of Double)
-        Dim source = If(ListBox2.SelectedItems.Count > 0, ListBox2.SelectedItems, ListBox2.Items)
+        Dim source = If(ListBox1.SelectedItems.Count > 0, ListBox1.SelectedItems, ListBox2.Items)
 
         For Each itm As Object In source
             Dim txt = itm.ToString()
@@ -440,6 +465,13 @@ Public Class FrmMain
         UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
 
         lblCnt1.Text = "Count : " & ListBox1.Items.Count
+        lblCnt2.Text = "Count : " & ListBox2.Items.Count
+
+        tlblBorderCount.Visible = False
+        slblBorderCount.Visible = False
+        slblSeparator2.Visible = False
+        slblCalibratedType.Text = "--"
+        slblKernelWidth.Text = "--"
         TextBox1.Select()
     End Sub
 
@@ -461,6 +493,13 @@ Public Class FrmMain
         ListBox2.Items.Clear()
         UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
         UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
+
+
+        tlblBorderCount.Visible = False
+        slblBorderCount.Visible = False
+        slblSeparator2.Visible = False
+        slblCalibratedType.Text = "--"
+        slblKernelWidth.Text = "--"
 
         lblCnt2.Text = "Count : " & ListBox2.Items.Count
         ListBox2.Select()
@@ -516,40 +555,53 @@ Public Class FrmMain
     Private Async Sub deleteButton1_Click(sender As Object, e As EventArgs) Handles deleteButton1.Click
         Dim selectedCount As Integer = ListBox1.SelectedIndices.Count
         Dim totalCount As Integer = ListBox1.Items.Count
-        Dim selectedItems As Boolean = ListBox1.SelectedItems.Count > 0
         Dim message As String
+        Dim isAllSelected As Boolean = (selectedCount = totalCount)
 
         If selectedCount = 0 Then
             UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
             Return
         End If
 
-        If selectedCount = totalCount Then
-            message = $"You are about to delete all {totalCount} item{If(totalCount <> 1, "s", "")} from the Initial Dataset listbox." & vbCrLf &
-                "This will also delete all items from the Refined Dataset listbox." & vbCrLf & vbCrLf &
-                "Are you sure you want to proceed?"
+        If isAllSelected Then
+            message =
+            $"You are about to delete all {totalCount} item{If(totalCount <> 1, "s", "")} from the Initial Dataset listbox." & vbCrLf &
+            "This will also delete all items from the Refined Dataset listbox." & vbCrLf & vbCrLf &
+            "Are you sure you want to proceed?"
         Else
-            message = $"You are about to delete {selectedCount} selected item{If(selectedCount <> 1, "s", "")} from the Initial Dataset listbox." &
-                      vbCrLf & vbCrLf & "Are you sure you want to proceed?"
+            message =
+            $"You are about to delete {selectedCount} selected item{If(selectedCount <> 1, "s", "")} from the Initial Dataset listbox." &
+            vbCrLf & vbCrLf & "Are you sure you want to proceed?"
         End If
 
-        Dim result As DialogResult = MessageBox.Show(message, "Delete Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+        ' Keep counts updated prior to showing the confirmation dialog
+        lblCnt1.Text = "Count : " & ListBox1.Items.Count
+        lblCnt2.Text = "Count : " & ListBox2.Items.Count
 
+        Dim result As DialogResult = MessageBox.Show(message, "Delete Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
         If result = DialogResult.No Then
             Return
         End If
 
-        If selectedCount = totalCount Then
+        If isAllSelected Then
             ListBox1.Items.Clear()
             ListBox2.Items.Clear()
             copyButton1.Enabled = False
+
             lblCnt1.Text = "Count : " & ListBox1.Items.Count
             lblCnt2.Text = "Count : " & ListBox2.Items.Count
+
             progressBar1.Value = 0
 
             txtDatasetTitle.Text = ExcelTitlePlaceholder
             txtDatasetTitle.ForeColor = Color.Gray
             txtDatasetTitle.TextAlign = HorizontalAlignment.Center
+
+            tlblBorderCount.Visible = False
+            slblBorderCount.Visible = False
+            slblSeparator2.Visible = False
+            slblCalibratedType.Text = "--"
+            slblKernelWidth.Text = "--"
 
             UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
 
@@ -558,10 +610,8 @@ Public Class FrmMain
         End If
 
         Await DeleteSelectedItemsPreserveSelection(ListBox1, progressBar1, lblCnt1)
-        lblCnt1.Text = "Count : " & ListBox1.Items.Count
 
         ListBox1.Select()
-
         UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
         UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
     End Sub
@@ -1424,6 +1474,4 @@ Public Class FrmMain
             ListBox1.EndUpdate()
         End Try
     End Sub
-
 End Class
-
