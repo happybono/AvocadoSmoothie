@@ -573,8 +573,7 @@ Public Class FrmMain
             $"You are about to delete {selectedCount} selected item{If(selectedCount <> 1, "s", "")} from the Initial Dataset listbox." &
             vbCrLf & vbCrLf & "Are you sure you want to proceed?"
         End If
-
-        ' Keep counts updated prior to showing the confirmation dialog
+                                                                                    
         lblCnt1.Text = "Count : " & ListBox1.Items.Count
         lblCnt2.Text = "Count : " & ListBox2.Items.Count
 
@@ -1474,4 +1473,5 @@ Public Class FrmMain
             ListBox1.EndUpdate()
         End Try
     End Sub
+
 End Class
