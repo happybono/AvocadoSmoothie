@@ -105,6 +105,26 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 #### July 25, 2025
 > Replaced unsafe Val() parsing with Double.TryParse() to prevent overflow and ensure robust input validation.<br><br>
 > Minor bugs fixed.
+
+### v4.0.0.0
+#### August 03, 2025
+> Added `FrmAbout` displaying app version and copyright information.<br><br>
+> Added `Buy Me a Coffee` feature via PayPal, integrated directly into the `FrmAbout` to support the developer.<br><br>
+> Minor bugs fixed.
+
+### v4.2.3.0
+#### August 03, 2025
+> Added `FrmAbout` displaying app version and copyright information.<br><br>
+> Added `Buy Me a Coffee` feature via PayPal, integrated directly into the `FrmAbout` to support the developer.<br><br>
+
+### v4.2.3.2
+#### August 05, 2025
+> Minor bugs fixed.
+
+### v4.2.6.7
+#### August 10, 2025
+> The code has been refactored, and variable names have been redefined for improved clarity.
+> Include an ARM64-native variant of the executable.
 </details>
 
 ## Required Components & Setup
