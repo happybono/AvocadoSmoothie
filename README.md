@@ -123,7 +123,7 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 
 ### v4.2.6.7
 #### August 10, 2025
-> The code has been refactored, and variable names have been redefined for improved clarity.
+> The code has been refactored, and variable names have been redefined for improved clarity.<br><br>
 > Include an ARM64-native variant of the executable.
 </details>
 
