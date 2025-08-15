@@ -239,10 +239,23 @@ End Sub
 #### Definition
 - Definition: In a median filter, `kernelRadius` specifies how many elements are taken on each side of the center element when creating the median window.
   
-#### Formula
-\text{kernelWidth} = 2 \times \text{kernelRadius} + 1
+#### Kernel Size Formula
 
-- Example: If kernelRadius = 2, then kernelWidth = 5.
+The width of a kernel is calculated using the following formula:
+
+$$
+\text{kernelWidth} = 2 \times \text{kernelRadius} + 1
+$$
+
+#### Example
+
+If the kernel radius is **2**, then:
+
+$$
+\text{kernelWidth} = 2 \times 2 + 1 = 5
+$$
+
+Therefore, the kernel width is **5**.
 
 #### Meaning
 - The filter includes the current element plus `kernelRadius` elements before it and after it.
