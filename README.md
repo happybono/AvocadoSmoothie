@@ -235,29 +235,30 @@ Private Async Sub ListBox1_DragDrop(sender As Object, e As DragEventArgs) Handle
 End Sub
 ```
 
-### 2. What is radiusWidth
+### 2. What is Kernel Radius
 #### Definition
-In a median filter, `radiusWidth` specifies how many elements to include on each side of the current index when forming the window for median calculation.
+- Definition: In a median filter, `kernelRadius` specifies how many elements are taken on each side of the center element when creating the median window.
   
 #### Formula
-\text{kernelWidth} = 2 \times \text{radiusWidth} + 1- Example: If radiusWidth = 2, then kernelWidth = 5.
+\text{kernelWidth} = 2 \times \text{kernelRadius} + 1
+
+- Example: If kernelRadius = 2, then kernelWidth = 5.
 
 #### Meaning
-- The filter will take the current element plus radiusWidth elements before and after it.
-- The total number of elements in the median window is always odd, ensuring there is a single middle value.
+- The filter includes the current element plus `kernelRadius` elements before it and after it.
+- This ensures the total window size is always odd, so there’s a single middle value.
 
 #### Benefit
-- `radiusWidth` makes window sizing intuitive.
-- Easier handling of edge cases at the beginning and end of the dataset.
-
+- `kernelRadius` makes it easy to reason about how far to extend the filter around the center point.
+- It helps in handling edge conditions without ambiguity.
 
 ### 2. AllMedian Calculation
 #### How it works
-For every data point, the algorithm calculates the median of a window centered at that point. The window radius is defined by radiusWidth, making the total window size 2 × radiusWidth + 1. At the edges, the window is automatically adjusted to stay within the bounds of the data array.
+For every data point, the algorithm calculates the median of a window centered at that point. The window radius is defined by `kernelRadius`, making the total window size 2 × `kernelRadius` + 1. At the edges, the window is automatically adjusted to stay within the bounds of the data array.
 
 #### Principle
 Principle
-- For each index, determine the start (`iMin`) and end (`iMax`) indices based on `radiusWidth`.
+- For each index, determine the start (`iMin`) and end (`iMax`) indices based on `kernelRadius`.
 - Copy these values into a temporary array and sort it.
 - Select the middle value as the median.
 - Uses `Parallel.For` to speed up computation on large datasets.
@@ -265,17 +266,17 @@ Principle
 
 #### Code Implementation
 ```vbnet
-Sub AllMedian(radiusWidth As Integer)
+Sub AllMedian(kernelRadius As Integer)
     Dim n = sourceList.Count
     If n = 0 Then Return
 
     Dim arr = sourceList.ToArray()
     Dim buffer(n - 1) As Double
-    Dim kWidth = 2 * radiusWidth + 1
+    Dim kWidth = 2 * kernelRadius + 1
 
     Parallel.For(0, n, Sub(i)
-        Dim iMin = Math.Max(0, i - radiusWidth)
-        Dim iMax = Math.Min(n - 1, i + radiusWidth)
+        Dim iMin = Math.Max(0, i - kernelRadius)
+        Dim iMax = Math.Min(n - 1, i + kernelRadius)
         Dim win(iMax - iMin) As Double
         Dim k = 0
         For j = iMin To iMax
@@ -293,7 +294,7 @@ End Sub
 
 ### 3. MiddleMedian Calculation
 #### How it works
-This median filter is applied only to the inner portion of the dataset, leaving the first and last `borderCount` elements unchanged. The size of the median window is determined by `radiusWidth`.
+This median filter is applied only to the inner portion of the dataset, leaving the first and last `borderCount` elements unchanged. The size of the median window is determined by `kernelRadius`.
 
 #### Principle
 - Copy the first and last `borderCount` elements directly from the source list.
@@ -303,13 +304,13 @@ This median filter is applied only to the inner portion of the dataset, leaving 
 
 #### Code Implementation
 ```vbnet
-Sub MiddleMedian(radiusWidth As Integer, borderCount As Integer)
+Sub MiddleMedian(kernelRadius As Integer, borderCount As Integer)
     Dim n = sourceList.Count
     If n = 0 Then Return
 
     Dim arr = sourceList.ToArray()
     Dim buffer(n - 1) As Double
-    Dim kWidth = 2 * radiusWidth + 1
+    Dim kWidth = 2 * kernelRadius + 1
 
     ' Copy boundary elements
     For i = 0 To borderCount - 1
@@ -319,14 +320,14 @@ Sub MiddleMedian(radiusWidth As Integer, borderCount As Integer)
 
     ' Apply median filter to inner region
     Parallel.For(borderCount, n - borderCount, Sub(i)
-        Dim iMin = i - radiusWidth
-        Dim iMax = i + radiusWidth
+        Dim iMin = i - kernelRadius
+        Dim iMax = i + kernelRadius
         Dim win(kWidth - 1) As Double
         For k = 0 To kWidth - 1
             win(k) = arr(iMin + k)
         Next
         Quicksort(win, 0, kWidth - 1)
-        buffer(i) = win(radiusWidth)
+        buffer(i) = win(kernelRadius)
     End Sub)
 
     medianList.Clear()
