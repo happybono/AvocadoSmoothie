@@ -42,3 +42,18 @@ D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\AvocadoSmoothie\AvocadoSmoothie\
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\AvocadoSmoothie\AvocadoSmoothie\obj\Release\AvocadoSmoothie.exe
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\AvocadoSmoothie\AvocadoSmoothie\obj\Release\AvocadoSmoothie.xml
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\AvocadoSmoothie\AvocadoSmoothie\obj\Release\AvocadoSmoothie.pdb
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\bin\Release\AvocadoSmoothie.exe.config
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\bin\Release\AvocadoSmoothie.exe
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\bin\Release\AvocadoSmoothie.pdb
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\bin\Release\AvocadoSmoothie.xml
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\Release\AvocadoSmoothie.vbproj.AssemblyReference.cache
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\Release\AvocadoSmoothie.exe.config
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\Release\AvocadoSmoothie.AboutBox.resources
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\Release\AvocadoSmoothie.FrmMain.resources
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\Release\AvocadoSmoothie.FrmModify.resources
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\Release\AvocadoSmoothie.Resources.resources
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\Release\AvocadoSmoothie.vbproj.GenerateResource.cache
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\Release\AvocadoSmoothie.vbproj.CoreCompileInputs.cache
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\Release\AvocadoSmoothie.exe
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\Release\AvocadoSmoothie.xml
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\Release\AvocadoSmoothie.pdb

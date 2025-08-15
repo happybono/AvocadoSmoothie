@@ -56,3 +56,18 @@ D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\AvocadoSmoothie\AvocadoSmoothie\
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\AvocadoSmoothie\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.exe
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\AvocadoSmoothie\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.xml
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\AvocadoSmoothie\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.pdb
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\bin\x64\Debug\AvocadoSmoothie.exe.config
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\bin\x64\Debug\AvocadoSmoothie.exe
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\bin\x64\Debug\AvocadoSmoothie.pdb
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\bin\x64\Debug\AvocadoSmoothie.xml
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.vbproj.AssemblyReference.cache
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.exe.config
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.AboutBox.resources
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.FrmMain.resources
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.FrmModify.resources
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.Resources.resources
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.vbproj.GenerateResource.cache
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.vbproj.CoreCompileInputs.cache
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.exe
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.xml
+D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Debug\AvocadoSmoothie.pdb
