@@ -116,9 +116,9 @@ Public Class FrmModify
 
         Dim count = mainForm.ListBox1.SelectedItems.Count
         If count > 1 Then
-            ToolStripStatusLabel1.Text = $"Modifying {count} selected items..."
+            ToolStripStatusLabel1.Text = $"선택하신 {count} 개의 항목들을 수정 중입니다..."
         Else
-            ToolStripStatusLabel1.Text = "Modifying the selected item..."
+            ToolStripStatusLabel1.Text = "선택하신 1 개의 항목을 수정 중입니다..."
         End If
 
         textBox1.Text = mainForm.ListBox1.SelectedItem.ToString()

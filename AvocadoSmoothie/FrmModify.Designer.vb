@@ -49,11 +49,11 @@ Partial Class FrmModify
         '
         Me.ToolStripStatusLabel1.AutoSize = False
         Me.ToolStripStatusLabel1.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
-        Me.ToolStripStatusLabel1.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!)
+        Me.ToolStripStatusLabel1.Font = New System.Drawing.Font("Microsoft NeoGothic", 9.0!)
         Me.ToolStripStatusLabel1.ForeColor = System.Drawing.Color.White
         Me.ToolStripStatusLabel1.Name = "ToolStripStatusLabel1"
         Me.ToolStripStatusLabel1.Size = New System.Drawing.Size(437, 19)
-        Me.ToolStripStatusLabel1.Text = "Modifying 2147483647 selected items... "
+        Me.ToolStripStatusLabel1.Text = "선택하신 N 개의 항목들을 수정 중입니다..."
         Me.ToolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'textBox1
@@ -87,14 +87,13 @@ Partial Class FrmModify
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.Font = New System.Drawing.Font("Microsoft NeoGothic", 9.75!)
         Me.Label1.ImeMode = System.Windows.Forms.ImeMode.NoControl
         Me.Label1.Location = New System.Drawing.Point(12, 39)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(270, 34)
+        Me.Label1.Size = New System.Drawing.Size(219, 34)
         Me.Label1.TabIndex = 24
-        Me.Label1.Text = "Apply changes to the selected items. " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Enter the numeric value you would like to " &
-    "set :"
+        Me.Label1.Text = "선택한 항목에 변경 사항을 적용합니다." & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "변경할 숫자 값을 입력하세요 :"
         '
         'ProgressBar1
         '
@@ -106,12 +105,12 @@ Partial Class FrmModify
         'label2
         '
         Me.label2.AutoSize = True
-        Me.label2.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.label2.Font = New System.Drawing.Font("Microsoft NeoGothic", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.label2.Location = New System.Drawing.Point(9, 7)
         Me.label2.Name = "label2"
-        Me.label2.Size = New System.Drawing.Size(214, 26)
+        Me.label2.Size = New System.Drawing.Size(158, 26)
         Me.label2.TabIndex = 30
-        Me.label2.Text = "Modify Selected Entries"
+        Me.label2.Text = "선택 항목 편집하기"
         '
         'FrmModify
         '
@@ -132,7 +131,7 @@ Partial Class FrmModify
         Me.MinimizeBox = False
         Me.Name = "FrmModify"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "Modify Selected Entries"
+        Me.Text = "선택 항목 편집하기"
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
         Me.ResumeLayout(False)

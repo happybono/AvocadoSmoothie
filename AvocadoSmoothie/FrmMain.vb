@@ -13,7 +13,7 @@ Public Class FrmMain
     Dim dpivalue As Double
     Dim borderCount As Integer
 
-    Private Const ExcelTitlePlaceholder As String = "Click here to enter a title for your dataset."
+    Private Const ExcelTitlePlaceholder As String = "여기를 클릭하여 제목을 입력하세요."
 
     Private sourceList As New List(Of Double)
     Private medianList As New List(Of Double)
@@ -47,7 +47,7 @@ Public Class FrmMain
 
         Parallel.For(2, n - 2, Sub(i)
                                    Dim win(4) As Double
-                                   ' i - 2 ... i + 2 복사
+                                   ' i-2 .. i+2 복사
                                    For k = 0 To 4
                                        win(k) = arr(i + k - 2)
                                    Next
@@ -114,7 +114,7 @@ Public Class FrmMain
 
     Private Sub ComputeMedians(
         useMiddle As Boolean,
-        KernelRadius As Integer,
+        kernelWidth As Integer,
         borderCount As Integer,
         progress As IProgress(Of Integer)
     )
@@ -127,15 +127,15 @@ Public Class FrmMain
         Dim arr = sourceList.ToArray()
         Dim buffer(n - 1) As Double
 
-        Dim offsetLow = (KernelRadius - 1) \ 2
-        Dim offsetHigh = (KernelRadius - 1) - offsetLow
+        Dim offsetLow = (kernelWidth - 1) \ 2
+        Dim offsetHigh = (kernelWidth - 1) - offsetLow
 
         Dim processed As Integer = 0
         Dim reportInterval = Math.Max(1, n \ 200)
         progress.Report(0)
 
         Dim localWin As New ThreadLocal(Of Double())(
-            Function() New Double(KernelRadius - 1) {}
+            Function() New Double(kernelWidth - 1) {}
         )
 
         If useMiddle Then
@@ -194,7 +194,7 @@ Public Class FrmMain
 
         If Double.TryParse(inputText, v) Then
             ListBox1.Items.Add(v)
-            lblCnt1.Text = $"Count : {ListBox1.Items.Count}"
+            lblCnt1.Text = $"데이터 개수 : {ListBox1.Items.Count}"
         End If
 
         UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
@@ -269,11 +269,11 @@ Public Class FrmMain
                 parsedList.Add(dValue)
             Else
                 MessageBox.Show(
-                $"The value '{strValue}' could not be converted to a number.",
-                "Avocado Smoothie",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning
-            )
+                    $"값 '{strValue}'(을)를 숫자로 변환할 수 없습니다.",
+                    "Avocado Smoothie",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                )
                 Return
             End If
         Next
@@ -283,30 +283,30 @@ Public Class FrmMain
         Dim useMiddle = RadioButton1.Checked
 
         Dim radius As Integer
-        If Not Integer.TryParse(cbxKernelRadius.Text, radius) Then
+        If Not Integer.TryParse(cbxKernelWidth.Text, radius) Then
             MessageBox.Show(
-        "Please select a kernel radius.",
-        "Avocado Smoothie",
-        MessageBoxButtons.OK,
-        MessageBoxIcon.Information
-    )
+                "커널 반경을 선택해 주세요.",
+                "Avocado Smoothie",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            )
             Return
         End If
 
-        Dim KernelRadius As Integer = 2 * radius + 1
+        Dim kernelWidth As Integer = 2 * radius + 1
 
         Dim borderCount As Integer
         If Not Integer.TryParse(cbxBorderCount.Text, borderCount) Then
             MessageBox.Show(
-            "Please select a border count.",
-            "Avocado Smoothie",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Information
-        )
+                "경계 계수를 선택해 주세요.",
+                "Avocado Smoothie",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information
+            )
             Return
         End If
 
-        If Not ValidateSmoothingParameters(total, KernelRadius, borderCount, useMiddle) Then
+        If Not ValidateSmoothingParameters(total, kernelWidth, borderCount, useMiddle) Then
             Return
         End If
 
@@ -320,7 +320,7 @@ Public Class FrmMain
         Await Task.Run(Sub()
                            ComputeMedians(
                            useMiddle:=useMiddle,
-                           KernelRadius:=KernelRadius,
+                           kernelWidth:=kernelWidth,
                            borderCount:=borderCount,
                            progress:=progress
                        )
@@ -332,10 +332,10 @@ Public Class FrmMain
         ListBox2.EndUpdate()
         ListBox2.TopIndex = ListBox2.Items.Count - 1
 
-        lblCnt1.Text = $"Count : {total}"
-        lblCnt2.Text = $"Count : {medianList.Count}"
-        slblCalibratedType.Text = If(useMiddle, "Middle Median", "All Median")
-        slblKernelWidth.Text = $"{KernelRadius}"
+        lblCnt1.Text = $"데이터 개수 : {total}"
+        lblCnt2.Text = $"데이터 개수 : {medianList.Count}"
+        slblCalibratedType.Text = If(useMiddle, "중앙 구간 이동 중간 값", "전체 구간 이동 중간 값")
+        slblKernelWidth.Text = $"{kernelWidth}"
         slblBorderCount.Text = $"{borderCount}"
 
         slblBorderCount.Visible = useMiddle
@@ -360,7 +360,7 @@ Public Class FrmMain
                 ListBox1.Items.Add(v)
             End If
 
-            lblCnt1.Text = $"Count : {ListBox1.Items.Count}"
+            lblCnt1.Text = $"데이터 개수 : {ListBox1.Items.Count}"
             UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
 
             TextBox1.Clear()
@@ -379,8 +379,8 @@ Public Class FrmMain
             If Double.TryParse(txt, num) Then
                 doubles.Add(num)
             Else
-                MessageBox.Show($"The value '{txt}' could not be converted to a number.",
-                                "Copy Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show($"값 '{txt}'(을)를 숫자로 변환할 수 없습니다.",
+                                "복사 오류", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return
             End If
         Next
@@ -400,8 +400,8 @@ Public Class FrmMain
             If Double.TryParse(txt, num) Then
                 doubles.Add(num)
             Else
-                MessageBox.Show($"The value '{txt}' could not be converted to a number.",
-                                "Copy Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show($"값 '{txt}'(을)를 숫자로 변환할 수 없습니다.",
+                                "복사 오류", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return
             End If
         Next
@@ -416,13 +416,13 @@ Public Class FrmMain
         Dim itemCount As Integer = ListBox1.Items.Count
 
         Dim result As DialogResult = MessageBox.Show(
-            $"This will delete all {itemCount} item{If(itemCount <> 1, "s", "")} from the Initial Dataset listbox." & vbCrLf &
-            "This will also delete all items from the Refined Dataset listbox." & vbCrLf & vbCrLf &
-            "Are you sure you want to proceed?",
-            "Delete Confirmation",
-    MessageBoxButtons.YesNo,
-    MessageBoxIcon.Warning
-)
+            $"초기 데이터 목록에서 {itemCount}개 항목을 모두 삭제합니다." & vbCrLf &
+            "정제된 데이터 목록의 모든 항목도 함께 삭제됩니다." & vbCrLf & vbCrLf &
+            "계속 진행하시겠습니까?",
+            "삭제 확인",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Warning
+        )
 
         If result = DialogResult.No Then
             Return
@@ -441,7 +441,7 @@ Public Class FrmMain
         UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
         UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
 
-        lblCnt1.Text = "Count : " & ListBox1.Items.Count
+        lblCnt1.Text = "데이터 개수 : " & ListBox1.Items.Count
         TextBox1.Select()
     End Sub
 
@@ -449,12 +449,12 @@ Public Class FrmMain
         Dim itemCount As Integer = ListBox2.Items.Count
 
         Dim result As DialogResult = MessageBox.Show(
-    $"This will delete all {itemCount} item{If(itemCount <> 1, "s", "")} from the Refined Dataset listbox." & vbCrLf & vbCrLf &
-    "Are you sure you want to proceed?",
-    "Delete Confirmation",
-    MessageBoxButtons.YesNo,
-    MessageBoxIcon.Warning
-)
+            $"정제된 데이터 목록에서 {itemCount}개 항목을 모두 삭제합니다." & vbCrLf & vbCrLf &
+            "계속 진행하시겠습니까?",
+            "삭제 확인",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Warning
+        )
 
         If result = DialogResult.No Then
             Return
@@ -464,7 +464,7 @@ Public Class FrmMain
         UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
         UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
 
-        lblCnt2.Text = "Count : " & ListBox2.Items.Count
+        lblCnt2.Text = "데이터 개수 : " & ListBox2.Items.Count
         ListBox2.Select()
     End Sub
 
@@ -510,7 +510,7 @@ Public Class FrmMain
             If idx < lb.Items.Count Then lb.SelectedIndices.Add(idx)
         Next
 
-        lblCount.Text = $"Count : {lb.Items.Count}"
+        lblCount.Text = $"데이터 개수 : {lb.Items.Count}"
         Await Task.Delay(200)
         progressBar.Value = 0
     End Function
@@ -527,12 +527,12 @@ Public Class FrmMain
         End If
 
         If selectedCount = totalCount Then
-            message = $"You are about to delete all {totalCount} item{If(totalCount <> 1, "s", "")} from the Initial Dataset listbox." & vbCrLf &
-                "This will also delete all items from the Refined Dataset listbox." & vbCrLf & vbCrLf &
-                "Are you sure you want to proceed?"
+            message = $"초기 데이터 목록에서 {totalCount} 개의 항목을 모두 삭제합니다." & vbCrLf &
+              "정제된 데이터 목록의 모든 항목도 함께 삭제됩니다." & vbCrLf & vbCrLf &
+              "계속 진행하시겠습니까?"
         Else
-            message = $"You are about to delete {selectedCount} selected item{If(selectedCount <> 1, "s", "")} from the Initial Dataset listbox." &
-                      vbCrLf & vbCrLf & "Are you sure you want to proceed?"
+            message = $"초기 데이터 목록에서 선택한 {selectedCount} 개의 항목을 삭제합니다." &
+              vbCrLf & vbCrLf & "계속 진행하시겠습니까?"
         End If
 
         Dim result As DialogResult = MessageBox.Show(message, "Delete Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
@@ -545,8 +545,8 @@ Public Class FrmMain
             ListBox1.Items.Clear()
             ListBox2.Items.Clear()
             copyButton1.Enabled = False
-            lblCnt1.Text = "Count : " & ListBox1.Items.Count
-            lblCnt2.Text = "Count : " & ListBox2.Items.Count
+            lblCnt1.Text = "데이터 개수 : " & ListBox1.Items.Count
+            lblCnt2.Text = "데이터 개수 : " & ListBox2.Items.Count
             progressBar1.Value = 0
 
             txtDatasetTitle.Text = ExcelTitlePlaceholder
@@ -560,7 +560,7 @@ Public Class FrmMain
         End If
 
         Await DeleteSelectedItemsPreserveSelection(ListBox1, progressBar1, lblCnt1)
-        lblCnt1.Text = "Count : " & ListBox1.Items.Count
+        lblCnt1.Text = "데이터 개수 : " & ListBox1.Items.Count
 
         ListBox1.Select()
 
@@ -633,7 +633,7 @@ Public Class FrmMain
             Await AddItemsInBatches(ListBox1, parsed, progressReporter, baseProgress)
 
             progressBar1.Value = 100
-            lblCnt1.Text = "Count : " & ListBox1.Items.Count
+            lblCnt1.Text = "데이터 개수 : " & ListBox1.Items.Count
             Await Task.Delay(200)
         Finally
             UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
@@ -724,7 +724,7 @@ Public Class FrmMain
             ListBox1.TopIndex = ListBox1.Items.Count - 1
 
             progressBar1.Value = 100
-            lblCnt1.Text = $"Count : {ListBox1.Items.Count}"
+            lblCnt1.Text = $"데이터 개수 : {ListBox1.Items.Count}"
             Await Task.Delay(200)
         Finally
             UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
@@ -819,7 +819,7 @@ Public Class FrmMain
             sClrButton1.PerformClick()
         End If
 
-        lblCnt1.Text = "Count : " & ListBox1.Items.Count
+        lblCnt1.Text = "데이터 개수 : " & ListBox1.Items.Count
     End Sub
 
 
@@ -845,7 +845,7 @@ Public Class FrmMain
             UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
         End If
 
-        lblCnt2.Text = "Count : " & ListBox2.Items.Count
+        lblCnt2.Text = "데이터 개수 : " & ListBox2.Items.Count
     End Sub
 
     Private Async Function ClearSelectionWithProgress(lb As ListBox,
@@ -878,7 +878,7 @@ Public Class FrmMain
         lb.ResumeLayout()
         lb.Select()
 
-        lblCount.Text = "Count : " & lb.Items.Count
+        lblCount.Text = "데이터 개수 : " & lb.Items.Count
 
         Await Task.Delay(200)
         progressBar.Value = 0
@@ -898,7 +898,7 @@ Public Class FrmMain
 
     Private Sub FrmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         cbxBorderCount.SelectedIndex = 0
-        cbxKernelRadius.SelectedItem = "5"
+        cbxKernelWidth.SelectedItem = "5"
 
         If String.IsNullOrWhiteSpace(txtDatasetTitle.Text) Then
             txtDatasetTitle.Text = ExcelTitlePlaceholder
@@ -971,16 +971,16 @@ Public Class FrmMain
         progressBar1.Value = 0
 
         ' Parameters 읽기
-        Dim KernelRadius As Integer
-        If Not Integer.TryParse(cbxKernelRadius.Text, KernelRadius) Then
-            MessageBox.Show("Please select a kernel radius.", "Export CSV",
+        Dim kernelWidth As Integer
+        If Not Integer.TryParse(cbxKernelWidth.Text, kernelWidth) Then
+            MessageBox.Show("커널 반경을 선택해 주세요.", "CSV 내보내기",
                     MessageBoxButtons.OK, MessageBoxIcon.Information)
             Return
         End If
 
         Dim borderCount As Integer
         If Not Integer.TryParse(cbxBorderCount.Text, borderCount) Then
-            MessageBox.Show("Please select a border count.", "Export CSV",
+            MessageBox.Show("경계 계수를 선택해 주세요.", "CSV 내보내기",
                     MessageBoxButtons.OK, MessageBoxIcon.Information)
             Return
         End If
@@ -999,7 +999,7 @@ Public Class FrmMain
                     .ToArray()
         Dim n = initialData.Length
         If n = 0 Then
-            MessageBox.Show("No data to export.", "Export CSV",
+            MessageBox.Show("내보낼 데이터가 없습니다.", "CSV 내보내기",
                     MessageBoxButtons.OK, MessageBoxIcon.Information)
             Return
         End If
@@ -1014,7 +1014,7 @@ Public Class FrmMain
                                              Math.Min(v, progressBar1.Maximum))
     )
         Await Task.Run(Sub()
-                           ComputeMedians(True, KernelRadius, borderCount, middleProg)
+                           ComputeMedians(True, kernelWidth, borderCount, middleProg)
                            medianList.CopyTo(0, middleMedian, 0, n)
                        End Sub)
 
@@ -1024,7 +1024,7 @@ Public Class FrmMain
                                              Math.Min(v, progressBar1.Maximum))
     )
         Await Task.Run(Sub()
-                           ComputeMedians(False, KernelRadius, borderCount, allProg)
+                           ComputeMedians(False, kernelWidth, borderCount, allProg)
                            medianList.CopyTo(0, allMedian, 0, n)
                        End Sub)
 
@@ -1069,13 +1069,13 @@ Public Class FrmMain
                 sw.WriteLine(txtDatasetTitle.Text)
                 sw.WriteLine($"Part {part + 1} of {partCount}")
                 sw.WriteLine()
-                sw.WriteLine("Smoothing Parameters")
-                sw.WriteLine($"Kernel Radius : {KernelRadius}")
-                sw.WriteLine($"Border Count : {borderCount}")
+                sw.WriteLine("보정 설정")
+                sw.WriteLine($"측정 오차 제거 필터 반경 :  {kernelWidth}")
+                sw.WriteLine($"경계 유지 계수 : {borderCount}")
                 sw.WriteLine()
-                sw.WriteLine($"Generated : {DateTime.Now.ToString("G", CultureInfo.CurrentCulture)}")
+                sw.WriteLine($"생성 일시 : {DateTime.Now.ToString("G", CultureInfo.CurrentCulture)}")
                 sw.WriteLine()
-                sw.WriteLine("Initial Data,MiddleMedian,AllMedian")
+                sw.WriteLine("초기 데이터,중앙 구간 이동 중간 값,전체 구간 이동 중간 값")
 
                 ' 데이터 쓰기
                 For i = startIdx To startIdx + count - 1
@@ -1106,57 +1106,45 @@ Public Class FrmMain
                 .UseShellExecute = True
             })
             Catch ex As Exception
-                MessageBox.Show($"We're sorry, but the file could not be opened : {file}{vbCrLf}{ex.Message}",
-                "Error Opening File", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show($"죄송합니다. 파일을 열 수 없습니다: {file}{vbCrLf}{ex.Message}",
+                "파일 열기 오류", MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
         Next
     End Function
 
-    Private Function ValidateSmoothingParameters(dataCount As Integer, kernelWidth As Integer, borderCount As Integer, useMiddle As Boolean) As Boolean
-        Dim radius As Integer = Integer.Parse(cbxKernelRadius.Text)
-        Dim windowSize As Integer = kernelWidth
-        Dim borderTotalWidth As Integer = borderCount * If(useMiddle, 2, 0)
 
-        ' 1) radius로 인한 windowSize 초과 검사
+    Private Function ValidateSmoothingParameters(dataCount As Integer, kernelWidth As Integer, borderCount As Integer, useMiddle As Boolean) As Boolean
+        Dim windowSize As Integer = kernelWidth
+        Dim radius As Integer = Integer.Parse(cbxKernelWidth.Text)
+        Dim borderTotalWidth As Integer
+
         If windowSize > dataCount Then
             MessageBox.Show(
-            $"Kernel radius is too large.{Environment.NewLine}{Environment.NewLine}" &
-            $"Window size formula : (2 × radius) + 1{Environment.NewLine}" &
-            $"Current : (2 × {radius}) + 1 = {windowSize}{Environment.NewLine}" &
-            $"Data count : {dataCount}{Environment.NewLine}{Environment.NewLine}" &
-            $"Rule : windowSize ≤ dataCount{Environment.NewLine}" &
-            $"Result : {windowSize} ≤ {dataCount} → Violation",
-            "Parameter Error",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.[Error]
-        )
+                $"커널 반경 ({kernelWidth}) 이 너무 큽니다.{Environment.NewLine}" &
+                $"윈도우 크기 (2 × 반경 + 1 = {windowSize}) 는 데이터 개수 ({dataCount}) 를 초과할 수 없습니다.",
+                "파라미터 오류",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error)
             Return False
         End If
 
-        ' 2) borderCount 범위 검사
         If borderCount > dataCount Then
             MessageBox.Show(
-            $"Border count is too large.{Environment.NewLine}{Environment.NewLine}" &
-            $"Rule : borderCount ≤ dataCount{Environment.NewLine}" &
-            $"Result : {borderCount} ≤ {dataCount} → Violation",
-            "Parameter Error",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.[Error]
-        )
+                $"경계 계수가 너무 큽니다.{Environment.NewLine}" &
+                $"경계 계수 ({borderCount}) 는 데이터 개수({dataCount})를 초과할 수 없습니다.",
+                "파라미터 오류",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error)
             Return False
         End If
 
-        ' 3) Middle 모드일 때 경계 폭 검사
         If useMiddle AndAlso borderTotalWidth >= windowSize Then
             MessageBox.Show(
-            $"Border width is too large relative to the window size.{Environment.NewLine}{Environment.NewLine}" &
-            $"Tip : windowSize = (2 × radius) + 1{Environment.NewLine}" &
-            $"Rule : totalBorderWidth < windowSize{Environment.NewLine}" &
-            $"Result : {borderTotalWidth} < {windowSize} → Violation",
-            "Parameter Error",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.[Error]
-        )
+                $"경계 너비가 윈도우 크기에 비해 너무 큽니다.{Environment.NewLine}" &
+                $"총 경계 너비 ({borderTotalWidth}) 는 윈도우 크기 (2 × 반경 + 1 = {windowSize}) 보다 작아야 합니다.",
+                "파라미터 오류",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error)
             Return False
         End If
 
@@ -1195,16 +1183,16 @@ Public Class FrmMain
 
             ' Kernel / 경계 값 읽기
             Dim radius As Integer
-            If Not Integer.TryParse(cbxKernelRadius.Text, radius) Then
-                MessageBox.Show("Please select a kernel radius.", "Export Excel", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            If Not Integer.TryParse(cbxKernelWidth.Text, radius) Then
+                MessageBox.Show("커널 반경을 선택해 주세요.", "엑셀 내보내기", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Return
             End If
 
-            Dim KernelWidth As Integer = 2 * radius + 1
+            Dim kernelWidth As Integer = 2 * radius + 1
 
             Dim borderCount As Integer
             If Not Integer.TryParse(cbxBorderCount.Text, borderCount) Then
-                MessageBox.Show("Please select a border count.", "Export Excel", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("경계 계수를 선택해 주세요.", "엑셀 내보내기", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Return
             End If
 
@@ -1218,7 +1206,7 @@ Public Class FrmMain
 
             Dim n = initialData.Length
             If n = 0 Then
-                MessageBox.Show("No data to export.", "Export Excel", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                MessageBox.Show("내보낼 데이터가 없습니다.", "엑셀 내보내기", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Return
             End If
 
@@ -1231,7 +1219,7 @@ Public Class FrmMain
             sourceList = initialData.ToList()
             Dim middleProgress = New Progress(Of Integer)(Sub(v) progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(v, progressBar1.Maximum)))
             Await Task.Run(Sub()
-                               ComputeMedians(True, KernelWidth, borderCount, middleProgress)
+                               ComputeMedians(True, kernelWidth, borderCount, middleProgress)
                                medianList.CopyTo(0, middleMedian, 0, n)
                            End Sub)
 
@@ -1244,7 +1232,7 @@ Public Class FrmMain
             sourceList = initialData.ToList()
             Dim allProgress = New Progress(Of Integer)(Sub(v) progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(v, progressBar1.Maximum)))
             Await Task.Run(Sub()
-                               ComputeMedians(False, KernelWidth, borderCount, allProgress)
+                               ComputeMedians(False, kernelWidth, borderCount, allProgress)
                                medianList.CopyTo(0, allMedian, 0, n)
                            End Sub)
 
@@ -1262,9 +1250,9 @@ Public Class FrmMain
                 ws = CType(wb.Worksheets(1), Excel.Worksheet)
 
                 ws.Cells(1, 1) = txtDatasetTitle.Text
-                ws.Cells(3, 1) = "Smoothing Parameters"
-                ws.Cells(4, 1) = $"Kernel Radius : {KernelWidth}"
-                ws.Cells(5, 1) = $"Border Count  {borderCount}"
+                ws.Cells(3, 1) = "보정 설정"
+                ws.Cells(4, 1) = $"측정 오차 제거 필터 반경 :  {kernelWidth}"
+                ws.Cells(5, 1) = $"경계 유지 계수 : {borderCount}"
 
                 ' 데이터를 분산 저장하는 함수
                 Dim WriteDistributed =
@@ -1291,11 +1279,11 @@ Public Class FrmMain
             End Function
 
                 ' 각 Median 결과를 엑셀에 분산 저장
-                Dim initialRanges = WriteDistributed(initialData, 3, "Initial Data")
+                Dim initialRanges = WriteDistributed(initialData, 3, "초기 데이터")
                 progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(30, progressBar1.Maximum))
-                Dim middleRanges = WriteDistributed(middleMedian, initialRanges.Last.Item1 + 2, "MiddleMedian")
+                Dim middleRanges = WriteDistributed(middleMedian, initialRanges.Last.Item1 + 2, "중앙 구간 이동 중간 값")
                 progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(60, progressBar1.Maximum))
-                Dim allRanges = WriteDistributed(allMedian, middleRanges.Last.Item1 + 2, "AllMedian")
+                Dim allRanges = WriteDistributed(allMedian, middleRanges.Last.Item1 + 2, "전체 구간 이동 중간 값")
                 progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(80, progressBar1.Maximum))
 
                 ' 차트 생성 (기존 로직 유지)
@@ -1316,9 +1304,9 @@ Public Class FrmMain
                 ' chart.ChartTitle.Text = "Symphony of Boundaries And Flow : Avocado Smoothie 's All-Median & Middle-Median"
                 chart.ChartTitle.Text = txtDatasetTitle.Text
                 chart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlValue).HasTitle = True
-                chart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlValue).AxisTitle.Text = "Value"
+                chart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlValue).AxisTitle.Text = "값"
                 chart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlCategory).HasTitle = True
-                chart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlCategory).AxisTitle.Text = "Sequence Number"
+                chart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlCategory).AxisTitle.Text = "순번"
 
                 Dim seriesCollection = chart.SeriesCollection()
 
@@ -1353,16 +1341,16 @@ Public Class FrmMain
                                     series.Name = name
                                 End Sub
 
-                AddSeries(initialRanges, "Initial Data")
-                AddSeries(middleRanges, "Middle Median")
-                AddSeries(allRanges, "All Median")
+                AddSeries(initialRanges, "초기 데이터")
+                AddSeries(middleRanges, "중앙 구간 이동 중간 값")
+                AddSeries(allRanges, "전체 구간 이동 중간 값")
 
                 progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(100, progressBar1.Maximum))
                 Await Task.Delay(200)
                 progressBar1.Value = 0
                 excel.Visible = True
             Catch ex As Exception
-                MessageBox.Show("Excel export failed: " & ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("엑셀 내보내기 도중 실패했습니다 : " & ex.Message, "내보내기 오류", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Finally
                 If ws IsNot Nothing Then Marshal.ReleaseComObject(ws)
                 If wb IsNot Nothing Then Marshal.ReleaseComObject(wb)
