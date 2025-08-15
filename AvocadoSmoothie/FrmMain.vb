@@ -114,7 +114,7 @@ Public Class FrmMain
 
     Private Sub ComputeMedians(
         useMiddle As Boolean,
-        kernelWidth As Integer,
+        KernelRadius As Integer,
         borderCount As Integer,
         progress As IProgress(Of Integer)
     )
@@ -127,15 +127,15 @@ Public Class FrmMain
         Dim arr = sourceList.ToArray()
         Dim buffer(n - 1) As Double
 
-        Dim offsetLow = (kernelWidth - 1) \ 2
-        Dim offsetHigh = (kernelWidth - 1) - offsetLow
+        Dim offsetLow = (KernelRadius - 1) \ 2
+        Dim offsetHigh = (KernelRadius - 1) - offsetLow
 
         Dim processed As Integer = 0
         Dim reportInterval = Math.Max(1, n \ 200)
         progress.Report(0)
 
         Dim localWin As New ThreadLocal(Of Double())(
-            Function() New Double(kernelWidth - 1) {}
+            Function() New Double(KernelRadius - 1) {}
         )
 
         If useMiddle Then
@@ -201,31 +201,6 @@ Public Class FrmMain
         UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
         TextBox1.Clear()
     End Sub
-
-    Private Function GetWindowMedian(
-            arr As Double(),
-            startIdx As Integer,
-            endIdx As Integer
-        ) As Double
-
-        Dim length = endIdx - startIdx + 1
-        Dim temp(length - 1) As Double
-        Array.Copy(arr, startIdx, temp, 0, length)
-
-        ' insertion sort (최대 5개)
-        For i As Integer = 1 To length - 1
-            Dim key = temp(i)
-            Dim j = i - 1
-            While j >= 0 AndAlso temp(j) > key
-                temp(j + 1) = temp(j)
-                j -= 1
-            End While
-            temp(j + 1) = key
-        Next
-
-        Return temp(length >> 1)
-    End Function
-
 
     Public Sub Quicksort(ByVal list() As Double, ByVal min As Integer, ByVal max As Integer)
         Dim random_number As New Random
@@ -307,16 +282,18 @@ Public Class FrmMain
         Dim total = sourceList.Count
         Dim useMiddle = RadioButton1.Checked
 
-        Dim kernelWidth As Integer
-        If Not Integer.TryParse(cbxKernelWidth.Text, kernelWidth) Then
+        Dim radius As Integer
+        If Not Integer.TryParse(cbxKernelRadius.Text, radius) Then
             MessageBox.Show(
-            "Please select a kernel width.",
-            "Avocado Smoothie",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Information
-        )
+        "Please select a kernel radius.",
+        "Avocado Smoothie",
+        MessageBoxButtons.OK,
+        MessageBoxIcon.Information
+    )
             Return
         End If
+
+        Dim KernelRadius As Integer = 2 * radius + 1
 
         Dim borderCount As Integer
         If Not Integer.TryParse(cbxBorderCount.Text, borderCount) Then
@@ -329,7 +306,7 @@ Public Class FrmMain
             Return
         End If
 
-        If Not ValidateSmoothingParameters(total, kernelWidth, borderCount, useMiddle) Then
+        If Not ValidateSmoothingParameters(total, KernelRadius, borderCount, useMiddle) Then
             Return
         End If
 
@@ -343,7 +320,7 @@ Public Class FrmMain
         Await Task.Run(Sub()
                            ComputeMedians(
                            useMiddle:=useMiddle,
-                           kernelWidth:=kernelWidth,
+                           KernelRadius:=KernelRadius,
                            borderCount:=borderCount,
                            progress:=progress
                        )
@@ -358,7 +335,7 @@ Public Class FrmMain
         lblCnt1.Text = $"Count : {total}"
         lblCnt2.Text = $"Count : {medianList.Count}"
         slblCalibratedType.Text = If(useMiddle, "Middle Median", "All Median")
-        slblKernelWidth.Text = $"{kernelWidth}"
+        slblKernelWidth.Text = $"{KernelRadius}"
         slblBorderCount.Text = $"{borderCount}"
 
         slblBorderCount.Visible = useMiddle
@@ -465,13 +442,6 @@ Public Class FrmMain
         UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
 
         lblCnt1.Text = "Count : " & ListBox1.Items.Count
-        lblCnt2.Text = "Count : " & ListBox2.Items.Count
-
-        tlblBorderCount.Visible = False
-        slblBorderCount.Visible = False
-        slblSeparator2.Visible = False
-        slblCalibratedType.Text = "--"
-        slblKernelWidth.Text = "--"
         TextBox1.Select()
     End Sub
 
@@ -493,13 +463,6 @@ Public Class FrmMain
         ListBox2.Items.Clear()
         UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
         UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
-
-
-        tlblBorderCount.Visible = False
-        slblBorderCount.Visible = False
-        slblSeparator2.Visible = False
-        slblCalibratedType.Text = "--"
-        slblKernelWidth.Text = "--"
 
         lblCnt2.Text = "Count : " & ListBox2.Items.Count
         ListBox2.Select()
@@ -555,52 +518,40 @@ Public Class FrmMain
     Private Async Sub deleteButton1_Click(sender As Object, e As EventArgs) Handles deleteButton1.Click
         Dim selectedCount As Integer = ListBox1.SelectedIndices.Count
         Dim totalCount As Integer = ListBox1.Items.Count
+        Dim selectedItems As Boolean = ListBox1.SelectedItems.Count > 0
         Dim message As String
-        Dim isAllSelected As Boolean = (selectedCount = totalCount)
 
         If selectedCount = 0 Then
             UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
             Return
         End If
 
-        If isAllSelected Then
-            message =
-            $"You are about to delete all {totalCount} item{If(totalCount <> 1, "s", "")} from the Initial Dataset listbox." & vbCrLf &
-            "This will also delete all items from the Refined Dataset listbox." & vbCrLf & vbCrLf &
-            "Are you sure you want to proceed?"
+        If selectedCount = totalCount Then
+            message = $"You are about to delete all {totalCount} item{If(totalCount <> 1, "s", "")} from the Initial Dataset listbox." & vbCrLf &
+                "This will also delete all items from the Refined Dataset listbox." & vbCrLf & vbCrLf &
+                "Are you sure you want to proceed?"
         Else
-            message =
-            $"You are about to delete {selectedCount} selected item{If(selectedCount <> 1, "s", "")} from the Initial Dataset listbox." &
-            vbCrLf & vbCrLf & "Are you sure you want to proceed?"
+            message = $"You are about to delete {selectedCount} selected item{If(selectedCount <> 1, "s", "")} from the Initial Dataset listbox." &
+                      vbCrLf & vbCrLf & "Are you sure you want to proceed?"
         End If
-                                                                                    
-        lblCnt1.Text = "Count : " & ListBox1.Items.Count
-        lblCnt2.Text = "Count : " & ListBox2.Items.Count
 
         Dim result As DialogResult = MessageBox.Show(message, "Delete Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+
         If result = DialogResult.No Then
             Return
         End If
 
-        If isAllSelected Then
+        If selectedCount = totalCount Then
             ListBox1.Items.Clear()
             ListBox2.Items.Clear()
             copyButton1.Enabled = False
-
             lblCnt1.Text = "Count : " & ListBox1.Items.Count
             lblCnt2.Text = "Count : " & ListBox2.Items.Count
-
             progressBar1.Value = 0
 
             txtDatasetTitle.Text = ExcelTitlePlaceholder
             txtDatasetTitle.ForeColor = Color.Gray
             txtDatasetTitle.TextAlign = HorizontalAlignment.Center
-
-            tlblBorderCount.Visible = False
-            slblBorderCount.Visible = False
-            slblSeparator2.Visible = False
-            slblCalibratedType.Text = "--"
-            slblKernelWidth.Text = "--"
 
             UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
 
@@ -609,8 +560,10 @@ Public Class FrmMain
         End If
 
         Await DeleteSelectedItemsPreserveSelection(ListBox1, progressBar1, lblCnt1)
+        lblCnt1.Text = "Count : " & ListBox1.Items.Count
 
         ListBox1.Select()
+
         UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
         UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
     End Sub
@@ -945,7 +898,7 @@ Public Class FrmMain
 
     Private Sub FrmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         cbxBorderCount.SelectedIndex = 0
-        cbxKernelWidth.SelectedItem = "5"
+        cbxKernelRadius.SelectedItem = "5"
 
         If String.IsNullOrWhiteSpace(txtDatasetTitle.Text) Then
             txtDatasetTitle.Text = ExcelTitlePlaceholder
@@ -1018,9 +971,9 @@ Public Class FrmMain
         progressBar1.Value = 0
 
         ' Parameters 읽기
-        Dim kernelWidth As Integer
-        If Not Integer.TryParse(cbxKernelWidth.Text, kernelWidth) Then
-            MessageBox.Show("Please select a kernel width.", "Export CSV",
+        Dim KernelRadius As Integer
+        If Not Integer.TryParse(cbxKernelRadius.Text, KernelRadius) Then
+            MessageBox.Show("Please select a kernel radius.", "Export CSV",
                     MessageBoxButtons.OK, MessageBoxIcon.Information)
             Return
         End If
@@ -1061,7 +1014,7 @@ Public Class FrmMain
                                              Math.Min(v, progressBar1.Maximum))
     )
         Await Task.Run(Sub()
-                           ComputeMedians(True, kernelWidth, borderCount, middleProg)
+                           ComputeMedians(True, KernelRadius, borderCount, middleProg)
                            medianList.CopyTo(0, middleMedian, 0, n)
                        End Sub)
 
@@ -1071,7 +1024,7 @@ Public Class FrmMain
                                              Math.Min(v, progressBar1.Maximum))
     )
         Await Task.Run(Sub()
-                           ComputeMedians(False, kernelWidth, borderCount, allProg)
+                           ComputeMedians(False, KernelRadius, borderCount, allProg)
                            medianList.CopyTo(0, allMedian, 0, n)
                        End Sub)
 
@@ -1117,7 +1070,7 @@ Public Class FrmMain
                 sw.WriteLine($"Part {part + 1} of {partCount}")
                 sw.WriteLine()
                 sw.WriteLine("Smoothing Parameters")
-                sw.WriteLine($"Kernel Width : {kernelWidth}")
+                sw.WriteLine($"Kernel Radius : {KernelRadius}")
                 sw.WriteLine($"Border Count : {borderCount}")
                 sw.WriteLine()
                 sw.WriteLine($"Generated : {DateTime.Now.ToString("G", CultureInfo.CurrentCulture)}")
@@ -1160,37 +1113,50 @@ Public Class FrmMain
     End Function
 
 
-    Private Function ValidateSmoothingParameters(dataCount As Integer, w As Integer, borderCount As Integer, useMiddle As Boolean) As Boolean
-        Dim windowSize As Integer = 2 * w + 1
-        Dim borderTotalWidth As Integer = borderCount * 2
+    Private Function ValidateSmoothingParameters(dataCount As Integer, radius As Integer, borderCount As Integer, useMiddle As Boolean) As Boolean
+        Dim windowSize As Integer = 2 * radius + 1
+        Dim borderTotalWidth As Integer = borderCount * If(useMiddle, 2, 0)
 
+        ' 1) radius로 인한 windowSize 초과 검사
         If windowSize > dataCount Then
             MessageBox.Show(
-            $"Kernel width is too large.{Environment.NewLine}" &
-            $"Window size ({windowSize}) must not exceed the number of data points ({dataCount}).",
+            $"Kernel radius is too large.{Environment.NewLine}{Environment.NewLine}" &
+            $"Window size formula : (2 × radius) + 1{Environment.NewLine}" &
+            $"Current : (2 × {radius}) + 1 = {windowSize}{Environment.NewLine}" &
+            $"Data count : {dataCount}{Environment.NewLine}{Environment.NewLine}" &
+            $"Rule : windowSize ≤ dataCount{Environment.NewLine}" &
+            $"Result : {windowSize} ≤ {dataCount} → Violation",
             "Parameter Error",
             MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
+            MessageBoxIcon.[Error]
+        )
             Return False
         End If
 
+        ' 2) borderCount 범위 검사
         If borderCount > dataCount Then
             MessageBox.Show(
-            $"Border count is too large.{Environment.NewLine}" &
-            $"Border count ({borderCount}) must not exceed the number of data points ({dataCount}).",
+            $"Border count is too large.{Environment.NewLine}{Environment.NewLine}" &
+            $"Rule : borderCount ≤ dataCount{Environment.NewLine}" &
+            $"Result : {borderCount} ≤ {dataCount} → Violation",
             "Parameter Error",
             MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
+            MessageBoxIcon.[Error]
+        )
             Return False
         End If
 
+        ' 3) Middle 모드일 때 경계 폭 검사
         If useMiddle AndAlso borderTotalWidth >= windowSize Then
             MessageBox.Show(
-            $"Border width is too large relative to the window size.{Environment.NewLine}" &
-            $"Total border width ({borderTotalWidth}) must be smaller than the window size ({windowSize}).",
+            $"Border width is too large relative to the window size.{Environment.NewLine}{Environment.NewLine}" &
+            $"Tip : windowSize = (2 × radius) + 1{Environment.NewLine}" &
+            $"Rule : totalBorderWidth < windowSize{Environment.NewLine}" &
+            $"Result : {borderTotalWidth} < {windowSize} → Violation",
             "Parameter Error",
             MessageBoxButtons.OK,
-            MessageBoxIcon.Error)
+            MessageBoxIcon.[Error]
+        )
             Return False
         End If
 
@@ -1228,11 +1194,13 @@ Public Class FrmMain
             progressBar1.Value = 0
 
             ' Kernel / 경계 값 읽기
-            Dim kernelWidth As Integer
-            If Not Integer.TryParse(cbxKernelWidth.Text, kernelWidth) Then
-                MessageBox.Show("Please select a kernel width.", "Export Excel", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Dim radius As Integer
+            If Not Integer.TryParse(cbxKernelRadius.Text, radius) Then
+                MessageBox.Show("Please select a kernel radius.", "Export Excel", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Return
             End If
+
+            Dim KernelRadius As Integer = 2 * radius + 1
 
             Dim borderCount As Integer
             If Not Integer.TryParse(cbxBorderCount.Text, borderCount) Then
@@ -1254,7 +1222,7 @@ Public Class FrmMain
                 Return
             End If
 
-            If Not ValidateSmoothingParameters(n, kernelWidth, borderCount, True) Then
+            If Not ValidateSmoothingParameters(n, radius, borderCount, True) Then
                 Return
             End If
 
@@ -1263,11 +1231,11 @@ Public Class FrmMain
             sourceList = initialData.ToList()
             Dim middleProgress = New Progress(Of Integer)(Sub(v) progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(v, progressBar1.Maximum)))
             Await Task.Run(Sub()
-                               ComputeMedians(True, kernelWidth, borderCount, middleProgress)
+                               ComputeMedians(True, KernelRadius, borderCount, middleProgress)
                                medianList.CopyTo(0, middleMedian, 0, n)
                            End Sub)
 
-            If Not ValidateSmoothingParameters(n, kernelWidth, borderCount, False) Then
+            If Not ValidateSmoothingParameters(n, radius, borderCount, False) Then
                 Return
             End If
 
@@ -1276,7 +1244,7 @@ Public Class FrmMain
             sourceList = initialData.ToList()
             Dim allProgress = New Progress(Of Integer)(Sub(v) progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(v, progressBar1.Maximum)))
             Await Task.Run(Sub()
-                               ComputeMedians(False, kernelWidth, borderCount, allProgress)
+                               ComputeMedians(False, KernelRadius, borderCount, allProgress)
                                medianList.CopyTo(0, allMedian, 0, n)
                            End Sub)
 
@@ -1289,13 +1257,13 @@ Public Class FrmMain
 
             Try
                 excel = New Excel.Application()
-                ' excel.Visible = True
+                'excel.Visible = True
                 wb = excel.Workbooks.Add()
                 ws = CType(wb.Worksheets(1), Excel.Worksheet)
 
                 ws.Cells(1, 1) = txtDatasetTitle.Text
                 ws.Cells(3, 1) = "Smoothing Parameters"
-                ws.Cells(4, 1) = $"Kernel Width : {kernelWidth}"
+                ws.Cells(4, 1) = $"Kernel Radius : {KernelRadius}"
                 ws.Cells(5, 1) = $"Border Count  {borderCount}"
 
                 ' 데이터를 분산 저장하는 함수
@@ -1475,4 +1443,3 @@ Public Class FrmMain
     End Sub
 
 End Class
-

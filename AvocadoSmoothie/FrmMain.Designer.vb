@@ -61,7 +61,7 @@ Partial Class FrmMain
         Me.slblBorderCount = New System.Windows.Forms.ToolStripStatusLabel()
         Me.groupBox5 = New System.Windows.Forms.GroupBox()
         Me.lblBorderCount = New System.Windows.Forms.Label()
-        Me.cbxKernelWidth = New System.Windows.Forms.ComboBox()
+        Me.cbxKernelRadius = New System.Windows.Forms.ComboBox()
         Me.label1 = New System.Windows.Forms.Label()
         Me.groupBox4 = New System.Windows.Forms.GroupBox()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
@@ -89,7 +89,7 @@ Partial Class FrmMain
         Me.ListBox1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.ListBox1.Name = "ListBox1"
         Me.ListBox1.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.ListBox1.Size = New System.Drawing.Size(294, 514)
+        Me.ListBox1.Size = New System.Drawing.Size(294, 497)
         Me.ListBox1.TabIndex = 4
         '
         'ListBox2
@@ -101,7 +101,7 @@ Partial Class FrmMain
         Me.ListBox2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.ListBox2.Name = "ListBox2"
         Me.ListBox2.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.ListBox2.Size = New System.Drawing.Size(294, 514)
+        Me.ListBox2.Size = New System.Drawing.Size(294, 497)
         Me.ListBox2.TabIndex = 21
         '
         'calcButton
@@ -315,7 +315,7 @@ Partial Class FrmMain
         Me.editButton.Enabled = False
         Me.editButton.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.editButton.Location = New System.Drawing.Point(307, 133)
-        Me.editButton.Margin = New System.Windows.Forms.Padding(2)
+        Me.editButton.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.editButton.Name = "editButton"
         Me.editButton.Size = New System.Drawing.Size(30, 30)
         Me.editButton.TabIndex = 8
@@ -411,6 +411,7 @@ Partial Class FrmMain
         '
         Me.statusStrip1.AutoSize = False
         Me.statusStrip1.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.statusStrip1.ImageScalingSize = New System.Drawing.Size(32, 32)
         Me.statusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tlblCalibratedType, Me.slblCalibratedType, Me.slblSeparator1, Me.tlblKernelWidth, Me.slblKernelWidth, Me.slblSeparator2, Me.tlblBorderCount, Me.slblBorderCount})
         Me.statusStrip1.Location = New System.Drawing.Point(0, 837)
         Me.statusStrip1.Name = "statusStrip1"
@@ -448,8 +449,8 @@ Partial Class FrmMain
         Me.tlblKernelWidth.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tlblKernelWidth.ForeColor = System.Drawing.Color.White
         Me.tlblKernelWidth.Name = "tlblKernelWidth"
-        Me.tlblKernelWidth.Size = New System.Drawing.Size(170, 19)
-        Me.tlblKernelWidth.Text = "Noise Reduction Kernel Width :"
+        Me.tlblKernelWidth.Size = New System.Drawing.Size(173, 19)
+        Me.tlblKernelWidth.Text = "Noise Reduction Kernel Radius :"
         '
         'slblKernelWidth
         '
@@ -490,7 +491,7 @@ Partial Class FrmMain
         '
         Me.groupBox5.Controls.Add(Me.cbxBorderCount)
         Me.groupBox5.Controls.Add(Me.lblBorderCount)
-        Me.groupBox5.Controls.Add(Me.cbxKernelWidth)
+        Me.groupBox5.Controls.Add(Me.cbxKernelRadius)
         Me.groupBox5.Controls.Add(Me.label1)
         Me.groupBox5.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.groupBox5.Location = New System.Drawing.Point(375, 643)
@@ -511,20 +512,20 @@ Partial Class FrmMain
         Me.lblBorderCount.TabIndex = 20
         Me.lblBorderCount.Text = "Border Count :"
         '
-        'cbxKernelWidth
+        'cbxKernelRadius
         '
-        Me.cbxKernelWidth.DropDownHeight = 150
-        Me.cbxKernelWidth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbxKernelWidth.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cbxKernelWidth.FormattingEnabled = True
-        Me.cbxKernelWidth.IntegralHeight = False
-        Me.cbxKernelWidth.ItemHeight = 17
-        Me.cbxKernelWidth.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"})
-        Me.cbxKernelWidth.Location = New System.Drawing.Point(232, 42)
-        Me.cbxKernelWidth.Margin = New System.Windows.Forms.Padding(2)
-        Me.cbxKernelWidth.Name = "cbxKernelWidth"
-        Me.cbxKernelWidth.Size = New System.Drawing.Size(80, 25)
-        Me.cbxKernelWidth.TabIndex = 17
+        Me.cbxKernelRadius.DropDownHeight = 150
+        Me.cbxKernelRadius.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbxKernelRadius.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cbxKernelRadius.FormattingEnabled = True
+        Me.cbxKernelRadius.IntegralHeight = False
+        Me.cbxKernelRadius.ItemHeight = 17
+        Me.cbxKernelRadius.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"})
+        Me.cbxKernelRadius.Location = New System.Drawing.Point(232, 42)
+        Me.cbxKernelRadius.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.cbxKernelRadius.Name = "cbxKernelRadius"
+        Me.cbxKernelRadius.Size = New System.Drawing.Size(80, 25)
+        Me.cbxKernelRadius.TabIndex = 17
         '
         'label1
         '
@@ -533,9 +534,9 @@ Partial Class FrmMain
         Me.label1.Location = New System.Drawing.Point(32, 45)
         Me.label1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.label1.Name = "label1"
-        Me.label1.Size = New System.Drawing.Size(198, 19)
+        Me.label1.Size = New System.Drawing.Size(201, 19)
         Me.label1.TabIndex = 17
-        Me.label1.Text = "Noise Reduction Kernel Width : "
+        Me.label1.Text = "Noise Reduction Kernel Radius : "
         '
         'groupBox4
         '
@@ -566,7 +567,7 @@ Partial Class FrmMain
         Me.btnInfo.Font = New System.Drawing.Font("Segoe Fluent Icons", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnInfo.ForeColor = System.Drawing.Color.DarkOliveGreen
         Me.btnInfo.Location = New System.Drawing.Point(689, 12)
-        Me.btnInfo.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnInfo.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.btnInfo.Name = "btnInfo"
         Me.btnInfo.Size = New System.Drawing.Size(30, 30)
         Me.btnInfo.TabIndex = 32
@@ -691,7 +692,7 @@ Partial Class FrmMain
     Friend WithEvents cbxBorderCount As ComboBox
     Private WithEvents groupBox5 As GroupBox
     Private WithEvents lblBorderCount As Label
-    Private WithEvents cbxKernelWidth As ComboBox
+    Private WithEvents cbxKernelRadius As ComboBox
     Private WithEvents label1 As Label
     Private WithEvents groupBox4 As GroupBox
     Private WithEvents editButton As Button
