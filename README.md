@@ -268,7 +268,6 @@ Therefore, the kernel width is **5**.
 For every data point, the algorithm calculates the median of a window centered at that point. The window radius is defined by `kernelRadius`, making the total window size 2 × `kernelRadius` + 1. At the edges, the window is automatically adjusted to stay within the bounds of the data array.
 
 #### Principle
-Principle
 - For each index, determine the start (`iMin`) and end (`iMax`) indices based on `kernelRadius`.
 - Copy these values into a temporary array and sort it.
 - Select the middle value as the median.
