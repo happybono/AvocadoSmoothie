@@ -237,10 +237,9 @@ End Sub
 
 ### 2. What is Kernel Radius
 #### Definition
-- Definition: In a median filter, `kernelRadius` specifies how many elements are taken on each side of the center element when creating the median window.
+In a median filter, `kernelRadius` specifies how many elements are taken on each side of the center element when creating the median window.
   
 #### Kernel Size Formula
-
 The width of a kernel is calculated using the following formula:
 
 $$
@@ -248,7 +247,6 @@ $$
 $$
 
 #### Example
-
 If the kernel radius is **2**, then:
 
 $$
