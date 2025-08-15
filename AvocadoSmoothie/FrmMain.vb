@@ -47,7 +47,7 @@ Public Class FrmMain
 
         Parallel.For(2, n - 2, Sub(i)
                                    Dim win(4) As Double
-                                   ' i-2 .. i+2 복사
+                                   ' i - 2 ... i + 2 복사
                                    For k = 0 To 4
                                        win(k) = arr(i + k - 2)
                                    Next
