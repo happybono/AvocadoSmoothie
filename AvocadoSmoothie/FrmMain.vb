@@ -1112,9 +1112,9 @@ Public Class FrmMain
         Next
     End Function
 
-
-    Private Function ValidateSmoothingParameters(dataCount As Integer, radius As Integer, borderCount As Integer, useMiddle As Boolean) As Boolean
-        Dim windowSize As Integer = 2 * radius + 1
+    Private Function ValidateSmoothingParameters(dataCount As Integer, kernelWidth As Integer, borderCount As Integer, useMiddle As Boolean) As Boolean
+        Dim radius As Integer = Integer.Parse(cbxKernelRadius.Text)
+        Dim windowSize As Integer = kernelWidth
         Dim borderTotalWidth As Integer = borderCount * If(useMiddle, 2, 0)
 
         ' 1) radius로 인한 windowSize 초과 검사
@@ -1200,7 +1200,7 @@ Public Class FrmMain
                 Return
             End If
 
-            Dim KernelRadius As Integer = 2 * radius + 1
+            Dim KernelWidth As Integer = 2 * radius + 1
 
             Dim borderCount As Integer
             If Not Integer.TryParse(cbxBorderCount.Text, borderCount) Then
@@ -1231,7 +1231,7 @@ Public Class FrmMain
             sourceList = initialData.ToList()
             Dim middleProgress = New Progress(Of Integer)(Sub(v) progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(v, progressBar1.Maximum)))
             Await Task.Run(Sub()
-                               ComputeMedians(True, KernelRadius, borderCount, middleProgress)
+                               ComputeMedians(True, KernelWidth, borderCount, middleProgress)
                                medianList.CopyTo(0, middleMedian, 0, n)
                            End Sub)
 
@@ -1244,7 +1244,7 @@ Public Class FrmMain
             sourceList = initialData.ToList()
             Dim allProgress = New Progress(Of Integer)(Sub(v) progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(v, progressBar1.Maximum)))
             Await Task.Run(Sub()
-                               ComputeMedians(False, KernelRadius, borderCount, allProgress)
+                               ComputeMedians(False, KernelWidth, borderCount, allProgress)
                                medianList.CopyTo(0, allMedian, 0, n)
                            End Sub)
 
@@ -1263,7 +1263,7 @@ Public Class FrmMain
 
                 ws.Cells(1, 1) = txtDatasetTitle.Text
                 ws.Cells(3, 1) = "Smoothing Parameters"
-                ws.Cells(4, 1) = $"Kernel Radius : {KernelRadius}"
+                ws.Cells(4, 1) = $"Kernel Radius : {KernelWidth}"
                 ws.Cells(5, 1) = $"Border Count  {borderCount}"
 
                 ' 데이터를 분산 저장하는 함수
