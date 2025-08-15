@@ -61,7 +61,7 @@ Partial Class FrmMain
         Me.slblBorderCount = New System.Windows.Forms.ToolStripStatusLabel()
         Me.groupBox5 = New System.Windows.Forms.GroupBox()
         Me.lblBorderCount = New System.Windows.Forms.Label()
-        Me.cbxKernelWidth = New System.Windows.Forms.ComboBox()
+        Me.cbxKernelRadius = New System.Windows.Forms.ComboBox()
         Me.label1 = New System.Windows.Forms.Label()
         Me.groupBox4 = New System.Windows.Forms.GroupBox()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
@@ -89,7 +89,7 @@ Partial Class FrmMain
         Me.ListBox1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.ListBox1.Name = "ListBox1"
         Me.ListBox1.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.ListBox1.Size = New System.Drawing.Size(294, 514)
+        Me.ListBox1.Size = New System.Drawing.Size(294, 497)
         Me.ListBox1.TabIndex = 4
         '
         'ListBox2
@@ -101,7 +101,7 @@ Partial Class FrmMain
         Me.ListBox2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.ListBox2.Name = "ListBox2"
         Me.ListBox2.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.ListBox2.Size = New System.Drawing.Size(294, 514)
+        Me.ListBox2.Size = New System.Drawing.Size(294, 497)
         Me.ListBox2.TabIndex = 21
         '
         'calcButton
@@ -119,13 +119,13 @@ Partial Class FrmMain
         'RadioButton1
         '
         Me.RadioButton1.Appearance = System.Windows.Forms.Appearance.Button
-        Me.RadioButton1.Font = New System.Drawing.Font("Microsoft NeoGothic", 10.125!)
+        Me.RadioButton1.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
         Me.RadioButton1.Location = New System.Drawing.Point(175, 24)
         Me.RadioButton1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.RadioButton1.Name = "RadioButton1"
         Me.RadioButton1.Size = New System.Drawing.Size(150, 30)
         Me.RadioButton1.TabIndex = 15
-        Me.RadioButton1.Text = "중앙 구간 이동 중간 값"
+        Me.RadioButton1.Text = "Middle Median"
         Me.RadioButton1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         Me.RadioButton1.UseVisualStyleBackColor = True
         '
@@ -133,14 +133,14 @@ Partial Class FrmMain
         '
         Me.RadioButton2.Appearance = System.Windows.Forms.Appearance.Button
         Me.RadioButton2.Checked = True
-        Me.RadioButton2.Font = New System.Drawing.Font("Microsoft NeoGothic", 10.125!)
+        Me.RadioButton2.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
         Me.RadioButton2.Location = New System.Drawing.Point(19, 24)
         Me.RadioButton2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.RadioButton2.Name = "RadioButton2"
         Me.RadioButton2.Size = New System.Drawing.Size(150, 30)
         Me.RadioButton2.TabIndex = 14
         Me.RadioButton2.TabStop = True
-        Me.RadioButton2.Text = "전체 구간 이동 중간 값"
+        Me.RadioButton2.Text = "All Median"
         Me.RadioButton2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         Me.RadioButton2.UseVisualStyleBackColor = True
         '
@@ -176,7 +176,7 @@ Partial Class FrmMain
         Me.copyButton1.Size = New System.Drawing.Size(30, 30)
         Me.copyButton1.TabIndex = 6
         Me.copyButton1.Text = ""
-        Me.ToolTip1.SetToolTip(Me.copyButton1, "복사")
+        Me.ToolTip1.SetToolTip(Me.copyButton1, "Copy")
         Me.copyButton1.UseVisualStyleBackColor = True
         '
         'cbxBorderCount
@@ -201,7 +201,7 @@ Partial Class FrmMain
         Me.clearButton1.Size = New System.Drawing.Size(30, 30)
         Me.clearButton1.TabIndex = 5
         Me.clearButton1.Text = ""
-        Me.ToolTip1.SetToolTip(Me.clearButton1, "전체 삭제")
+        Me.ToolTip1.SetToolTip(Me.clearButton1, "Clear")
         Me.clearButton1.UseVisualStyleBackColor = True
         '
         'clearButton2
@@ -213,7 +213,7 @@ Partial Class FrmMain
         Me.clearButton2.Size = New System.Drawing.Size(30, 30)
         Me.clearButton2.TabIndex = 22
         Me.clearButton2.Text = ""
-        Me.ToolTip1.SetToolTip(Me.clearButton2, "전체 삭제")
+        Me.ToolTip1.SetToolTip(Me.clearButton2, "Clear")
         Me.clearButton2.UseVisualStyleBackColor = True
         '
         'deleteButton1
@@ -225,7 +225,7 @@ Partial Class FrmMain
         Me.deleteButton1.Size = New System.Drawing.Size(30, 30)
         Me.deleteButton1.TabIndex = 9
         Me.deleteButton1.Text = ""
-        Me.ToolTip1.SetToolTip(Me.deleteButton1, "선택 삭제")
+        Me.ToolTip1.SetToolTip(Me.deleteButton1, "Delete")
         Me.deleteButton1.UseVisualStyleBackColor = True
         '
         'pasteButton
@@ -237,7 +237,7 @@ Partial Class FrmMain
         Me.pasteButton.Size = New System.Drawing.Size(30, 30)
         Me.pasteButton.TabIndex = 7
         Me.pasteButton.Text = ""
-        Me.ToolTip1.SetToolTip(Me.pasteButton, "붙여넣기")
+        Me.ToolTip1.SetToolTip(Me.pasteButton, "Paste")
         Me.pasteButton.UseVisualStyleBackColor = True
         '
         'copyButton2
@@ -250,7 +250,7 @@ Partial Class FrmMain
         Me.copyButton2.Size = New System.Drawing.Size(30, 30)
         Me.copyButton2.TabIndex = 23
         Me.copyButton2.Text = ""
-        Me.ToolTip1.SetToolTip(Me.copyButton2, "복사")
+        Me.ToolTip1.SetToolTip(Me.copyButton2, "Copy")
         Me.copyButton2.UseVisualStyleBackColor = True
         '
         'selectAllButton1
@@ -262,7 +262,7 @@ Partial Class FrmMain
         Me.selectAllButton1.Size = New System.Drawing.Size(30, 30)
         Me.selectAllButton1.TabIndex = 10
         Me.selectAllButton1.Text = ""
-        Me.ToolTip1.SetToolTip(Me.selectAllButton1, "모두 선택")
+        Me.ToolTip1.SetToolTip(Me.selectAllButton1, "Select All")
         Me.selectAllButton1.UseVisualStyleBackColor = True
         '
         'selectAllButton2
@@ -274,7 +274,7 @@ Partial Class FrmMain
         Me.selectAllButton2.Size = New System.Drawing.Size(30, 30)
         Me.selectAllButton2.TabIndex = 24
         Me.selectAllButton2.Text = ""
-        Me.ToolTip1.SetToolTip(Me.selectAllButton2, "전체 선택")
+        Me.ToolTip1.SetToolTip(Me.selectAllButton2, "Select All")
         Me.selectAllButton2.UseVisualStyleBackColor = True
         '
         'GroupBox2
@@ -289,7 +289,7 @@ Partial Class FrmMain
         Me.GroupBox2.Controls.Add(Me.clearButton1)
         Me.GroupBox2.Controls.Add(Me.copyButton1)
         Me.GroupBox2.Controls.Add(Me.ListBox1)
-        Me.GroupBox2.Font = New System.Drawing.Font("Microsoft NeoGothic", 11.25!, System.Drawing.FontStyle.Bold)
+        Me.GroupBox2.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold)
         Me.GroupBox2.Location = New System.Drawing.Point(14, 52)
         Me.GroupBox2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.GroupBox2.Name = "GroupBox2"
@@ -297,7 +297,7 @@ Partial Class FrmMain
         Me.GroupBox2.Size = New System.Drawing.Size(344, 586)
         Me.GroupBox2.TabIndex = 3
         Me.GroupBox2.TabStop = False
-        Me.GroupBox2.Text = "초기 데이터"
+        Me.GroupBox2.Text = "Initial Dataset"
         '
         'syncButton1
         '
@@ -307,7 +307,7 @@ Partial Class FrmMain
         Me.syncButton1.Size = New System.Drawing.Size(30, 30)
         Me.syncButton1.TabIndex = 12
         Me.syncButton1.Text = ""
-        Me.ToolTip1.SetToolTip(Me.syncButton1, "선택 순번 일치 ( ▶ 정제된 데이터 )")
+        Me.ToolTip1.SetToolTip(Me.syncButton1, "Match Selection" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "( ▶ Refined Dataset )")
         Me.syncButton1.UseVisualStyleBackColor = True
         '
         'editButton
@@ -315,24 +315,24 @@ Partial Class FrmMain
         Me.editButton.Enabled = False
         Me.editButton.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.editButton.Location = New System.Drawing.Point(307, 133)
-        Me.editButton.Margin = New System.Windows.Forms.Padding(2)
+        Me.editButton.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.editButton.Name = "editButton"
         Me.editButton.Size = New System.Drawing.Size(30, 30)
         Me.editButton.TabIndex = 8
         Me.editButton.Text = ""
-        Me.ToolTip1.SetToolTip(Me.editButton, "수정")
+        Me.ToolTip1.SetToolTip(Me.editButton, "Edit")
         Me.editButton.UseVisualStyleBackColor = True
         '
         'lblCnt1
         '
         Me.lblCnt1.AutoSize = True
-        Me.lblCnt1.Font = New System.Drawing.Font("Microsoft NeoGothic", 10.125!, System.Drawing.FontStyle.Bold)
+        Me.lblCnt1.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
         Me.lblCnt1.Location = New System.Drawing.Point(7, 555)
         Me.lblCnt1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblCnt1.Name = "lblCnt1"
-        Me.lblCnt1.Size = New System.Drawing.Size(101, 19)
+        Me.lblCnt1.Size = New System.Drawing.Size(65, 19)
         Me.lblCnt1.TabIndex = 26
-        Me.lblCnt1.Text = "데이터 개수 :  0"
+        Me.lblCnt1.Text = "Count : 0"
         '
         'sClrButton1
         '
@@ -343,7 +343,7 @@ Partial Class FrmMain
         Me.sClrButton1.Size = New System.Drawing.Size(30, 30)
         Me.sClrButton1.TabIndex = 11
         Me.sClrButton1.Text = ""
-        Me.ToolTip1.SetToolTip(Me.sClrButton1, "선택 취소")
+        Me.ToolTip1.SetToolTip(Me.sClrButton1, "Deselect All")
         Me.sClrButton1.UseVisualStyleBackColor = True
         '
         'GroupBox3
@@ -355,7 +355,7 @@ Partial Class FrmMain
         Me.GroupBox3.Controls.Add(Me.copyButton2)
         Me.GroupBox3.Controls.Add(Me.clearButton2)
         Me.GroupBox3.Controls.Add(Me.ListBox2)
-        Me.GroupBox3.Font = New System.Drawing.Font("Microsoft NeoGothic", 11.25!, System.Drawing.FontStyle.Bold)
+        Me.GroupBox3.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold)
         Me.GroupBox3.Location = New System.Drawing.Point(375, 52)
         Me.GroupBox3.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.GroupBox3.Name = "GroupBox3"
@@ -363,7 +363,7 @@ Partial Class FrmMain
         Me.GroupBox3.Size = New System.Drawing.Size(344, 586)
         Me.GroupBox3.TabIndex = 20
         Me.GroupBox3.TabStop = False
-        Me.GroupBox3.Text = "정제된 데이터"
+        Me.GroupBox3.Text = "Refined Dataset"
         '
         'syncButton2
         '
@@ -373,19 +373,19 @@ Partial Class FrmMain
         Me.syncButton2.Size = New System.Drawing.Size(30, 30)
         Me.syncButton2.TabIndex = 26
         Me.syncButton2.Text = ""
-        Me.ToolTip1.SetToolTip(Me.syncButton2, "선택 순번 일치 " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "( ◀ 초기 데이터 )")
+        Me.ToolTip1.SetToolTip(Me.syncButton2, "Match Selection " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "( ◀ Initial Dataset )")
         Me.syncButton2.UseVisualStyleBackColor = True
         '
         'lblCnt2
         '
         Me.lblCnt2.AutoSize = True
-        Me.lblCnt2.Font = New System.Drawing.Font("Microsoft NeoGothic", 10.125!, System.Drawing.FontStyle.Bold)
+        Me.lblCnt2.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
         Me.lblCnt2.Location = New System.Drawing.Point(7, 555)
         Me.lblCnt2.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblCnt2.Name = "lblCnt2"
-        Me.lblCnt2.Size = New System.Drawing.Size(97, 19)
+        Me.lblCnt2.Size = New System.Drawing.Size(65, 19)
         Me.lblCnt2.TabIndex = 27
-        Me.lblCnt2.Text = "데이터 개수 : 0"
+        Me.lblCnt2.Text = "Count : 0"
         '
         'sClrButton2
         '
@@ -396,7 +396,7 @@ Partial Class FrmMain
         Me.sClrButton2.Size = New System.Drawing.Size(30, 30)
         Me.sClrButton2.TabIndex = 25
         Me.sClrButton2.Text = ""
-        Me.ToolTip1.SetToolTip(Me.sClrButton2, "선택 취소")
+        Me.ToolTip1.SetToolTip(Me.sClrButton2, "Deselect All")
         Me.sClrButton2.UseVisualStyleBackColor = True
         '
         'progressBar1
@@ -411,6 +411,7 @@ Partial Class FrmMain
         '
         Me.statusStrip1.AutoSize = False
         Me.statusStrip1.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.statusStrip1.ImageScalingSize = New System.Drawing.Size(32, 32)
         Me.statusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tlblCalibratedType, Me.slblCalibratedType, Me.slblSeparator1, Me.tlblKernelWidth, Me.slblKernelWidth, Me.slblSeparator2, Me.tlblBorderCount, Me.slblBorderCount})
         Me.statusStrip1.Location = New System.Drawing.Point(0, 837)
         Me.statusStrip1.Name = "statusStrip1"
@@ -421,15 +422,15 @@ Partial Class FrmMain
         '
         'tlblCalibratedType
         '
-        Me.tlblCalibratedType.Font = New System.Drawing.Font("Microsoft NeoGothic", 9.0!)
+        Me.tlblCalibratedType.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tlblCalibratedType.ForeColor = System.Drawing.Color.White
         Me.tlblCalibratedType.Name = "tlblCalibratedType"
-        Me.tlblCalibratedType.Size = New System.Drawing.Size(99, 19)
-        Me.tlblCalibratedType.Text = "적용된 보정 방법 : "
+        Me.tlblCalibratedType.Size = New System.Drawing.Size(114, 19)
+        Me.tlblCalibratedType.Text = "Applied Calibration :"
         '
         'slblCalibratedType
         '
-        Me.slblCalibratedType.Font = New System.Drawing.Font("Microsoft NeoGothic", 9.0!)
+        Me.slblCalibratedType.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblCalibratedType.ForeColor = System.Drawing.Color.White
         Me.slblCalibratedType.Name = "slblCalibratedType"
         Me.slblCalibratedType.Size = New System.Drawing.Size(17, 19)
@@ -445,15 +446,15 @@ Partial Class FrmMain
         '
         'tlblKernelWidth
         '
-        Me.tlblKernelWidth.Font = New System.Drawing.Font("Microsoft NeoGothic", 9.0!)
+        Me.tlblKernelWidth.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tlblKernelWidth.ForeColor = System.Drawing.Color.White
         Me.tlblKernelWidth.Name = "tlblKernelWidth"
-        Me.tlblKernelWidth.Size = New System.Drawing.Size(138, 19)
-        Me.tlblKernelWidth.Text = "측정 오차 제거 필터 반경 : "
+        Me.tlblKernelWidth.Size = New System.Drawing.Size(173, 19)
+        Me.tlblKernelWidth.Text = "Noise Reduction Kernel Radius :"
         '
         'slblKernelWidth
         '
-        Me.slblKernelWidth.Font = New System.Drawing.Font("Microsoft NeoGothic", 9.0!)
+        Me.slblKernelWidth.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblKernelWidth.ForeColor = System.Drawing.Color.White
         Me.slblKernelWidth.Name = "slblKernelWidth"
         Me.slblKernelWidth.Size = New System.Drawing.Size(17, 19)
@@ -470,16 +471,16 @@ Partial Class FrmMain
         '
         'tlblBorderCount
         '
-        Me.tlblBorderCount.Font = New System.Drawing.Font("Microsoft NeoGothic", 9.0!)
+        Me.tlblBorderCount.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tlblBorderCount.ForeColor = System.Drawing.Color.White
         Me.tlblBorderCount.Name = "tlblBorderCount"
-        Me.tlblBorderCount.Size = New System.Drawing.Size(85, 19)
-        Me.tlblBorderCount.Text = "경계 유지 계수 :"
+        Me.tlblBorderCount.Size = New System.Drawing.Size(83, 19)
+        Me.tlblBorderCount.Text = "Border Count :"
         Me.tlblBorderCount.Visible = False
         '
         'slblBorderCount
         '
-        Me.slblBorderCount.Font = New System.Drawing.Font("Microsoft NeoGothic", 9.0!)
+        Me.slblBorderCount.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblBorderCount.ForeColor = System.Drawing.Color.White
         Me.slblBorderCount.Name = "slblBorderCount"
         Me.slblBorderCount.Size = New System.Drawing.Size(17, 19)
@@ -490,64 +491,64 @@ Partial Class FrmMain
         '
         Me.groupBox5.Controls.Add(Me.cbxBorderCount)
         Me.groupBox5.Controls.Add(Me.lblBorderCount)
-        Me.groupBox5.Controls.Add(Me.cbxKernelWidth)
+        Me.groupBox5.Controls.Add(Me.cbxKernelRadius)
         Me.groupBox5.Controls.Add(Me.label1)
-        Me.groupBox5.Font = New System.Drawing.Font("Microsoft NeoGothic", 11.25!, System.Drawing.FontStyle.Bold)
+        Me.groupBox5.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.groupBox5.Location = New System.Drawing.Point(375, 643)
         Me.groupBox5.Name = "groupBox5"
         Me.groupBox5.Size = New System.Drawing.Size(344, 130)
         Me.groupBox5.TabIndex = 16
         Me.groupBox5.TabStop = False
-        Me.groupBox5.Text = "보정 설정"
+        Me.groupBox5.Text = "Signal Smoothing Parameters"
         '
         'lblBorderCount
         '
         Me.lblBorderCount.AutoSize = True
         Me.lblBorderCount.Enabled = False
-        Me.lblBorderCount.Font = New System.Drawing.Font("Microsoft NeoGothic", 10.125!)
+        Me.lblBorderCount.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
         Me.lblBorderCount.Location = New System.Drawing.Point(72, 83)
         Me.lblBorderCount.Name = "lblBorderCount"
-        Me.lblBorderCount.Size = New System.Drawing.Size(102, 19)
+        Me.lblBorderCount.Size = New System.Drawing.Size(98, 19)
         Me.lblBorderCount.TabIndex = 20
-        Me.lblBorderCount.Text = "경계 유지 계수 :"
+        Me.lblBorderCount.Text = "Border Count :"
         '
-        'cbxKernelWidth
+        'cbxKernelRadius
         '
-        Me.cbxKernelWidth.DropDownHeight = 150
-        Me.cbxKernelWidth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbxKernelWidth.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.cbxKernelWidth.FormattingEnabled = True
-        Me.cbxKernelWidth.IntegralHeight = False
-        Me.cbxKernelWidth.ItemHeight = 17
-        Me.cbxKernelWidth.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"})
-        Me.cbxKernelWidth.Location = New System.Drawing.Point(217, 42)
-        Me.cbxKernelWidth.Margin = New System.Windows.Forms.Padding(2)
-        Me.cbxKernelWidth.Name = "cbxKernelWidth"
-        Me.cbxKernelWidth.Size = New System.Drawing.Size(80, 25)
-        Me.cbxKernelWidth.TabIndex = 17
+        Me.cbxKernelRadius.DropDownHeight = 150
+        Me.cbxKernelRadius.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbxKernelRadius.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cbxKernelRadius.FormattingEnabled = True
+        Me.cbxKernelRadius.IntegralHeight = False
+        Me.cbxKernelRadius.ItemHeight = 17
+        Me.cbxKernelRadius.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"})
+        Me.cbxKernelRadius.Location = New System.Drawing.Point(232, 42)
+        Me.cbxKernelRadius.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.cbxKernelRadius.Name = "cbxKernelRadius"
+        Me.cbxKernelRadius.Size = New System.Drawing.Size(80, 25)
+        Me.cbxKernelRadius.TabIndex = 17
         '
         'label1
         '
         Me.label1.AutoSize = True
-        Me.label1.Font = New System.Drawing.Font("Microsoft NeoGothic", 10.125!)
-        Me.label1.Location = New System.Drawing.Point(47, 45)
+        Me.label1.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.label1.Location = New System.Drawing.Point(32, 45)
         Me.label1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.label1.Name = "label1"
-        Me.label1.Size = New System.Drawing.Size(166, 19)
+        Me.label1.Size = New System.Drawing.Size(201, 19)
         Me.label1.TabIndex = 17
-        Me.label1.Text = "측정 오차 제거 필터 반경 : "
+        Me.label1.Text = "Noise Reduction Kernel Radius : "
         '
         'groupBox4
         '
         Me.groupBox4.Controls.Add(Me.RadioButton1)
         Me.groupBox4.Controls.Add(Me.RadioButton2)
-        Me.groupBox4.Font = New System.Drawing.Font("Microsoft NeoGothic", 11.25!, System.Drawing.FontStyle.Bold)
+        Me.groupBox4.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold)
         Me.groupBox4.Location = New System.Drawing.Point(14, 643)
         Me.groupBox4.Name = "groupBox4"
         Me.groupBox4.Size = New System.Drawing.Size(344, 64)
         Me.groupBox4.TabIndex = 13
         Me.groupBox4.TabStop = False
-        Me.groupBox4.Text = "보정 방법"
+        Me.groupBox4.Text = "Calibration Method"
         '
         'btnExport
         '
@@ -566,7 +567,7 @@ Partial Class FrmMain
         Me.btnInfo.Font = New System.Drawing.Font("Segoe Fluent Icons", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnInfo.ForeColor = System.Drawing.Color.DarkOliveGreen
         Me.btnInfo.Location = New System.Drawing.Point(689, 12)
-        Me.btnInfo.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnInfo.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.btnInfo.Name = "btnInfo"
         Me.btnInfo.Size = New System.Drawing.Size(30, 30)
         Me.btnInfo.TabIndex = 32
@@ -576,7 +577,7 @@ Partial Class FrmMain
         '
         'txtDatasetTitle
         '
-        Me.txtDatasetTitle.Font = New System.Drawing.Font("Microsoft NeoGothic", 10.125!, System.Drawing.FontStyle.Bold)
+        Me.txtDatasetTitle.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
         Me.txtDatasetTitle.Location = New System.Drawing.Point(384, 14)
         Me.txtDatasetTitle.Name = "txtDatasetTitle"
         Me.txtDatasetTitle.Size = New System.Drawing.Size(300, 25)
@@ -586,39 +587,39 @@ Partial Class FrmMain
         '
         Me.GroupBox1.Controls.Add(Me.rbtnCSV)
         Me.GroupBox1.Controls.Add(Me.rbtnXLSX)
-        Me.GroupBox1.Font = New System.Drawing.Font("Microsoft NeoGothic", 11.25!, System.Drawing.FontStyle.Bold)
+        Me.GroupBox1.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold)
         Me.GroupBox1.Location = New System.Drawing.Point(14, 709)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(344, 64)
         Me.GroupBox1.TabIndex = 28
         Me.GroupBox1.TabStop = False
-        Me.GroupBox1.Text = "내보내기 설정"
+        Me.GroupBox1.Text = "Data Export Options"
         '
         'rbtnCSV
         '
         Me.rbtnCSV.Appearance = System.Windows.Forms.Appearance.Button
         Me.rbtnCSV.Checked = True
-        Me.rbtnCSV.Font = New System.Drawing.Font("Microsoft NeoGothic", 10.125!)
+        Me.rbtnCSV.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
         Me.rbtnCSV.Location = New System.Drawing.Point(175, 24)
         Me.rbtnCSV.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.rbtnCSV.Name = "rbtnCSV"
         Me.rbtnCSV.Size = New System.Drawing.Size(150, 30)
         Me.rbtnCSV.TabIndex = 30
         Me.rbtnCSV.TabStop = True
-        Me.rbtnCSV.Text = "CSV 형식으로 저장"
+        Me.rbtnCSV.Text = "Save as CSV"
         Me.rbtnCSV.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         Me.rbtnCSV.UseVisualStyleBackColor = True
         '
         'rbtnXLSX
         '
         Me.rbtnXLSX.Appearance = System.Windows.Forms.Appearance.Button
-        Me.rbtnXLSX.Font = New System.Drawing.Font("Microsoft NeoGothic", 10.125!)
+        Me.rbtnXLSX.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
         Me.rbtnXLSX.Location = New System.Drawing.Point(19, 24)
         Me.rbtnXLSX.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.rbtnXLSX.Name = "rbtnXLSX"
         Me.rbtnXLSX.Size = New System.Drawing.Size(150, 30)
         Me.rbtnXLSX.TabIndex = 29
-        Me.rbtnXLSX.Text = "엑셀에서 열기"
+        Me.rbtnXLSX.Text = "Open in Excel"
         Me.rbtnXLSX.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         Me.rbtnXLSX.UseVisualStyleBackColor = True
         '
@@ -691,7 +692,7 @@ Partial Class FrmMain
     Friend WithEvents cbxBorderCount As ComboBox
     Private WithEvents groupBox5 As GroupBox
     Private WithEvents lblBorderCount As Label
-    Private WithEvents cbxKernelWidth As ComboBox
+    Private WithEvents cbxKernelRadius As ComboBox
     Private WithEvents label1 As Label
     Private WithEvents groupBox4 As GroupBox
     Private WithEvents editButton As Button
