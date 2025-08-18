@@ -389,6 +389,92 @@ Private Async Sub calcButton_Click(sender As Object, e As EventArgs) Handles cal
 End Sub
 ```
 
+### Implementation Details
+#### Input Handling
+- Manual Entry  
+  The `addButton_Click` handler and `TextBox1_KeyDown` allow users to type a numeric value into `TextBox1` and press Enter or click Add. Valid numbers are parsed via `Double.TryParse` and appended to `ListBox1`.
+  
+- Clipboard Paste  
+  The `pasteButton_Click` event reads `Clipboard.GetText()`, uses `regexNumbers` to match numeric tokens, then parses them in parallel (`AsParallel().WithDegreeOfParallelism`) before adding to `ListBox1` in a batch (`BeginUpdate`/`EndUpdate`).
+
+- Drag & Drop  
+  The `ListBox1_DragDrop` handler checks for “HTML Format” or plain text, strips tags via `regexStripTags`, extracts numbers via `regexNumbers.Matches`, parses in a background task, and calls `AddItemsInBatches` to insert items with incremental progress.
+
+- Regex-Based Filtering  
+  Two compiled regexes are used:  
+  - `regexStripTags` to remove HTML/XML tags.  
+  - `regexNumbers` to find `"[+-]?(\\d+(,\\d{3})*|(?=\\.\\d))((\\.\\d+([eE][+-]\\d+)?)|)"` and extract numeric substrings.
+
+#### Smoothing Workflow
+
+When the user clicks **Calibrate** (`calcButton_Click`):
+
+1. Convert each `ListBox1.Items` entry to `Double` and store in `sourceList`.  
+2. Read `cbxKernelRadius` (radius) and compute `KernelRadius = 2 * radius + 1`.  
+3. Read `cbxBorderCount` and parse `borderCount`.  
+4. Validate parameters with `ValidateSmoothingParameters(dataCount, KernelRadius, borderCount, useMiddle)`.  
+5. Initialize `progressBar1` (min=0, max=total count) and create `Progress(Of Integer)` to update it.  
+6. Run `ComputeMedians(useMiddle, KernelRadius, borderCount, progress)` on the thread pool.  
+7. Populate `ListBox2` with the resulting `medianList`, update labels (`lblCnt1`, `lblCnt2`, `slblCalibratedType`, `slblKernelWidth`, `slblBorderCount`), then reset the progress bar.
+
+#### Filter Algorithm Implementation
+- Middle Median  
+  When `useMiddle = True`, `ComputeMedians` first copies the first and last `borderCount` values unchanged. For interior indices, it takes a fixed-size window of length `KernelRadius`, sorts the `Double()` via `Array.Sort` or `Quicksort`, and selects the middle element.
+
+- All Median  
+  When `useMiddle = False`, `ComputeMedians` applies a sliding window at every index. Near edges the window shrinks to available data; after copying values into a thread-local buffer it sorts and picks the median (or average of two middle values for even-length windows).
+
+- Core Median Functions  
+  - `GetWindowMedian(win(), length)` sorts the first `length` elements of `win()` and returns either `slice(mid)` or `(slice(mid - 1) + slice(mid)) / 2`.  
+  - `Quicksort(list(), min, max)` provides an in-place quicksort variant used in `MiddleMedian`.
+ 
+#### Parallel Processing & UI Responsiveness
+- `ComputeMedians` uses `Parallel.For` to distribute median computation over CPU cores.  
+- Regex-based parsing uses PLINQ (`AsParallel().WithDegreeOfParallelism(Environment.ProcessorCount)`).  
+- Progress is reported via `IProgress(Of Integer)` to `progressBar1`.  
+- `BeginUpdate` / `EndUpdate` on listboxes prevent flicker during bulk updates.  
+- `Task.Run` combined with `Await` and occasional `Task.Delay(1)` or `Task.Yield()` keeps the UI thread free.  
+- In deletion routines, `Application.DoEvents()` processes pending UI messages during long operations.
+
+
+#### Export Functionality
+
+##### CSV & Excel Export
+
+- CSV (`ExportCsvAsync`)  
+  • Reads initial data into a `Double()` array.  
+  • Computes both Middle and All medians by calling `ComputeMedians` twice.  
+  • Splits output into 1 048 576-row parts (Excel’s limit) if needed.  
+  • Writes headers, parameters, timestamps, and three columns (`Initial Data, MiddleMedian, AllMedian`) to UTF-8 CSV files.  
+  • Optionally opens each generated CSV in the default editor.
+
+- Excel (`btnExport_Click` with `rbtnXLSX`)  
+  • Uses Microsoft Office Interop to create a new workbook.  
+  • Writes dataset title and smoothing parameters in rows 1–5.  
+  • Streams each data series into adjacent columns (splitting across sheets if >1 048 576 rows).  
+  • Builds a line chart plotting all three series with labeled axes and title.  
+  • Makes Excel visible on completion.
+
+##### Export Settings
+
+- Format selection via radio buttons (`rbtnCSV`, `rbtnXLSX`).  
+- Kernel radius (`cbxKernelRadius`) and border count (`cbxBorderCount`) must be valid integers.  
+- Title supplied in `txtDatasetTitle` (placeholder until edited).
+
+---
+
+#### Keyboard Shortcuts
+
+- Ctrl + C – Copy selected or all items to clipboard.  
+- Ctrl + V – Paste numeric data from clipboard.  
+- Ctrl + A – Select all items.  
+- Delete – Delete selected items (`deleteButtonX`).  
+- Ctrl + Delete – Clear all items (`clearButtonX`).  
+- F2 – Edit selected item(s) (`FrmModify`).  
+- Esc – Deselect selection (`sClrButtonX`).
+
+---
+
 ### Data Handling and Processing
 - Efficiently processes numeric data for running median calculations
 - Supports data input via :
@@ -426,7 +512,15 @@ End Sub
 - All settings applied instantly for immediate data visualization and experimentation
 
 ## Conclusion
-This AvocadoSmoothie application combines robust data handling, a user-friendly interface, and flexible configuration options to deliver fast and accurate median filtering for numeric datasets. Its support for large-scale data, parallel processing, and real-time feedback makes it suitable for a wide range of data analysis and preprocessing tasks. Whether for exploratory analysis or as part of a larger workflow, this AvocadoSmoothie project provides a reliable and efficient solution for running median calculations.
+AvocadoSmoothie delivers a seamless, high-performance Windows Forms experience for running median calculations on numeric datasets. It combines flexible data ingestion (manual entry, clipboard paste, drag-and-drop) with two smoothing modes : Middle Median (preserving edge values) and All Median (adaptive windowing) : to transform noisy signals into clear, consistent outputs.
+
+Key highlights:
+- Robust border handling that avoids edge artifacts without dropping data points.
+- Multithreaded execution via `Parallel.For`, PLINQ and asynchronous UI updates for maximum throughput.
+- Real-time progress reporting and flicker-free batch rendering to keep users informed and the interface smooth.
+- Flexible export options : split CSV files for very large datasets or full-featured Excel workbooks with automatic chart generation.
+
+Together, these features empower users to interactively refine their data, fine-tune smoothing parameters, and export polished results—making AvocadoSmoothie a reliable, efficient component in any data-analysis or preprocessing workflow.  
 
 ## Principle Demonstration
 <div align="center">
