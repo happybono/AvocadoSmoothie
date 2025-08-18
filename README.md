@@ -311,7 +311,7 @@ End Sub
 This median filter is applied only to the inner portion of the dataset, leaving the first and last `borderCount` elements unchanged. The size of the median window is determined by `kernelRadius`.
 
 #### Principle
-- Copy the first and last `borderCount` elements directly from the source list.
+- Copy the first and last `borderCount` elements directly from the source-list.
 - Apply the median filter to the indices in between.
 - Use `Parallel.For` for efficient processing
 
@@ -406,7 +406,6 @@ End Sub
   - `regexNumbers` to find `"[+-]?(\\d+(,\\d{3})*|(?=\\.\\d))((\\.\\d+([eE][+-]\\d+)?)|)"` and extract numeric substrings.
 
 #### Smoothing Workflow
-
 When the user clicks **Calibrate** (`calcButton_Click`):
 
 1. Convert each `ListBox1.Items` entry to `Double` and store in `sourceList`.  
@@ -418,10 +417,10 @@ When the user clicks **Calibrate** (`calcButton_Click`):
 7. Populate `ListBox2` with the resulting `medianList`, update labels (`lblCnt1`, `lblCnt2`, `slblCalibratedType`, `slblKernelWidth`, `slblBorderCount`), then reset the progress bar.
 
 #### Filter Algorithm Implementation
-- Middle Median  
+- Middle-Median  
   When `useMiddle = True`, `ComputeMedians` first copies the first and last `borderCount` values unchanged. For interior indices, it takes a fixed-size window of length `KernelRadius`, sorts the `Double()` via `Array.Sort` or `Quicksort`, and selects the middle element.
 
-- All Median  
+- All-Median  
   When `useMiddle = False`, `ComputeMedians` applies a sliding window at every index. Near edges the window shrinks to available data; after copying values into a thread-local buffer it sorts and picks the median (or average of two middle values for even-length windows).
 
 - Core Median Functions  
@@ -520,7 +519,7 @@ Key highlights:
 - Real-time progress reporting and flicker-free batch rendering to keep users informed and the interface smooth.
 - Flexible export options : split CSV files for very large datasets or full-featured Excel workbooks with automatic chart generation.
 
-Together, these features empower users to interactively refine their data, fine-tune smoothing parameters, and export polished results—making AvocadoSmoothie a reliable, efficient component in any data-analysis or preprocessing workflow.  
+Together, these features empower users to interactively refine their data, fine-tune smoothing parameters, and export polished results : making AvocadoSmoothie a reliable, efficient component in any data-analysis or preprocessing workflow.  
 
 ## Principle Demonstration
 <div align="center">
