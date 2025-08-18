@@ -110,12 +110,10 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 #### August 03, 2025
 > Added `FrmAbout` displaying app version and copyright information.<br><br>
 > Added `Buy Me a Coffee` feature via PayPal, integrated directly into the `FrmAbout` to support the developer.<br><br>
-> Minor bugs fixed.
 
 ### v4.2.3.0
 #### August 03, 2025
-> Added `FrmAbout` displaying app version and copyright information.<br><br>
-> Added `Buy Me a Coffee` feature via PayPal, integrated directly into the `FrmAbout` to support the developer.<br><br>
+> Minor bugs fixed.
 
 ### v4.2.3.2
 #### August 05, 2025
@@ -125,6 +123,12 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 #### August 10, 2025
 > The code has been refactored, and variable names have been redefined for improved clarity.<br><br>
 > Include an ARM64-native variant of the executable.
+
+### v4.2.7.0
+#### August 22, 2025
+> Updated UI labels by replacing "Kernel Width" with the more precise "Kernel Radius".<br><br>
+> Refactored variable names and code references to use "Kernel Radius (r)" instead of "Kernel Width (w)".<br><br>
+> Minor bugs fixed.
 </details>
 
 ## Required Components & Setup
