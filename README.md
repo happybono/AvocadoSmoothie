@@ -267,7 +267,7 @@ Therefore, the kernel width is **5**.
 - `kernelRadius` makes it easy to reason about how far to extend the filter around the center point.
 - It helps in handling edge conditions without ambiguity.
 
-### 2. AllMedian Calculation
+### 3. AllMedian Calculation
 #### How it works
 For every data point, the algorithm calculates the median of a window centered at that point. The window radius is defined by `kernelRadius`, making the total window size 2 × `kernelRadius` + 1. At the edges, the window is automatically adjusted to stay within the bounds of the data array.
 
@@ -306,7 +306,7 @@ Sub AllMedian(kernelRadius As Integer)
 End Sub
 ```
 
-### 3. MiddleMedian Calculation
+### 4. MiddleMedian Calculation
 #### How it works
 This median filter is applied only to the inner portion of the dataset, leaving the first and last `borderCount` elements unchanged. The size of the median window is determined by `kernelRadius`.
 
@@ -348,7 +348,7 @@ Sub MiddleMedian(kernelRadius As Integer, borderCount As Integer)
 End Sub
 ```
 
-### 4. Border Count
+### 5. Border Count
 When you apply the Running Median filter, the **Border Count** parameter lets you exempt a fixed number of points at each end of your series from filtering. This helps you avoid unwanted edge distortion and preserves known "safe" values at the start and finish.
 
 - Definition  
