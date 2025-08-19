@@ -562,11 +562,11 @@ Together, these features empower users to interactively refine their data, fine-
 </div>
 
 ## Demonstration
-![AvocadoSmoothie-AllMedian](AvocadoSmoothie-AllMedian.png)<br><br>
-![AvocadoSmoothie-MiddleMedian](AvocadoSmoothie-MiddleMedian.png)<br><br>
-![AvocadoSmoothie-EditEntries](AvocadoSmoothie-EditEntries.png)<br><br>
-![AvocadoSmoothie-MatchSelection](AvocadoSmoothie-MatchSelection.png)<br><br>
-![Calibrated Results](Before_and_After_Smoothing_with_Avocado_Smoothie.png)
+![AvocadoSmoothie-AllMedian](Screenshots/AvocadoSmoothie-AllMedian.png)<br><br>
+![AvocadoSmoothie-MiddleMedian](Screenshots/AvocadoSmoothie-MiddleMedian.png)<br><br>
+![AvocadoSmoothie-EditEntries](Screenshots/AvocadoSmoothie-EditEntries.png)<br><br>
+![AvocadoSmoothie-MatchSelection](Screenshots/AvocadoSmoothie-MatchSelection.png)<br><br>
+![Calibrated Results](Screenshots/Before_and_After_Smoothing_with_Avocado_Smoothie.png)
 
 ## License
 This project is licensed under the MIT License. See the `LICENSE` file for details.
