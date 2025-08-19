@@ -20,7 +20,7 @@ Like a well-balanced smoothie in taste and texture, this project aims to respond
 By removing noise, AvocadoSmoothie breathes clarity and energy into your analysis : leading to better decisions and deeper insights, all through a nutritious blending process.
 
 ## Project Overview
-This AvocadoSmoothie project delivers a highly optimized running median filter on numeric data held in a `ListBox`. Users pick a `kernel width` and `border count`, then choose between two modes :<br><br>
+This AvocadoSmoothie project delivers a highly optimized running median filter on numeric data held in a `ListBox`. Users pick a `kernel radius` and `border count`, then choose between two modes :<br><br>
 
 - **AllMedian** : applies the median filter at every index, clamping the window at the ends for out-of-range safety.<br>
 - **MiddleMedian** : preserves the specified number of leading and trailing values, filtering only the central section.<br><br>
