@@ -315,7 +315,6 @@ This median filter is applied only to the inner portion of the dataset, leaving 
 - Apply the median filter to the indices in between.
 - Use `Parallel.For` for efficient processing
 
-
 #### Code Implementation
 ```vbnet
 Sub MiddleMedian(kernelRadius As Integer, borderCount As Integer)
@@ -347,6 +346,40 @@ Sub MiddleMedian(kernelRadius As Integer, borderCount As Integer)
     medianList.Clear()
     medianList.AddRange(buffer)
 End Sub
+```
+
+### 4. Border Count
+When you apply the Running Median filter, the **Border Count** parameter lets you exempt a fixed number of points at each end of your series from filtering. This helps you avoid unwanted edge distortion and preserves known "safe" values at the start and finish.
+
+- Definition  
+  The number of data points to leave unchanged at both the beginning and the end of the sequence.
+
+- Type  
+  Integer, 0 ≤ Border Count < ⌊n / 2⌋
+
+- Default  
+  0 (no edge preservation : all points are filtered)
+
+### Notes
+
+- If your series length is less than 2 × Border Count, the filter will skip processing entirely.  
+- Choose a small k (e.g. 1 – 5) when you trust your edge data but still need robust spike suppression in the center.
+
+### Behavior
+
+If you set `Border Count = k`, then:  
+- The first **k** samples remain exactly as they are.  
+- The last **k** samples remain exactly as they are.  
+- Only the middle section (everything between those preserved edges) is passed through the median filter.
+
+### Example
+
+```txt
+Original data (10 points):   [x₀, x₁, x₂, x₃, x₄, x₅, x₆, x₇, x₈, x₉]
+Border Count = 3
+
+Preserved by Border Count:   [x₀, x₁, x₂]                [x₇, x₈, x₉]
+Filtered by Running Median:              [x₃, x₄, x₅, x₆]
 ```
 
 ### Results Aggregation & UI Update
