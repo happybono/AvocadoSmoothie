@@ -360,19 +360,19 @@ When you apply the Running Median filter, the **Border Count** parameter lets yo
 - Default  
   0 (no edge preservation : all points are filtered)
 
-### Notes
+#### Notes
 
 - If your series length is less than 2 × Border Count, the filter will skip processing entirely.  
 - Choose a small k (e.g. 1 – 5) when you trust your edge data but still need robust spike suppression in the center.
 
-### Behavior
+#### Behavior
 
 If you set `Border Count = k`, then:  
 - The first **k** samples remain exactly as they are.  
 - The last **k** samples remain exactly as they are.  
 - Only the middle section (everything between those preserved edges) is passed through the median filter.
 
-### Example
+#### Example
 
 ```txt
 Original data (10 points):   [x₀, x₁, x₂, x₃, x₄, x₅, x₆, x₇, x₈, x₉]
