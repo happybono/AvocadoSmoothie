@@ -988,9 +988,7 @@ Public Class FrmMain
         FrmModify.ShowDialog(Me)
     End Sub
 
-    Dim maxRows = 1048573
     Dim EXCEL_MAX_ROW = 1048576
-
 
     Private Async Function ExportCsvAsync() As Task
         ' ProgressBar 초기화
@@ -1065,7 +1063,10 @@ Public Class FrmMain
             dlg.Filter = "CSV files (*.csv)|*.csv"
             dlg.DefaultExt = "csv"
             dlg.AddExtension = True
-            If dlg.ShowDialog(Me) <> DialogResult.OK Then Return
+            If dlg.ShowDialog(Me) <> DialogResult.OK Then
+                progressBar1.Value = 0
+                Return
+            End If
             basePath = dlg.FileName
         End Using
 
@@ -1135,11 +1136,14 @@ Public Class FrmMain
             Catch ex As System.ComponentModel.Win32Exception
                 Process.Start(New ProcessStartInfo("rundll32.exe",
                        $"shell32.dll,OpenAs_RunDLL ""{file}""") With {
-                .UseShellExecute = True
-            })
+                .UseShellExecute = True})
+                progressBar1.Value = 0
+                Return
             Catch ex As Exception
                 MessageBox.Show($"We're sorry, but the file could not be opened : {file}{vbCrLf}{ex.Message}",
                 "Error Opening File", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                progressBar1.Value = 0
+                Return
             End Try
         Next
     End Function
@@ -1232,7 +1236,7 @@ Public Class FrmMain
                 Return
             End If
 
-            Dim KernelWidth As Integer = 2 * kernelRadius + 1
+            Dim kernelWidth As Integer = 2 * kernelRadius + 1
 
             Dim borderCount As Integer
             If Not Integer.TryParse(cbxBorderCount.Text, borderCount) Then
@@ -1241,12 +1245,12 @@ Public Class FrmMain
             End If
 
             Dim initialData = ListBox1.Items.Cast(Of Object)().
-        Select(Function(x)
-                   Dim d As Double
-                   If Double.TryParse(x.ToString(), d) Then Return d Else Return Double.NaN
-               End Function).
-        Where(Function(d) Not Double.IsNaN(d)).
-        ToArray()
+            Select(Function(x)
+                       Dim d As Double
+                       If Double.TryParse(x.ToString(), d) Then Return d Else Return Double.NaN
+                   End Function).
+            Where(Function(d) Not Double.IsNaN(d)).
+            ToArray()
 
             Dim n = initialData.Length
             If n = 0 Then
@@ -1254,7 +1258,7 @@ Public Class FrmMain
                 Return
             End If
 
-            If Not ValidateSmoothingParameters(n, KernelWidth, borderCount, True) Then
+            If Not ValidateSmoothingParameters(n, kernelWidth, borderCount, True) Then
                 Return
             End If
 
@@ -1263,7 +1267,7 @@ Public Class FrmMain
             sourceList = initialData.ToList()
             Dim middleProgress = New Progress(Of Integer)(Sub(v) progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(v, progressBar1.Maximum)))
             Await Task.Run(Sub()
-                               ComputeMedians(True, KernelWidth, borderCount, middleProgress)
+                               ComputeMedians(True, kernelWidth, borderCount, middleProgress)
                                medianList.CopyTo(0, middleMedian, 0, n)
                            End Sub)
 
@@ -1276,52 +1280,72 @@ Public Class FrmMain
             sourceList = initialData.ToList()
             Dim allProgress = New Progress(Of Integer)(Sub(v) progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(v, progressBar1.Maximum)))
             Await Task.Run(Sub()
-                               ComputeMedians(False, KernelWidth, borderCount, allProgress)
+                               ComputeMedians(False, kernelWidth, borderCount, allProgress)
                                medianList.CopyTo(0, allMedian, 0, n)
                            End Sub)
 
+            ' COM 참조 관리 추가
+            Dim coms As New Stack(Of Object)()
+
             Dim excel As Excel.Application = Nothing
+            Dim workbooks As Excel.Workbooks = Nothing
             Dim wb As Excel.Workbook = Nothing
+            Dim sheets As Excel.Sheets = Nothing
             Dim ws As Excel.Worksheet = Nothing
+
+            Dim chartObjects As Excel.ChartObjects = Nothing
+            Dim chartObj As Excel.ChartObject = Nothing
+            Dim chart As Excel.Chart = Nothing
+            Dim seriesCollection As Excel.SeriesCollection = Nothing
 
             Dim EXCEL_MAX_ROW = 1048576
             Dim DATA_START_ROW = 4
 
             Try
                 excel = New Excel.Application()
-                'excel.Visible = True
-                wb = excel.Workbooks.Add()
-                ws = CType(wb.Worksheets(1), Excel.Worksheet)
+                coms.Push(excel)
+
+                workbooks = excel.Workbooks
+                coms.Push(workbooks)
+
+                wb = workbooks.Add()
+                coms.Push(wb)
+
+                sheets = wb.Worksheets
+                coms.Push(sheets)
+
+                ws = CType(sheets(1), Excel.Worksheet)
+                coms.Push(ws)
 
                 ws.Cells(1, 1) = txtDatasetTitle.Text
                 ws.Cells(3, 1) = "Smoothing Parameters"
                 ws.Cells(4, 1) = $"Kernel Radius : {kernelRadius}"
-                ws.Cells(5, 1) = $"Kernel Width : {KernelWidth}"
+                ws.Cells(5, 1) = $"Kernel Width : {kernelWidth}"
                 ws.Cells(5, 1) = $"Border Count  {borderCount}"
 
                 ' 데이터를 분산 저장하는 함수
                 Dim WriteDistributed =
-            Function(data As Double(), startCol As Integer, title As String) As List(Of Tuple(Of Integer, Integer, Integer))
-                Dim ranges As New List(Of Tuple(Of Integer, Integer, Integer))
-                Dim idx = 0
-                Dim col = startCol
-                Dim firstCol = col
-                While idx < data.Length
-                    Dim count = Math.Min(EXCEL_MAX_ROW - DATA_START_ROW + 1, data.Length - idx)
-                    Dim arr2D(count - 1, 0) As Object
-                    For r = 0 To count - 1
-                        arr2D(r, 0) = data(idx)
-                        idx += 1
-                    Next
-                    Dim startRow = DATA_START_ROW
-                    Dim endRow = startRow + count - 1
-                    If col = firstCol Then ws.Cells(3, col) = title
-                    ws.Range(ws.Cells(startRow, col), ws.Cells(endRow, col)).Value2 = arr2D
-                    ranges.Add(Tuple.Create(col, startRow, endRow))
-                    col += 1
-                End While
-                Return ranges
-            End Function
+                Function(data As Double(), startCol As Integer, title As String) As List(Of Tuple(Of Integer, Integer, Integer))
+                    Dim ranges As New List(Of Tuple(Of Integer, Integer, Integer))
+                    Dim idx = 0
+                    Dim col = startCol
+                    Dim firstCol = col
+                    While idx < data.Length
+                        Dim count = Math.Min(EXCEL_MAX_ROW - DATA_START_ROW + 1, data.Length - idx)
+                        Dim arr2D(count - 1, 0) As Object
+                        For r = 0 To count - 1
+                            arr2D(r, 0) = data(idx)
+                            idx += 1
+                        Next
+                        Dim startRow = DATA_START_ROW
+                        Dim endRow = startRow + count - 1
+                        If col = firstCol Then ws.Cells(3, col) = title
+                        ws.Range(ws.Cells(startRow, col), ws.Cells(endRow, col)).Value2 = arr2D
+                        ranges.Add(Tuple.Create(col, startRow, endRow))
+                        col += 1
+                    End While
+                    Return ranges
+                End Function
 
                 ' 각 Median 결과를 엑셀에 분산 저장
                 Dim initialRanges = WriteDistributed(initialData, 3, "Initial Data")
@@ -1331,40 +1355,46 @@ Public Class FrmMain
                 Dim allRanges = WriteDistributed(allMedian, middleRanges.Last.Item1 + 2, "AllMedian")
                 progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(80, progressBar1.Maximum))
 
-                ' 차트 생성 (기존 로직 유지)
+                ' 차트 생성 (원본 로직 유지, 생성한 COM은 추적)
                 Dim lastCol = Math.Max(Math.Max(initialRanges.Last.Item1, middleRanges.Last.Item1), allRanges.Last.Item1)
                 Dim chartBaseCol = lastCol + 2
                 Dim chartBaseRow = DATA_START_ROW
 
-                Dim chartObjects = CType(ws.ChartObjects(), Excel.ChartObjects)
+                chartObjects = CType(ws.ChartObjects(), Excel.ChartObjects)
+                coms.Push(chartObjects)
+
                 Dim chartLeft = ws.Cells(chartBaseRow, chartBaseCol).Left
                 Dim chartTop = ws.Cells(chartBaseRow, chartBaseCol).Top
                 Dim chartWidth = 900
                 Dim chartHeight = 600
-                Dim chartObj = chartObjects.Add(chartLeft, chartTop, chartWidth, chartHeight)
-                Dim chart = chartObj.Chart
+
+                chartObj = chartObjects.Add(chartLeft, chartTop, chartWidth, chartHeight)
+                coms.Push(chartObj)
+
+                chart = chartObj.Chart
+                coms.Push(chart)
 
                 chart.ChartType = Microsoft.Office.Interop.Excel.XlChartType.xlLine
                 chart.HasTitle = True
-                ' chart.ChartTitle.Text = "Symphony of Boundaries And Flow : Avocado Smoothie 's All-Median & Middle-Median"
                 chart.ChartTitle.Text = txtDatasetTitle.Text
                 chart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlValue).HasTitle = True
                 chart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlValue).AxisTitle.Text = "Value"
                 chart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlCategory).HasTitle = True
                 chart.Axes(Microsoft.Office.Interop.Excel.XlAxisType.xlCategory).AxisTitle.Text = "Sequence Number"
 
-                Dim seriesCollection = chart.SeriesCollection()
+                seriesCollection = chart.SeriesCollection()
+                coms.Push(seriesCollection)
 
                 Dim GetExcelColumnName As Func(Of Integer, String) =
-                    Function(columnNumber As Integer) As String
-                        Dim colName As String = ""
-                        While columnNumber > 0
-                            Dim modulo = (columnNumber - 1) Mod 26
-                            colName = Chr(65 + modulo) & colName
-                            columnNumber = (columnNumber - modulo) \ 26
-                        End While
-                        Return colName
-                    End Function
+                Function(columnNumber As Integer) As String
+                    Dim colName As String = ""
+                    While columnNumber > 0
+                        Dim modulo = (columnNumber - 1) Mod 26
+                        colName = Chr(65 + modulo) & colName
+                        columnNumber = (columnNumber - modulo) \ 26
+                    End While
+                    Return colName
+                End Function
 
                 Dim AddSeries = Sub(ranges As List(Of Tuple(Of Integer, Integer, Integer)), name As String)
                                     Dim multiRange As Excel.Range = Nothing
@@ -1382,8 +1412,11 @@ Public Class FrmMain
                                         End If
                                         totalCount += (endRow - startRow + 1)
                                     Next
-                                    Dim series As Excel.Series = CType(seriesCollection.Add(Source:=multiRange, RowCol:=Microsoft.Office.Interop.Excel.XlRowCol.xlColumns), Excel.Series)
+                                    Dim series As Excel.Series = CType(seriesCollection.Add(Source:=multiRange, Rowcol:=Microsoft.Office.Interop.Excel.XlRowCol.xlColumns), Excel.Series)
                                     series.Name = name
+                                    ' 지역 RCW 정리 : Series 추가 후 Multi-Range 해제
+                                    If multiRange IsNot Nothing Then FinalRelease(multiRange)
+                                    FinalRelease(series)
                                 End Sub
 
                 AddSeries(initialRanges, "Initial Data")
@@ -1393,15 +1426,43 @@ Public Class FrmMain
                 progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(100, progressBar1.Maximum))
                 Await Task.Delay(200)
                 progressBar1.Value = 0
+
+                ' 창 유지 : 사용자에게 권한 이관
+                wb.Saved = False ' 닫기 시 저장 대화상자 표시
                 excel.Visible = True
+                excel.DisplayAlerts = True
+
             Catch ex As Exception
                 MessageBox.Show("Excel export failed: " & ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Finally
-                If ws IsNot Nothing Then Marshal.ReleaseComObject(ws)
-                If wb IsNot Nothing Then Marshal.ReleaseComObject(wb)
-                If excel IsNot Nothing Then Marshal.ReleaseComObject(excel)
+                ' 생성한 COM 참조를 역순으로 해제
+                ReleaseAll(coms)
+
+                ' RCW Finalizer 보장을 위해 2 회 GC
+                GC.Collect()
+                GC.WaitForPendingFinalizers()
+                GC.Collect()
+                GC.WaitForPendingFinalizers()
             End Try
         End If
+    End Sub
+
+    ' RCW 를 안전하게 해제
+    Private Shared Sub FinalRelease(ByVal com As Object)
+        Try
+            If com IsNot Nothing AndAlso Marshal.IsComObject(com) Then
+                Marshal.FinalReleaseComObject(com)
+            End If
+        Catch
+            ' 필요 시 로깅
+        End Try
+    End Sub
+
+    ' 생성한 COM 개체를 역순으로 모두 해제
+    Private Shared Sub ReleaseAll(ByVal stack As Stack(Of Object))
+        While stack.Count > 0
+            FinalRelease(stack.Pop())
+        End While
     End Sub
 
     Private Sub btnInfo_Click(sender As Object, e As EventArgs) Handles btnInfo.Click
