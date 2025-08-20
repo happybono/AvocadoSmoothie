@@ -27,3 +27,4 @@ E:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\AvocadoSmoothie\AvocadoSmoothie\
 E:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\AvocadoSmoothie\AvocadoSmoothie\obj\ARM64\Debug\AvocadoSmoothie.exe
 E:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\AvocadoSmoothie\AvocadoSmoothie\obj\ARM64\Debug\AvocadoSmoothie.xml
 E:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\AvocadoSmoothie\AvocadoSmoothie\obj\ARM64\Debug\AvocadoSmoothie.pdb
+D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\AvocadoSmoothie\AvocadoSmoothie\obj\ARM64\Debug\AvocadoSmoothie.exe.config
