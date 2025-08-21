@@ -33,84 +33,56 @@ Public Class FrmMain
         Me.KeyPreview = True
     End Sub
 
-    Sub MiddleMedian()
-        Dim n = sourceList.Count
-        If n = 0 Then Return
+    'Sub MiddleMedian()
+    '    Dim n = sourceList.Count
+    '    If n = 0 Then Return
 
-        Dim arr = sourceList.ToArray()
-        Dim buffer(n - 1) As Double
+    '    Dim arr = sourceList.ToArray()
+    '    Dim buffer(n - 1) As Double
 
-        buffer(0) = arr(0)
-        If n > 1 Then buffer(1) = arr(1)
-        If n > 2 Then buffer(n - 2) = arr(n - 2)
-        buffer(n - 1) = arr(n - 1)
+    '    buffer(0) = arr(0)
+    '    If n > 1 Then buffer(1) = arr(1)
+    '    If n > 2 Then buffer(n - 2) = arr(n - 2)
+    '    buffer(n - 1) = arr(n - 1)
 
-        Parallel.For(2, n - 2, Sub(i)
-                                   Dim win(4) As Double
-                                   ' i - 2 ... i + 2 복사
-                                   For k = 0 To 4
-                                       win(k) = arr(i + k - 2)
-                                   Next
-                                   Quicksort(win, 0, 4)
-                                   buffer(i) = win(2)
-                               End Sub)
+    '    Parallel.For(2, n - 2, Sub(i)
+    '                               Dim win(4) As Double
+    '                               ' i - 2 ... i + 2 복사
+    '                               For k = 0 To 4
+    '                                   win(k) = arr(i + k - 2)
+    '                               Next
+    '                               Quicksort(win, 0, 4)
+    '                               buffer(i) = win(2)
+    '                           End Sub)
 
-        medianList.Clear()
-        medianList.AddRange(buffer)
-    End Sub
+    '    medianList.Clear()
+    '    medianList.AddRange(buffer)
+    'End Sub
 
 
-    Sub AllMedian()
-        Dim n = sourceList.Count
-        If n = 0 Then Return
+    'Sub AllMedian()
+    '    Dim n = sourceList.Count
+    '    If n = 0 Then Return
 
-        Dim arr = sourceList.ToArray()
-        Dim buffer(n - 1) As Double
+    '    Dim arr = sourceList.ToArray()
+    '    Dim buffer(n - 1) As Double
 
-        Parallel.For(0, n, Sub(i)
-                               Dim iMin = If(i < 2, 0, i - 2)
-                               Dim iMax = If(i > n - 3, n - 1, i + 2)
-                               Dim win(4) As Double
-                               Dim k = 0
-                               For j = iMin To iMax
-                                   win(k) = arr(j)
-                                   k += 1
-                               Next
-                               Quicksort(win, 0, 4)
-                               buffer(i) = win(2)
-                           End Sub)
+    '    Parallel.For(0, n, Sub(i)
+    '                           Dim iMin = If(i < 2, 0, i - 2)
+    '                           Dim iMax = If(i > n - 3, n - 1, i + 2)
+    '                           Dim win(4) As Double
+    '                           Dim k = 0
+    '                           For j = iMin To iMax
+    '                               win(k) = arr(j)
+    '                               k += 1
+    '                           Next
+    '                           Quicksort(win, 0, 4)
+    '                           buffer(i) = win(2)
+    '                       End Sub)
 
-        medianList.Clear()
-        medianList.AddRange(buffer)
-    End Sub
-
-    Private Function MedianOf5(a As Double, b As Double,
-                           c As Double, d As Double, e As Double) As Double
-        If a > b Then Swap(a, b)
-        If d > e Then Swap(d, e)
-        If a > c Then Swap(a, c)
-        If b > c Then Swap(b, c)
-        If a > d Then Swap(a, d)
-        If c > e Then Swap(c, e)
-        If b > d Then Swap(b, d)
-        Return c
-    End Function
-
-    Private Function MedianOfWindow(w As Double(), length As Integer) As Double
-        For i As Integer = 1 To length - 1
-            Dim key = w(i), j = i - 1
-            While j >= 0 AndAlso w(j) > key
-                w(j + 1) = w(j)
-                j -= 1
-            End While
-            w(j + 1) = key
-        Next
-        Return w(length \ 2)
-    End Function
-
-    Private Sub Swap(ByRef x As Double, ByRef y As Double)
-        Dim t = x : x = y : y = t
-    End Sub
+    '    medianList.Clear()
+    '    medianList.AddRange(buffer)
+    'End Sub
 
     Private Sub ComputeMedians(
         useMiddle As Boolean,
@@ -246,14 +218,6 @@ Public Class FrmMain
 
         Quicksort(list, min, lo - 1)
         Quicksort(list, lo + 1, max)
-    End Sub
-
-    Sub DisplayResults()
-        ListBox2.BeginUpdate()
-        For Each v As Double In medianList
-            ListBox2.Items.Add(v)
-        Next
-        ListBox2.EndUpdate()
     End Sub
 
     Private Async Sub calcButton_Click(sender As Object, e As EventArgs) Handles calcButton.Click
@@ -672,12 +636,7 @@ Public Class FrmMain
         End Try
     End Sub
 
-    Private Async Function AddItemsInBatches(
-    box As System.Windows.Forms.ListBox,
-    items As Double(),
-    progress As IProgress(Of Integer),
-    baseProgress As Integer
-) As Task
+    Private Async Function AddItemsInBatches(box As System.Windows.Forms.ListBox, items As Double(), progress As IProgress(Of Integer), baseProgress As Integer) As Task
         Const BatchSize As Integer = 1000
         Dim total As Integer = items.Length
         Dim done As Integer = 0
@@ -877,9 +836,7 @@ Public Class FrmMain
         lblCnt2.Text = "Count : " & ListBox2.Items.Count
     End Sub
 
-    Private Async Function ClearSelectionWithProgress(lb As ListBox,
-                                                  progressBar As ProgressBar,
-                                                  lblCount As Label) As Task
+    Private Async Function ClearSelectionWithProgress(lb As ListBox, progressBar As ProgressBar, lblCount As Label) As Task
         Dim count As Integer = lb.SelectedIndices.Count
         If count = 0 Then Return
 
@@ -1153,7 +1110,7 @@ Public Class FrmMain
         Dim windowSize As Integer = kernelWidth
         Dim borderTotalWidth As Integer = borderCount * If(useMiddle, 2, 0)
 
-        ' 1) radius로 인한 windowSize 초과 검사
+        ' radius로 인한 windowSize 초과 검사
         If windowSize > dataCount Then
             MessageBox.Show(
             $"Kernel radius is too large.{Environment.NewLine}{Environment.NewLine}" &
@@ -1169,7 +1126,7 @@ Public Class FrmMain
             Return False
         End If
 
-        ' 2) borderCount 범위 검사
+        ' borderCount 범위 검사
         If borderCount > dataCount Then
             MessageBox.Show(
             $"Border count is too large.{Environment.NewLine}{Environment.NewLine}" &
@@ -1182,7 +1139,7 @@ Public Class FrmMain
             Return False
         End If
 
-        ' 3) Middle 모드일 때 경계 폭 검사
+        ' Middle 모드일 때 경계 폭 검사
         If useMiddle AndAlso borderTotalWidth >= windowSize Then
             MessageBox.Show(
             $"Border width is too large relative to the window size.{Environment.NewLine}{Environment.NewLine}" &
@@ -1197,26 +1154,6 @@ Public Class FrmMain
         End If
 
         Return True
-    End Function
-
-    Private Function IsRangeEmpty(rng As Excel.Range) As Boolean
-        Dim v = rng.Value2
-        If v Is Nothing Then Return True
-        If TypeOf v Is Object(,) Then
-            Dim arr = CType(v, Object(,))
-            For Each cell In arr
-                If cell IsNot Nothing AndAlso cell.ToString <> "" Then Return False
-            Next
-            Return True
-        ElseIf TypeOf v Is Object() Then
-            Dim arr = CType(v, Object())
-            For Each cell In arr
-                If cell IsNot Nothing AndAlso cell.ToString <> "" Then Return False
-            Next
-            Return True
-        Else
-            Return v.ToString = ""
-        End If
     End Function
 
     Private Async Sub btnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
@@ -1321,7 +1258,7 @@ Public Class FrmMain
                 ws.Cells(3, 1) = "Smoothing Parameters"
                 ws.Cells(4, 1) = $"Kernel Radius : {kernelRadius}"
                 ws.Cells(5, 1) = $"Kernel Width : {kernelWidth}"
-                ws.Cells(5, 1) = $"Border Count  {borderCount}"
+                ws.Cells(6, 1) = $"Border Count : {borderCount}"
 
                 ' 데이터를 분산 저장하는 함수
                 Dim WriteDistributed =
@@ -1355,7 +1292,7 @@ Public Class FrmMain
                 Dim allRanges = WriteDistributed(allMedian, middleRanges.Last.Item1 + 2, "AllMedian")
                 progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(80, progressBar1.Maximum))
 
-                ' 차트 생성 (원본 로직 유지, 생성한 COM은 추적)
+                ' 차트 생성 (원본 로직 유지, 생성한 COM 은 추적)
                 Dim lastCol = Math.Max(Math.Max(initialRanges.Last.Item1, middleRanges.Last.Item1), allRanges.Last.Item1)
                 Dim chartBaseCol = lastCol + 2
                 Dim chartBaseRow = DATA_START_ROW
@@ -1454,7 +1391,7 @@ Public Class FrmMain
                 Marshal.FinalReleaseComObject(com)
             End If
         Catch
-            ' 필요 시 로깅
+            ' 필요 시 로깅 부분 추가
         End Try
     End Sub
 
@@ -1535,5 +1472,4 @@ Public Class FrmMain
             ListBox1.EndUpdate()
         End Try
     End Sub
-
 End Class

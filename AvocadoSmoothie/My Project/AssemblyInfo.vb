@@ -9,7 +9,7 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("AvocadoSmoothie")>
-<Assembly: AssemblyDescription("")>
+<Assembly: AssemblyDescription("AvocadoSmoothie uses a running median filter to smooth numerical data with dual modes, parallel processing, and flexible input options including HTML parsing.")>
 <Assembly: AssemblyCompany("Codies")>
 <Assembly: AssemblyProduct("AvocadoSmoothie")>
 <Assembly: AssemblyCopyright("Copyright © HappyBono 2025")>
@@ -28,5 +28,5 @@ Imports System.Runtime.InteropServices
 '      Revision
 '
 
-<Assembly: AssemblyVersion("4.3.0.0")>
-<Assembly: AssemblyFileVersion("4.3.0.0")>
+<Assembly: AssemblyVersion("4.3.1.0")>
+<Assembly: AssemblyFileVersion("4.3.1.0")>
