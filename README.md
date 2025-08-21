@@ -11,7 +11,7 @@
 
 **Philosophical Foundation**
 - **Gentle Refinement**<br>
-Like living organisms, data requires delicate care. AvocadoSmoothie follows a soft-touch philosophy to ensure vital patterns aren’t damaged by excessive processing.
+Like living organisms, data requires delicate care. AvocadoSmoothie follows a soft-touch philosophy to ensure vital patterns aren't damaged by excessive processing.
 
 - **Harmony Between Responsiveness and Stability**<br>
 Like a well-balanced smoothie in taste and texture, this project aims to respond swiftly while also withstanding sudden fluctuations.
@@ -179,7 +179,7 @@ A **Pascal triangle–based weighted median** assigns weights to each element : 
 
 In comparison:
 - A **[standard median](https://github.com/happybono/AvocadoSmoothie/)** simply picks the middle value, so random spikes are more easily ignored.
-- A **[weighted median](https://github.com/happybono/SonataSmooth/)**, especially with Pascal-style weights, might over-represent noisy points if they’re close to the center.
+- A **[weighted median](https://github.com/happybono/SonataSmooth/)**, especially with Pascal-style weights, might over-represent noisy points if they're close to the center.
 
 ### Which Method Is Commonly Used in Practice?
 Depending on the field, practitioners choose based on context :
@@ -261,7 +261,7 @@ Therefore, the kernel width is **5**.
 
 #### Meaning
 - The filter includes the current element plus `kernelRadius` elements before it and after it.
-- This ensures the total window size is always odd, so there’s a single middle value.
+- This ensures the total window size is always odd, so there's a single middle value.
 
 #### Benefit
 - `kernelRadius` makes it easy to reason about how far to extend the filter around the center point.
@@ -269,83 +269,110 @@ Therefore, the kernel width is **5**.
 
 ### 3. AllMedian Calculation
 #### How it works
-For every data point, the algorithm calculates the median of a window centered at that point. The window radius is defined by `kernelRadius`, making the total window size 2 × `kernelRadius` + 1. At the edges, the window is automatically adjusted to stay within the bounds of the data array.
+AllMedian applies a median filter across every data point in the source list using a symmetric window of size `2 × kernelRadius + 1`. Internally it invokes a single routine, `ComputeMedians(useMiddle:=False, ...)`, which :
+
+- Spawns a thread-local buffer for the sliding window
+- Parallelizes each index's window extraction and median computation
+- Reports progress back to the UI
 
 #### Principle
-- For each index, determine the start (`iMin`) and end (`iMax`) indices based on `kernelRadius`.
-- Copy these values into a temporary array and sort it.
-- Select the middle value as the median.
-- Uses `Parallel.For` to speed up computation on large datasets.
-- Stores all median results in `medianList`.
+- Compute window parameters:
+  - kernelWidth = 2 * kernelRadius + 1
+  - offsetLow = (kernelWidth - 1) \ 2
+  - offsetHigh = (kernelWidth - 1) - offsetLow
+- For each index i in [0 … n-1]:
+  1. iMin = Max(0, i - offsetLow) iMax = Min(n-1, i + offsetHigh)
+  2. Copy arr(iMin…iMax) into a thread-local array win
+  3. Sort the slice and pick its median via GetWindowMedian
+      - Odd-length windows → middle element
+      - Even-length windows → average of two middle values
 
 #### Code Implementation
 ```vbnet
-Sub AllMedian(kernelRadius As Integer)
+' All-points median smoothing
+ComputeMedians(useMiddle:=False,
+               KernelRadius:=kernelWidth,
+               borderCount:=0,
+               progress:=progress)
+
+Private Sub ComputeMedians(useMiddle As Boolean,
+                           KernelRadius As Integer,
+                           borderCount As Integer,
+                           progress As IProgress(Of Integer))
     Dim n = sourceList.Count
-    If n = 0 Then Return
+    If n = 0 Then progress.Report(0) : Return
 
     Dim arr = sourceList.ToArray()
     Dim buffer(n - 1) As Double
-    Dim kWidth = 2 * kernelRadius + 1
+    Dim offsetLow  = (KernelRadius - 1) \ 2
+    Dim offsetHigh = (KernelRadius - 1) - offsetLow
+
+    ' Thread-local buffer to avoid per-iteration allocations
+    Dim localWin As New ThreadLocal(Of Double())(
+        Function() New Double(KernelRadius - 1) {})
 
     Parallel.For(0, n, Sub(i)
-        Dim iMin = Math.Max(0, i - kernelRadius)
-        Dim iMax = Math.Min(n - 1, i + kernelRadius)
-        Dim win(iMax - iMin) As Double
-        Dim k = 0
-        For j = iMin To iMax
-            win(k) = arr(j)
-            k += 1
+        Dim win    = localWin.Value
+        Dim iMin   = Math.Max(0, i - offsetLow)
+        Dim iMax   = Math.Min(n - 1, i + offsetHigh)
+        Dim length = iMax - iMin + 1
+
+        For k = 0 To length - 1
+            win(k) = arr(iMin + k)
         Next
-        Quicksort(win, 0, win.Length - 1)
-        buffer(i) = win(win.Length \ 2)
+
+        buffer(i) = GetWindowMedian(win, length)
     End Sub)
 
     medianList.Clear()
     medianList.AddRange(buffer)
 End Sub
+
+Private Function GetWindowMedian(win() As Double, length As Integer) As Double
+    Dim slice = win.Take(length).ToArray()
+    Array.Sort(slice)
+    Dim mid = length \ 2
+
+    If length Mod 2 = 0 Then
+        ' even → average two middle elements
+        Return (slice(mid - 1) + slice(mid)) / 2.0
+    Else
+        Return slice(mid)
+    End If
+End Function
 ```
 
 ### 4. MiddleMedian Calculation
 #### How it works
-This median filter is applied only to the inner portion of the dataset, leaving the first and last `borderCount` elements unchanged. The size of the median window is determined by `kernelRadius`.
+MiddleMedian preserves the first and last `borderCount` elements unchanged, then applies the same median filter only to the inner region. It calls the **same** `ComputeMedians` routine with `useMiddle:=True`.
 
 #### Principle
-- Copy the first and last `borderCount` elements directly from the source-list.
-- Apply the median filter to the indices in between.
-- Use `Parallel.For` for efficient processing
+Copy boundary elements directly :
+buffer(0 … borderCount - 1) = arr(0 … borderCount - 1)
+buffer(n - 1 … n - borderCount) = arr(n - 1 … n - borderCount)
+Run the sliding-window median on indices [borderCount … n - borderCount - 1]
+Filtering logic and median selection are identical to `AllMedian`
 
 #### Code Implementation
 ```vbnet
-Sub MiddleMedian(kernelRadius As Integer, borderCount As Integer)
-    Dim n = sourceList.Count
-    If n = 0 Then Return
+' Inner-region median smoothing
+ComputeMedians(useMiddle:=True,
+               KernelRadius:=kernelWidth,
+               borderCount:=borderCount,
+               progress:=progress)
 
-    Dim arr = sourceList.ToArray()
-    Dim buffer(n - 1) As Double
-    Dim kWidth = 2 * kernelRadius + 1
-
-    ' Copy boundary elements
+' Inside ComputeMedians:
+If useMiddle Then
     For i = 0 To borderCount - 1
-        buffer(i) = arr(i)
-        buffer(n - 1 - i) = arr(n - 1 - i)
+        buffer(i)               = arr(i)
+        buffer(n - 1 - i)       = arr(n - 1 - i)
     Next
+End If
 
-    ' Apply median filter to inner region
-    Parallel.For(borderCount, n - borderCount, Sub(i)
-        Dim iMin = i - kernelRadius
-        Dim iMax = i + kernelRadius
-        Dim win(kWidth - 1) As Double
-        For k = 0 To kWidth - 1
-            win(k) = arr(iMin + k)
-        Next
-        Quicksort(win, 0, kWidth - 1)
-        buffer(i) = win(kernelRadius)
-    End Sub)
-
-    medianList.Clear()
-    medianList.AddRange(buffer)
-End Sub
+' Then the Parallel.For loop runs from
+'   startIdx = borderCount
+'   endIdx   = n - borderCount - 1
+' to compute medians on the inner slice only.
 ```
 
 ### 5. Border Count
@@ -384,41 +411,63 @@ Filtered by Running Median:              [x₃, x₄, x₅, x₆]
 
 ### Results Aggregation & UI Update
 #### How it works
-After the median calculation, the results are displayed in `ListBox2`. The UI is updated to reflect the new data, including count labels and enabling relevant buttons. Progress is shown during computation for better user experience.
+Once `ComputeMedians` completes on a background thread, the UI thread:
+Clears and repopulates `ListBox2` in one batch
+Scrolls `ListBox2` so the last element is visible
+Updates count labels, summary labels, and button states
+Shows a brief 200 ms delay before resetting the progress bar to 0
 
 #### Principle
--	The computed median values are copied to `ListBox2` for user review.
--	UI elements such as labels and buttons are updated based on the current state.
--	Progress bars and status labels provide feedback during long computations.
+- Repopulate ListBox2 using AddRange(medianList)
+- Set ListBox2.TopIndex to the last item index
+- Update :
+    - `lblCnt1` and `lblCnt2` with total and refined counts
+    - `slblCalibratedType` to "Middle Median" or "All Median"
+    - `slblKernelWidth` with the chosen radius
+    - `slblBorderCount` with the border count (visible only in middle‐median mode)
+  - Toggle visibility of `slblBorderCount`, `tlblBorderCount` and `slblSeparator2` based on mode
+  - Refresh button states via `UpdateListBox1ButtonsState` and `UpdateListBox2ButtonsState`
+  - Delay 200 ms to let users see "100% complete", then reset `progressBar1.Value`
 
 #### Code Implementation
 ```vbnet
-' Display results in ListBox2
-Sub DisplayResults()
-    ListBox2.BeginUpdate()
-    For Each v As Double In medianList
-        ListBox2.Items.Add(v)
-    Next
-    ListBox2.EndUpdate()
-End Sub
-
-' Main calculation and UI update
 Private Async Sub calcButton_Click(sender As Object, e As EventArgs) Handles calcButton.Click
-    ' ... (Prepare data and parameters)
+    ' ... (prepare sourceList, parameters, progressBar)
+    
     Await Task.Run(Sub()
-        ComputeMedians(
-            useMiddle:=useMiddle,
-            kernelWidth:=kernelWidth,
-            borderCount:=borderCount,
-            progress:=progress)
+        ComputeMedians(useMiddle, KernelRadius, borderCount, progress)
     End Sub)
 
-    ' Update ListBox2 and UI
+    ' Refresh ListBox2
     ListBox2.BeginUpdate()
     ListBox2.Items.Clear()
-    ListBox2.Items.AddRange(medianList.Cast(Of Object)().ToArray())
+    ListBox2.Items.AddRange(medianList.Cast(Of Object).ToArray())
     ListBox2.EndUpdate()
-    ' ... (Update labels, progress bar, etc.)
+
+    ' Scroll to last item
+    ListBox2.TopIndex = ListBox2.Items.Count - 1
+
+    ' Update count labels
+    lblCnt1.Text = $"Count : {sourceList.Count}"
+    lblCnt2.Text = $"Count : {medianList.Count}"
+
+    ' Update summary labels
+    slblCalibratedType.Text = If(useMiddle, "Middle Median", "All Median")
+    slblKernelWidth.Text     = Integer.Parse(cbxKernelRadius.Text)
+    slblBorderCount.Text     = $"{borderCount}"
+
+    ' Toggle visibility of border‐related labels
+    slblBorderCount.Visible  = useMiddle
+    tlblBorderCount.Visible   = useMiddle
+    slblSeparator2.Visible    = useMiddle
+
+    ' Refresh UI button states
+    UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+    UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
+
+    ' Brief UX pause, then reset progress bar
+    Await Task.Delay(200)
+    progressBar1.Value = 0
 End Sub
 ```
 
@@ -431,7 +480,7 @@ End Sub
   The `pasteButton_Click` event reads `Clipboard.GetText()`, uses `regexNumbers` to match numeric tokens, then parses them in parallel (`AsParallel().WithDegreeOfParallelism`) before adding to `ListBox1` in a batch (`BeginUpdate`/`EndUpdate`).
 
 - Drag & Drop  
-  The `ListBox1_DragDrop` handler checks for “HTML Format” or plain text, strips tags via `regexStripTags`, extracts numbers via `regexNumbers.Matches`, parses in a background task, and calls `AddItemsInBatches` to insert items with incremental progress.
+  The `ListBox1_DragDrop` handler checks for "HTML Format" or plain text, strips tags via `regexStripTags`, extracts numbers via `regexNumbers.Matches`, parses in a background task, and calls `AddItemsInBatches` to insert items with incremental progress.
 
 - Regex-Based Filtering  
   Two compiled regexes are used:  
@@ -450,53 +499,55 @@ When the user clicks **Calibrate** (`calcButton_Click`):
 7. Populate `ListBox2` with the resulting `medianList`, update labels (`lblCnt1`, `lblCnt2`, `slblCalibratedType`, `slblKernelWidth`, `slblBorderCount`), then reset the progress bar.
 
 #### Filter Algorithm Implementation
-- Middle-Median  
-  When `useMiddle = True`, `ComputeMedians` first copies the first and last `borderCount` values unchanged. For interior indices, it takes a fixed-size window of length `KernelRadius`, sorts the `Double()` via `Array.Sort` or `Quicksort`, and selects the middle element.
+##### Core Routine: ComputeMedians
+- Middle-Median (`useMiddle = True)` Copies the first and last `borderCount` points unmodified to buffer. Applies a sliding window of width `KernelRadius` only to indices [borderCount … n-borderCount-1].
 
-- All-Median  
-  When `useMiddle = False`, `ComputeMedians` applies a sliding window at every index. Near edges the window shrinks to available data; after copying values into a thread-local buffer it sorts and picks the median (or average of two middle values for even-length windows).
+- All-Median (`useMiddle = False`) Applies the sliding window at every index; windows at edges automatically shrink to available data.
 
-- Core Median Functions  
-  - `GetWindowMedian(win(), length)` sorts the first `length` elements of `win()` and returns either `slice(mid)` or `(slice(mid - 1) + slice(mid)) / 2`.  
-  - `Quicksort(list(), min, max)` provides an in-place quicksort variant used in `MiddleMedian`.
+Both modes share :
+1. A thread-local win() buffer (`ThreadLocal(Of Double())`) to avoid per-iteration allocations.
+2. A `Parallel.For` loop distributing indices across CPU cores.
+3. For each index, copy the window slice from `arr(iMin … iMax)` into win, then compute the median via `GetWindowMedian(win, length)` (which uses `Array.Sort` on the slice and returns either the middle element or the average of the two middle elements).
+
+##### Core Median Functions  
+- `GetWindowMedian(win() As Double, length As Integer)` Creates a temporary slice of length elements from win, sorts with Array.Sort, and returns:
+    - `slice(mid)` if `length` is odd
+    - `(slice(mid-1) + slice(mid)) / 2.0` if even
+- `Quicksort(list() As Double, min As Integer, max As Integer)` remains in the codebase but is no longer used by ComputeMedians.
  
 #### Parallel Processing & UI Responsiveness
-- `ComputeMedians` uses `Parallel.For` to distribute median computation over CPU cores.  
-- Regex-based parsing uses PLINQ (`AsParallel().WithDegreeOfParallelism(Environment.ProcessorCount)`).  
-- Progress is reported via `IProgress(Of Integer)` to `progressBar1`.  
-- `BeginUpdate` / `EndUpdate` on listboxes prevent flicker during bulk updates.  
-- `Task.Run` combined with `Await` and occasional `Task.Delay(1)` or `Task.Yield()` keeps the UI thread free.  
-- In deletion routines, `Application.DoEvents()` processes pending UI messages during long operations.
+- Median computation leverages `Parallel.For` with thread-local buffers.
+- Text parsing uses PLINQ (`.AsParallel().WithDegreeOfParallelism(Environment.ProcessorCount)`).
+- Progress updates flow through `IProgress(Of Integer)` into `progressBar1`.
+- `BeginUpdate` / `EndUpdate` on both listboxes prevent repaint flicker.
+- Background work is offloaded via `Task.Run` / `Await`; small `Task.Delay(1)` calls within batch routines yield to the UI thread.
+- Deletion and selection routines use `Application.DoEvents()` to process pending Windows messages during lengthy operations.
 
 
 #### Export Functionality
-
 ##### CSV & Excel Export
-
 - CSV (`ExportCsvAsync`)  
-  • Reads initial data into a `Double()` array.  
-  • Computes both Middle and All medians by calling `ComputeMedians` twice.  
-  • Splits output into 1 048 576-row parts (Excel’s limit) if needed.  
-  • Writes headers, parameters, timestamps, and three columns (`Initial Data, MiddleMedian, AllMedian`) to UTF-8 CSV files.  
-  • Optionally opens each generated CSV in the default editor.
+  • Parses `kernelRadius` and `borderCount` from `cbxKernelRadius`/`cbxBorderCount`.  
+  • Loads initial data from `ListBox1` into a `Double()` array.  
+  • Runs `ComputeMedians(True, …)` and `ComputeMedians(False, …)` to produce middle-median and all-median arrays.  
+  • Splits output into chunks of up to 1 048 576 rows (Excel's row limit minus header lines).  
+  • Writes UTF-8 CSV files with dataset title, "Part X of Y", smoothing parameters, timestamp, and three columns : `Initial Data`, `MiddleMedian`, `AllMedian`.  
+  • Opens each CSV via `Process.Start(UseShellExecute = True)`, falling back to `rundll32 shell32.dll,OpenAs_RunDLL` if needed.
 
 - Excel (`btnExport_Click` with `rbtnXLSX`)  
-  • Uses Microsoft Office Interop to create a new workbook.  
-  • Writes dataset title and smoothing parameters in rows 1–5.  
-  • Streams each data series into adjacent columns (splitting across sheets if >1 048 576 rows).  
-  • Builds a line chart plotting all three series with labeled axes and title.  
-  • Makes Excel visible on completion.
+  • Validates and reads the same parameters and initial data array, then computes both median arrays.  
+  • Creates a new Excel `Application`, adds a `Workbook` and gets its first `Worksheet`.  
+  • Writes the dataset title and smoothing parameters into rows 1 - 6.  
+  • Uses a `WriteDistributed` helper to dump each series into adjacent columns—splitting across sheets if a series exceeds Excel's 1,048,576-row cap.  
+  • Inserts a line chart (`XlChartType.xlLine`) plotting all three series, sets chart title and axis labels ("Value" vs "Sequence Number").  
+  • Makes Excel visible, enables alerts, and releases all COM objects to avoid leaks.
 
 ##### Export Settings
-
-- Format selection via radio buttons (`rbtnCSV`, `rbtnXLSX`).  
-- Kernel radius (`cbxKernelRadius`) and border count (`cbxBorderCount`) must be valid integers.  
-- Title supplied in `txtDatasetTitle` (placeholder until edited).
-
----
+- Format selected via `rbtnCSV` or `rbtnXLSX`.  
+- `cbxKernelRadius` and `cbxBorderCount` must parse to valid integers before export.  
+- Dataset title comes from `txtDatasetTitle` (starts with a placeholder until edited).
 
 #### Keyboard Shortcuts
-
 - Ctrl + C – Copy selected or all items to clipboard.  
 - Ctrl + V – Paste numeric data from clipboard.  
 - Ctrl + A – Select all items.  
@@ -504,8 +555,6 @@ When the user clicks **Calibrate** (`calcButton_Click`):
 - Ctrl + Delete – Clear all items (`clearButtonX`).  
 - F2 – Edit selected item(s) (`FrmModify`).  
 - Esc – Deselect selection (`sClrButtonX`).
-
----
 
 ### Data Handling and Processing
 - Efficiently processes numeric data for running median calculations
