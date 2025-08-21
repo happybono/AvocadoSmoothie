@@ -207,7 +207,7 @@ Depending on the field, practitioners choose based on context :
 ## Features & Algorithms
 ### 1. Initialization & Input Processing
 #### How it works
-When the application starts, users can input numeric data through various methods: direct text entry, clipboard paste, or drag-and-drop. The input values are parsed and stored in the internal sourceList, and displayed in ListBox1 for review and editing.
+When the application starts, users can input numeric data through various methods : direct text entry, clipboard paste, or drag-and-drop. The input values are parsed and stored in the internal sourceList, and displayed in ListBox1 for review and editing.
 
 #### Principle
 -	Input data is added to `ListBox1` and internally stored in the sourceList list.
@@ -244,14 +244,14 @@ End Sub
 In a median filter, `kernelRadius` specifies how many elements are taken on each side of the center element when creating the median window.
   
 #### Kernel Size Formula
-The width of a kernel is calculated using the following formula:
+The width of a kernel is calculated using the following formula :
 
 $$
 \text{kernelWidth} = 2 \times \text{kernelRadius} + 1
 $$
 
 #### Example
-If the kernel radius is **2**, then:
+If the kernel radius is **2**, then :
 
 $$
 \text{kernelWidth} = 2 \times 2 + 1 = 5
@@ -276,13 +276,13 @@ AllMedian applies a median filter across every data point in the source list usi
 - Reports progress back to the UI
 
 #### Principle
-- Compute window parameters:
+- Compute window parameters :
   - kernelWidth = 2 * kernelRadius + 1
   - offsetLow = (kernelWidth - 1) \ 2
   - offsetHigh = (kernelWidth - 1) - offsetLow
-- For each index i in [0 … n-1]:
-  1. iMin = Max(0, i - offsetLow) iMax = Min(n-1, i + offsetHigh)
-  2. Copy arr(iMin…iMax) into a thread-local array win
+- For each index i in [0 … n - 1] :
+  1. iMin = Max(0, i - offsetLow) iMax = Min(n - 1, i + offsetHigh)
+  2. Copy arr(iMin … iMax) into a thread-local array win
   3. Sort the slice and pick its median via GetWindowMedian
       - Odd-length windows → middle element
       - Even-length windows → average of two middle values
@@ -361,7 +361,7 @@ ComputeMedians(useMiddle:=True,
                borderCount:=borderCount,
                progress:=progress)
 
-' Inside ComputeMedians:
+' Inside ComputeMedians :
 If useMiddle Then
     For i = 0 To borderCount - 1
         buffer(i)               = arr(i)
@@ -394,7 +394,7 @@ When you apply the Running Median filter, the **Border Count** parameter lets yo
 
 #### Behavior
 
-If you set `Border Count = k`, then:  
+If you set `Border Count = k`, then :  
 - The first **k** samples remain exactly as they are.  
 - The last **k** samples remain exactly as they are.  
 - Only the middle section (everything between those preserved edges) is passed through the median filter.
@@ -402,16 +402,16 @@ If you set `Border Count = k`, then:
 #### Example
 
 ```txt
-Original data (10 points):   [x₀, x₁, x₂, x₃, x₄, x₅, x₆, x₇, x₈, x₉]
+Original data (10 points) :   [x₀, x₁, x₂, x₃, x₄, x₅, x₆, x₇, x₈, x₉]
 Border Count = 3
 
-Preserved by Border Count:   [x₀, x₁, x₂]                [x₇, x₈, x₉]
-Filtered by Running Median:              [x₃, x₄, x₅, x₆]
+Preserved by Border Count :   [x₀, x₁, x₂]                [x₇, x₈, x₉]
+Filtered by Running Median :              [x₃, x₄, x₅, x₆]
 ```
 
 ### Results Aggregation & UI Update
 #### How it works
-Once `ComputeMedians` completes on a background thread, the UI thread:
+Once `ComputeMedians` completes on a background thread, the UI thread :
 Clears and repopulates `ListBox2` in one batch
 Scrolls `ListBox2` so the last element is visible
 Updates count labels, summary labels, and button states
@@ -483,12 +483,12 @@ End Sub
   The `ListBox1_DragDrop` handler checks for "HTML Format" or plain text, strips tags via `regexStripTags`, extracts numbers via `regexNumbers.Matches`, parses in a background task, and calls `AddItemsInBatches` to insert items with incremental progress.
 
 - Regex-Based Filtering  
-  Two compiled regexes are used:  
+  Two compiled regexes are used :  
   - `regexStripTags` to remove HTML/XML tags.  
   - `regexNumbers` to find `"[+-]?(\\d+(,\\d{3})*|(?=\\.\\d))((\\.\\d+([eE][+-]\\d+)?)|)"` and extract numeric substrings.
 
 #### Smoothing Workflow
-When the user clicks **Calibrate** (`calcButton_Click`):
+When the user clicks **Calibrate** (`calcButton_Click`) :
 
 1. Convert each `ListBox1.Items` entry to `Double` and store in `sourceList`.  
 2. Read `cbxKernelRadius` (radius) and compute `KernelRadius = 2 * radius + 1`.  
@@ -499,7 +499,7 @@ When the user clicks **Calibrate** (`calcButton_Click`):
 7. Populate `ListBox2` with the resulting `medianList`, update labels (`lblCnt1`, `lblCnt2`, `slblCalibratedType`, `slblKernelWidth`, `slblBorderCount`), then reset the progress bar.
 
 #### Filter Algorithm Implementation
-##### Core Routine: ComputeMedians
+##### Core Routine : ComputeMedians
 - Middle-Median (`useMiddle = True)` Copies the first and last `borderCount` points unmodified to buffer. Applies a sliding window of width `KernelRadius` only to indices [borderCount … n-borderCount-1].
 
 - All-Median (`useMiddle = False`) Applies the sliding window at every index; windows at edges automatically shrink to available data.
@@ -510,7 +510,7 @@ Both modes share :
 3. For each index, copy the window slice from `arr(iMin … iMax)` into win, then compute the median via `GetWindowMedian(win, length)` (which uses `Array.Sort` on the slice and returns either the middle element or the average of the two middle elements).
 
 ##### Core Median Functions  
-- `GetWindowMedian(win() As Double, length As Integer)` Creates a temporary slice of length elements from win, sorts with Array.Sort, and returns:
+- `GetWindowMedian(win() As Double, length As Integer)` Creates a temporary slice of length elements from win, sorts with Array.Sort, and returns :
     - `slice(mid)` if `length` is odd
     - `(slice(mid-1) + slice(mid)) / 2.0` if even
 - `Quicksort(list() As Double, min As Integer, max As Integer)` remains in the codebase but is no longer used by ComputeMedians.
@@ -565,10 +565,10 @@ Both modes share :
 - Validates numeric values using regular expressions
 - Stores data as a list of doubles for high-precision calculations
 - Provides two types of running median filters :
-  - `AllMedian`:
+  - `AllMedian` :
     - Calculates median at every position using a sliding window
     - Automatically adjusts at dataset boundaries
-  - `MiddleMedian`:
+  - `MiddleMedian` :
     - Applies median only to the inner region of data
     - Leaves a user-defined number of boundary elements untouched
 - Implements parallel processing for fast performance on large datasets
