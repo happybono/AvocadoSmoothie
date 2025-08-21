@@ -125,9 +125,22 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 > Include an ARM64-native variant of the executable.
 
 ### v4.2.7.0
-#### August 22, 2025
+#### August 15, 2025
 > Updated UI labels by replacing "Kernel Width" with the more precise "Kernel Radius".<br><br>
 > Refactored variable names and code references to use "Kernel Radius (r)" instead of "Kernel Width (w)".<br><br>
+> Removed unnecessary `Task.Yield` calls to eliminate extra context switches and improve execution efficiency.<br><br>
+> Improved Microsoft Office (Excel) installation detection and exception handling robustness.
+> Minor bugs fixed.
+
+### v4.3.0.0
+#### August 20, 2025
+> Implemented explicit COM object cleanup (`Application`, `Workbook`, `Worksheet`) with `Marshal.ReleaseComObject` and forced GC to prevent memory leaks and lingering background Excel processes.
+> Minor bugs fixed.
+
+### v4.3.1.0
+#### August 21, 2025
+> Removed unused functions to streamline the codebase.<br><br>
+> Retained early-stage/draft code as commented-out sections for reference and potential future use.<br><br>
 > Minor bugs fixed.
 </details>
 
