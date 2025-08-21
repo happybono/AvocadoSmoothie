@@ -134,7 +134,7 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 
 ### v4.3.0.0
 #### August 20, 2025
-> Implemented explicit COM object cleanup (`Application`, `Workbook`, `Worksheet`) with `Marshal.ReleaseComObject` and forced GC to prevent memory leaks and lingering background Excel processes.
+> Implemented explicit COM object cleanup (`Application`, `Workbook`, `Worksheet`) with `Marshal.ReleaseComObject` and forced GC to prevent memory leaks and lingering background Excel processes.<br><br>
 > Minor bugs fixed.
 
 ### v4.3.1.0
