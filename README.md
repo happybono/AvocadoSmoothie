@@ -538,7 +538,7 @@ Both modes share :
   • Validates and reads the same parameters and initial data array, then computes both median arrays.  
   • Creates a new Excel `Application`, adds a `Workbook` and gets its first `Worksheet`.  
   • Writes the dataset title and smoothing parameters into rows 1 - 6.  
-  • Uses a `WriteDistributed` helper to dump each series into adjacent columns—splitting across sheets if a series exceeds Excel's 1,048,576-row cap.  
+  • Uses a `WriteDistributed` helper to dump each series into adjacent columns : splitting across columns if a series exceeds Excel's 1,048,576-row cap.  
   • Inserts a line chart (`XlChartType.xlLine`) plotting all three series, sets chart title and axis labels ("Value" vs "Sequence Number").  
   • Makes Excel visible, enables alerts, and releases all COM objects to avoid leaks.
 
