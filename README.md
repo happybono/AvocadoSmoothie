@@ -490,14 +490,14 @@ End Sub
   The `addButton_Click` handler and `TextBox1_KeyDown` allow users to type a numeric value into `TextBox1` and press Enter or click Add. Valid numbers are parsed via `Double.TryParse` and appended to `ListBox1`.
   
 - Clipboard Paste  
-  The `pasteButton_Click` event reads `Clipboard.GetText()`, uses `regexNumbers` to match numeric tokens, then parses them in parallel (`AsParallel().WithDegreeOfParallelism`) before adding to `ListBox1` in a batch (`BeginUpdate`/`EndUpdate`).
+  The `pasteButton_Click` event reads `Clipboard.GetText()`, uses `regexNumbers` to match numeric tokens, then parses them in parallel (`AsParallel().WithDegreeOfParallelism`) before adding to `ListBox1` in a batch (`BeginUpdate` / `EndUpdate`).
 
 - Drag & Drop  
   The `ListBox1_DragDrop` handler checks for "HTML Format" or plain text, strips tags via `regexStripTags`, extracts numbers via `regexNumbers.Matches`, parses in a background task, and calls `AddItemsInBatches` to insert items with incremental progress.
 
 - Regex-Based Filtering  
   Two compiled regexes are used :  
-  - `regexStripTags` to remove HTML/XML tags.  
+  - `regexStripTags` to remove HTML / XML tags.  
   - `regexNumbers` to find `"[+-]?(\\d+(,\\d{3})*|(?=\\.\\d))((\\.\\d+([eE][+-]\\d+)?)|)"` and extract numeric substrings.
 
 #### Smoothing Workflow
@@ -540,7 +540,7 @@ Both modes share :
 #### Export Functionality
 ##### CSV & Excel Export
 - CSV (`ExportCsvAsync`)  
-  • Parses `kernelRadius` and `borderCount` from `cbxKernelRadius`/`cbxBorderCount`.  
+  • Parses `kernelRadius` and `borderCount` from `cbxKernelRadius` / `cbxBorderCount`.  
   • Loads initial data from `ListBox1` into a `Double()` array.  
   • Runs `ComputeMedians(True, …)` and `ComputeMedians(False, …)` to produce middle-median and all-median arrays.  
   • Splits output into chunks of up to 1 048 576 rows (Excel's row limit minus header lines).  
