@@ -25,7 +25,10 @@ End Module
 
 Public Class FrmModify
 
-    Private Async Sub OK_Button_Click(sender As Object, e As EventArgs) Handles OK_Button.Click
+    Private dpiX As Double
+    Private dpiY As Double
+
+    Private Async Sub btnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click
         Dim numericValue As Double
 
         ' mainForm 인스턴스 가져오기
@@ -40,15 +43,15 @@ Public Class FrmModify
         End If
 
         ' 입력 유효성 검사
-        If String.IsNullOrEmpty(textBox1.Text) OrElse
-           Not Double.TryParse(textBox1.Text, numericValue) Then
-            textBox1.Select()
-            textBox1.SelectAll()
+        If String.IsNullOrEmpty(txtInitEdit.Text) OrElse
+           Not Double.TryParse(txtInitEdit.Text, numericValue) Then
+            txtInitEdit.Select()
+            txtInitEdit.SelectAll()
             Return
         End If
 
         ' 선택된 Index 정렬 후 배열로
-        Dim indices = mainForm.ListBox1 _
+        Dim indices = mainForm.lbInitData _
                         .SelectedIndices _
                         .Cast(Of Integer)() _
                         .OrderBy(Function(x) x) _
@@ -57,12 +60,12 @@ Public Class FrmModify
         If total = 0 Then Return
 
         ' ProgressBar 초기화
-        ProgressBar1.Minimum = 0
-        ProgressBar1.Maximum = total
-        ProgressBar1.Value = 0
+        pbModify.Minimum = 0
+        pbModify.Maximum = total
+        pbModify.Value = 0
 
         ' ListBox 업데이트 일시 중지
-        Dim lb = mainForm.ListBox1
+        Dim lb = mainForm.lbInitData
         lb.BeginUpdate()
 
         ' 새로운 값 미리 생성
@@ -82,7 +85,15 @@ Public Class FrmModify
                                      For i = 0 To batchIndices.Length - 1
                                          lb.Items(batchIndices(i)) = batchValues(i)
                                      Next
-                                     ProgressBar1.Value = Math.Min(done + cnt, total)
+                                     pbModify.Value = Math.Min(done + cnt, total)
+
+                                     Dim count As Integer = mainForm.lbInitData.SelectedItems.Count
+
+                                     If count > 1 Then
+                                         slblModify.Text = $"Modifying {count} selected items..."
+                                     Else
+                                         slblModify.Text = "Modifying the selected item..."
+                                     End If
                                  End Sub)
 
             done += cnt
@@ -98,8 +109,9 @@ Public Class FrmModify
                                      End If
                                  Next
                                  lb.EndUpdate()
-                                 mainForm.ListBox1.Focus()
-                                 ProgressBar1.Value = 0
+                                 mainForm.lbInitData.Focus()
+                                 pbModify.Value = 0
+                                 mainForm.slblDesc.Text = $"Modified {total} item{If(total > 1, "s", "")} to '{newValue}' in Initial Dataset."
                                  Me.Close()
                              End Sub)
     End Sub
@@ -110,38 +122,91 @@ Public Class FrmModify
                             .OfType(Of FrmMain)() _
                             .FirstOrDefault()
         If mainForm Is Nothing Then
-            ToolStripStatusLabel1.Text = "Main form not found."
+            slblModify.Text = "Main form not found."
             Return
         End If
 
-        Dim count = mainForm.ListBox1.SelectedItems.Count
+        Using g As Graphics = Me.CreateGraphics()
+            dpiX = g.DpiX
+            dpiY = g.DpiY
+        End Using
+
+        pbModify.Size = New Size(
+        (438 * dpiX / 96),
+        (5 * dpiY / 96))
+
+        slblModify.Size = New Size(
+        (438 * dpiX / 96),
+        (20 * dpiY / 96))
+
+        Dim count = mainForm.lbInitData.SelectedItems.Count
         If count > 1 Then
-            ToolStripStatusLabel1.Text = $"Modifying {count} selected items..."
+            slblModify.Text = $"Enter the new value for the {count} selected items."
         Else
-            ToolStripStatusLabel1.Text = "Modifying the selected item..."
+            slblModify.Text = "Enter the new value for the selected item."
         End If
 
-        textBox1.Text = mainForm.ListBox1.SelectedItem.ToString()
-        textBox1.SelectAll()
-        textBox1.Select()
+        txtInitEdit.Text = mainForm.lbInitData.SelectedItem.ToString()
+        txtInitEdit.SelectAll()
+        txtInitEdit.Select()
     End Sub
 
-    Private Sub textBox1_KeyDown(sender As Object, e As KeyEventArgs) Handles textBox1.KeyDown
+    Private Sub txtInitEdit_KeyDown(sender As Object, e As KeyEventArgs) Handles txtInitEdit.KeyDown
         If e.KeyData = Keys.Enter Then
-            OK_Button.PerformClick()
+            btnOK.PerformClick()
             e.SuppressKeyPress = True
         ElseIf e.KeyData = Keys.Escape Then
-            Cancel_Button.PerformClick()
+            btnCancel.PerformClick()
             e.SuppressKeyPress = True
         End If
     End Sub
 
-    Private Sub textBox1_TextChanged(sender As Object, e As EventArgs) Handles textBox1.TextChanged
-        OK_Button.Enabled = textBox1.Text.Length > 0 AndAlso
-                                Double.TryParse(textBox1.Text, Nothing)
+    Private Sub txtInitEdit_TextChanged(sender As Object, e As EventArgs) Handles txtInitEdit.TextChanged
+        btnOK.Enabled = txtInitEdit.Text.Length > 0 AndAlso Double.TryParse(txtInitEdit.Text, Nothing)
     End Sub
 
-    Private Sub Cancel_Button_Click(sender As Object, e As EventArgs) Handles Cancel_Button.Click
+    Private Sub btnCancel_Click(sender As Object, e As EventArgs)
         Me.Close()
     End Sub
+
+#Region "Mouse Hover / Leave Handlers"
+    Private Sub MouseLeaveHandler(sender As Object, e As EventArgs)
+        Dim count As Integer = FrmMain.lbInitData.SelectedItems.Count
+        If count > 1 Then
+            ' 다수의 항목이 선택된 경우
+            slblModify.Text = $"Enter the new value for the {count} selected items."
+        Else
+            slblModify.Text = "Enter the new value for the selected item."
+        End If
+    End Sub
+
+    Private Sub FrmModify_MouseHover(sender As Object, e As EventArgs) Handles MyBase.MouseHover
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub txtInitEdit_MouseHover(sender As Object, e As EventArgs) Handles txtInitEdit.MouseHover
+        slblModify.Text = "To modify the selected items, enter a new value and click 'OK'."
+    End Sub
+
+    Private Sub txtInitEdit_MouseLeave(sender As Object, e As EventArgs) Handles txtInitEdit.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnOK_MouseHover(sender As Object, e As EventArgs) Handles btnOK.MouseHover
+        slblModify.Text = "Click to apply the new value to the selected items."
+    End Sub
+
+    Private Sub btnOK_MouseLeave(sender As Object, e As EventArgs) Handles btnOK.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnCancel_MouseHover(sender As Object, e As EventArgs) Handles btnCancel.MouseHover
+        slblModify.Text = "Click to cancel the modification and close the dialog."
+    End Sub
+
+    Private Sub btnCancel_MouseLeave(sender As Object, e As EventArgs) Handles btnCancel.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+#End Region
+
 End Class

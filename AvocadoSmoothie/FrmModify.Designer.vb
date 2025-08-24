@@ -20,98 +20,98 @@ Partial Class FrmModify
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmModify))
-        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
-        Me.ToolStripStatusLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.textBox1 = New System.Windows.Forms.TextBox()
-        Me.Cancel_Button = New System.Windows.Forms.Button()
-        Me.OK_Button = New System.Windows.Forms.Button()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
-        Me.label2 = New System.Windows.Forms.Label()
-        Me.StatusStrip1.SuspendLayout()
+        Me.sstripModify = New System.Windows.Forms.StatusStrip()
+        Me.slblModify = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.txtInitEdit = New System.Windows.Forms.TextBox()
+        Me.btnCancel = New System.Windows.Forms.Button()
+        Me.btnOK = New System.Windows.Forms.Button()
+        Me.lblModifyDscr = New System.Windows.Forms.Label()
+        Me.pbModify = New System.Windows.Forms.ProgressBar()
+        Me.lblModifyTtl = New System.Windows.Forms.Label()
+        Me.sstripModify.SuspendLayout()
         Me.SuspendLayout()
         '
-        'StatusStrip1
+        'sstripModify
         '
-        Me.StatusStrip1.AutoSize = False
-        Me.StatusStrip1.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
-        Me.StatusStrip1.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(32, 32)
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripStatusLabel1})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 119)
-        Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(438, 24)
-        Me.StatusStrip1.SizingGrip = False
-        Me.StatusStrip1.TabIndex = 28
-        Me.StatusStrip1.Text = "StatusStrip1"
+        Me.sstripModify.AutoSize = False
+        Me.sstripModify.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.sstripModify.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.sstripModify.ImageScalingSize = New System.Drawing.Size(32, 32)
+        Me.sstripModify.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.slblModify})
+        Me.sstripModify.Location = New System.Drawing.Point(0, 119)
+        Me.sstripModify.Name = "sstripModify"
+        Me.sstripModify.Size = New System.Drawing.Size(438, 24)
+        Me.sstripModify.SizingGrip = False
+        Me.sstripModify.TabIndex = 28
+        Me.sstripModify.Text = "StatusStrip1"
         '
-        'ToolStripStatusLabel1
+        'slblModify
         '
-        Me.ToolStripStatusLabel1.AutoSize = False
-        Me.ToolStripStatusLabel1.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
-        Me.ToolStripStatusLabel1.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!)
-        Me.ToolStripStatusLabel1.ForeColor = System.Drawing.Color.White
-        Me.ToolStripStatusLabel1.Name = "ToolStripStatusLabel1"
-        Me.ToolStripStatusLabel1.Size = New System.Drawing.Size(437, 19)
-        Me.ToolStripStatusLabel1.Text = "Modifying 2147483647 selected items... "
-        Me.ToolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.slblModify.AutoSize = False
+        Me.slblModify.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.slblModify.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!)
+        Me.slblModify.ForeColor = System.Drawing.Color.White
+        Me.slblModify.Name = "slblModify"
+        Me.slblModify.Size = New System.Drawing.Size(437, 19)
+        Me.slblModify.Text = "Modifying 2147483647 selected items... "
+        Me.slblModify.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
-        'textBox1
+        'txtInitEdit
         '
-        Me.textBox1.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.textBox1.Location = New System.Drawing.Point(14, 81)
-        Me.textBox1.Name = "textBox1"
-        Me.textBox1.Size = New System.Drawing.Size(411, 25)
-        Me.textBox1.TabIndex = 1
+        Me.txtInitEdit.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtInitEdit.Location = New System.Drawing.Point(14, 81)
+        Me.txtInitEdit.Name = "txtInitEdit"
+        Me.txtInitEdit.Size = New System.Drawing.Size(411, 25)
+        Me.txtInitEdit.TabIndex = 1
         '
-        'Cancel_Button
+        'btnCancel
         '
-        Me.Cancel_Button.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Cancel_Button.Location = New System.Drawing.Point(340, 53)
-        Me.Cancel_Button.Name = "Cancel_Button"
-        Me.Cancel_Button.Size = New System.Drawing.Size(85, 24)
-        Me.Cancel_Button.TabIndex = 3
-        Me.Cancel_Button.Text = ""
-        Me.Cancel_Button.UseVisualStyleBackColor = True
+        Me.btnCancel.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCancel.Location = New System.Drawing.Point(340, 53)
+        Me.btnCancel.Name = "btnCancel"
+        Me.btnCancel.Size = New System.Drawing.Size(85, 24)
+        Me.btnCancel.TabIndex = 3
+        Me.btnCancel.Text = ""
+        Me.btnCancel.UseVisualStyleBackColor = True
         '
-        'OK_Button
+        'btnOK
         '
-        Me.OK_Button.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.OK_Button.Location = New System.Drawing.Point(340, 7)
-        Me.OK_Button.Name = "OK_Button"
-        Me.OK_Button.Size = New System.Drawing.Size(85, 44)
-        Me.OK_Button.TabIndex = 2
-        Me.OK_Button.Text = ""
-        Me.OK_Button.UseVisualStyleBackColor = True
+        Me.btnOK.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnOK.Location = New System.Drawing.Point(340, 7)
+        Me.btnOK.Name = "btnOK"
+        Me.btnOK.Size = New System.Drawing.Size(85, 44)
+        Me.btnOK.TabIndex = 2
+        Me.btnOK.Text = ""
+        Me.btnOK.UseVisualStyleBackColor = True
         '
-        'Label1
+        'lblModifyDscr
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.Label1.Location = New System.Drawing.Point(12, 39)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(270, 34)
-        Me.Label1.TabIndex = 24
-        Me.Label1.Text = "Apply changes to the selected items. " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Enter the numeric value you would like to " &
+        Me.lblModifyDscr.AutoSize = True
+        Me.lblModifyDscr.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblModifyDscr.ImeMode = System.Windows.Forms.ImeMode.NoControl
+        Me.lblModifyDscr.Location = New System.Drawing.Point(12, 39)
+        Me.lblModifyDscr.Name = "lblModifyDscr"
+        Me.lblModifyDscr.Size = New System.Drawing.Size(270, 34)
+        Me.lblModifyDscr.TabIndex = 24
+        Me.lblModifyDscr.Text = "Apply changes to the selected items. " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Enter the numeric value you would like to " &
     "set :"
         '
-        'ProgressBar1
+        'pbModify
         '
-        Me.ProgressBar1.Location = New System.Drawing.Point(0, 114)
-        Me.ProgressBar1.Name = "ProgressBar1"
-        Me.ProgressBar1.Size = New System.Drawing.Size(438, 5)
-        Me.ProgressBar1.TabIndex = 29
+        Me.pbModify.Location = New System.Drawing.Point(0, 114)
+        Me.pbModify.Name = "pbModify"
+        Me.pbModify.Size = New System.Drawing.Size(438, 5)
+        Me.pbModify.TabIndex = 29
         '
-        'label2
+        'lblModifyTtl
         '
-        Me.label2.AutoSize = True
-        Me.label2.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.label2.Location = New System.Drawing.Point(9, 7)
-        Me.label2.Name = "label2"
-        Me.label2.Size = New System.Drawing.Size(214, 26)
-        Me.label2.TabIndex = 30
-        Me.label2.Text = "Modify Selected Entries"
+        Me.lblModifyTtl.AutoSize = True
+        Me.lblModifyTtl.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblModifyTtl.Location = New System.Drawing.Point(9, 7)
+        Me.lblModifyTtl.Name = "lblModifyTtl"
+        Me.lblModifyTtl.Size = New System.Drawing.Size(214, 26)
+        Me.lblModifyTtl.TabIndex = 30
+        Me.lblModifyTtl.Text = "Modify Selected Entries"
         '
         'FrmModify
         '
@@ -119,13 +119,13 @@ Partial Class FrmModify
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(438, 143)
-        Me.Controls.Add(Me.label2)
-        Me.Controls.Add(Me.StatusStrip1)
-        Me.Controls.Add(Me.textBox1)
-        Me.Controls.Add(Me.Cancel_Button)
-        Me.Controls.Add(Me.OK_Button)
-        Me.Controls.Add(Me.Label1)
-        Me.Controls.Add(Me.ProgressBar1)
+        Me.Controls.Add(Me.lblModifyTtl)
+        Me.Controls.Add(Me.sstripModify)
+        Me.Controls.Add(Me.txtInitEdit)
+        Me.Controls.Add(Me.btnCancel)
+        Me.Controls.Add(Me.btnOK)
+        Me.Controls.Add(Me.lblModifyDscr)
+        Me.Controls.Add(Me.pbModify)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximizeBox = False
@@ -133,19 +133,19 @@ Partial Class FrmModify
         Me.Name = "FrmModify"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Modify Selected Entries"
-        Me.StatusStrip1.ResumeLayout(False)
-        Me.StatusStrip1.PerformLayout()
+        Me.sstripModify.ResumeLayout(False)
+        Me.sstripModify.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
 
-    Friend WithEvents StatusStrip1 As System.Windows.Forms.StatusStrip
-    Friend WithEvents ToolStripStatusLabel1 As System.Windows.Forms.ToolStripStatusLabel
-    Friend WithEvents textBox1 As System.Windows.Forms.TextBox
-    Friend WithEvents Cancel_Button As System.Windows.Forms.Button
-    Friend WithEvents OK_Button As System.Windows.Forms.Button
-    Friend WithEvents Label1 As System.Windows.Forms.Label
-    Friend WithEvents ProgressBar1 As System.Windows.Forms.ProgressBar
-    Friend WithEvents label2 As System.Windows.Forms.Label
+    Friend WithEvents sstripModify As System.Windows.Forms.StatusStrip
+    Friend WithEvents slblModify As System.Windows.Forms.ToolStripStatusLabel
+    Friend WithEvents txtInitEdit As System.Windows.Forms.TextBox
+    Friend WithEvents btnCancel As System.Windows.Forms.Button
+    Friend WithEvents btnOK As System.Windows.Forms.Button
+    Friend WithEvents lblModifyDscr As System.Windows.Forms.Label
+    Friend WithEvents pbModify As System.Windows.Forms.ProgressBar
+    Friend WithEvents lblModifyTtl As System.Windows.Forms.Label
 End Class

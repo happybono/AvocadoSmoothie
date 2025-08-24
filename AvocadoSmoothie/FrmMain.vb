@@ -2,6 +2,7 @@
 Imports System.IO
 Imports System.Net.Mime.MediaTypeNames
 Imports System.Runtime.InteropServices
+Imports System.Security.Cryptography
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Threading
@@ -9,9 +10,14 @@ Imports System.Windows.Forms.Application
 Imports Excel = Microsoft.Office.Interop.Excel
 
 Public Class FrmMain
+    Private isRefinedLoading As Boolean = False
+
+    Dim borderCount As Integer
 
     Dim dpivalue As Double
-    Dim borderCount As Integer
+    Dim g As Graphics = Me.CreateGraphics
+    Dim dpiX = g.DpiX.ToString()
+    Dim dpiY = g.DpiY.ToString()
 
     Private Const ExcelTitlePlaceholder As String = "Click here to enter a title for your dataset."
 
@@ -160,18 +166,26 @@ Public Class FrmMain
         End If
     End Function
 
-    Private Sub addButton_Click(sender As Object, e As EventArgs) Handles addButton.Click
-        Dim inputText = TextBox1.Text
+    Private Sub txtInitAdd_Click(sender As Object, e As EventArgs) Handles btnInitAdd.Click
+        Dim inputText = txtInitAdd.Text
         Dim v As Double
 
         If Double.TryParse(inputText, v) Then
-            ListBox1.Items.Add(v)
-            lblCnt1.Text = $"Count : {ListBox1.Items.Count}"
+            lbInitData.Items.Add(v)
+            lblInitCnt.Text = $"Count : {lbInitData.Items.Count}"
+            slblDesc.Visible = True
+            slblDesc.Text = $"Value '{v}' has been added to Initial Dataset."
+        Else
+            txtInitAdd.Focus()
+            txtInitAdd.SelectAll()
         End If
 
-        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
-        UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
-        TextBox1.Clear()
+        If lbInitData.Items.Count > 0 Then
+            UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
+            UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
+        End If
+
+        txtInitAdd.Text = String.Empty
     End Sub
 
     Public Sub Quicksort(ByVal list() As Double, ByVal min As Integer, ByVal max As Integer)
@@ -220,13 +234,13 @@ Public Class FrmMain
         Quicksort(list, lo + 1, max)
     End Sub
 
-    Private Async Sub calcButton_Click(sender As Object, e As EventArgs) Handles calcButton.Click
-        If ListBox1.Items.Count = 0 Then
+    Private Async Sub btnCalibrate_Click(sender As Object, e As EventArgs) Handles btnCalibrate.Click
+        If lbInitData.Items.Count = 0 Then
             Return
         End If
 
         Dim parsedList As New List(Of Double)
-        For Each item As Object In ListBox1.Items
+        For Each item As Object In lbInitData.Items
             Dim strValue As String = item.ToString()
             Dim dValue As Double
             If Double.TryParse(strValue, dValue) Then
@@ -244,7 +258,7 @@ Public Class FrmMain
 
         sourceList = parsedList
         Dim total = sourceList.Count
-        Dim useMiddle = RadioButton1.Checked
+        Dim useMiddle = rbtnMidMedian.Checked
 
         Dim radius As Integer
         If Not Integer.TryParse(cbxKernelRadius.Text, radius) Then
@@ -274,13 +288,26 @@ Public Class FrmMain
             Return
         End If
 
-        progressBar1.Minimum = 0
-        progressBar1.Maximum = total
-        progressBar1.Value = 0
+        pbMain.Minimum = 0
+        pbMain.Maximum = total
+        pbMain.Value = 0
         Dim progress = New Progress(Of Integer)(
-        Sub(v) progressBar1.Value = Math.Min(v, total)
+        Sub(v) pbMain.Value = Math.Min(v, total)
     )
 
+        btnCalibrate.Enabled = False
+        btnInitClear.Enabled = False
+        btnInitEdit.Enabled = False
+        btnInitPaste.Enabled = False
+        btnInitDelete.Enabled = False
+        btnInitSelectAll.Enabled = False
+        btnInitSelectSync.Enabled = False
+        btnRefClear.Enabled = False
+        btnRefSelectAll.Enabled = False
+        btnRefSelectSync.Enabled = False
+        btnExport.Enabled = False
+
+        isRefinedLoading = True
         Await Task.Run(Sub()
                            ComputeMedians(
                            useMiddle:=useMiddle,
@@ -289,15 +316,16 @@ Public Class FrmMain
                            progress:=progress
                        )
                        End Sub)
+        isRefinedLoading = False
 
-        ListBox2.BeginUpdate()
-        ListBox2.Items.Clear()
-        ListBox2.Items.AddRange(medianList.Cast(Of Object).ToArray())
-        ListBox2.EndUpdate()
-        ListBox2.TopIndex = ListBox2.Items.Count - 1
+        lbRefinedData.BeginUpdate()
+        lbRefinedData.Items.Clear()
+        lbRefinedData.Items.AddRange(medianList.Cast(Of Object).ToArray())
+        lbRefinedData.EndUpdate()
+        lbRefinedData.TopIndex = lbRefinedData.Items.Count - 1
 
-        lblCnt1.Text = $"Count : {total}"
-        lblCnt2.Text = $"Count : {medianList.Count}"
+        lblInitCnt.Text = $"Count : {total}"
+        lblRefCnt.Text = $"Count : {medianList.Count}"
         slblCalibratedType.Text = If(useMiddle, "Middle Median", "All Median")
         slblKernelWidth.Text = Integer.Parse(cbxKernelRadius.Text)
         slblBorderCount.Text = $"{borderCount}"
@@ -306,36 +334,55 @@ Public Class FrmMain
         tlblBorderCount.Visible = useMiddle
         slblSeparator2.Visible = useMiddle
 
-        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
-        UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
+        slblDesc.Visible = False
+        btnInitPaste.Enabled = True
+        btnCalibrate.Enabled = True
+        btnInitClear.Enabled = True
+        btnInitEdit.Enabled = True
+        btnInitDelete.Enabled = True
+        btnInitSelectAll.Enabled = True
+        btnInitSelectSync.Enabled = True
+        btnRefClear.Enabled = True
+        btnRefSelectAll.Enabled = True
+        btnRefSelectSync.Enabled = True
+        btnExport.Enabled = True
+
+        UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
+        UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
 
         Await Task.Delay(200)
-        progressBar1.Value = 0
+        pbMain.Value = 0
     End Sub
 
 
 
-    Private Sub TextBox1_KeyDown(sender As Object, e As KeyEventArgs) Handles TextBox1.KeyDown
+    Private Sub txtInitAdd_KeyDown(sender As Object, e As KeyEventArgs) Handles txtInitAdd.KeyDown
         If e.KeyCode = Keys.Enter Then
-            Dim inputText = TextBox1.Text
+            Dim inputText = txtInitAdd.Text
             Dim v As Double
 
             If Double.TryParse(inputText, v) Then
-                ListBox1.Items.Add(v)
+                lbInitData.Items.Add(v)
+                lblInitCnt.Text = $"Count : {lbInitData.Items.Count}"
+                slblDesc.Visible = True
+                slblDesc.Text = $"Value '{v}' has been added to Initial Dataset."
+            Else
+                txtInitAdd.Focus()
+                txtInitAdd.SelectAll()
             End If
 
-            lblCnt1.Text = $"Count : {ListBox1.Items.Count}"
-            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
 
-            TextBox1.Clear()
+            UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
+
+            txtInitAdd.Clear()
             e.SuppressKeyPress = True
         End If
 
     End Sub
 
-    Private Sub copyButton1_Click(sender As Object, e As EventArgs) Handles copyButton1.Click
+    Private Sub btnInitCopy_Click(sender As Object, e As EventArgs) Handles btnInitCopy.Click
         Dim doubles As New List(Of Double)
-        Dim source = If(ListBox1.SelectedItems.Count > 0, ListBox1.SelectedItems, ListBox1.Items)
+        Dim source = If(lbInitData.SelectedItems.Count > 0, lbInitData.SelectedItems, lbInitData.Items)
 
         For Each itm As Object In source
             Dim txt = itm.ToString()
@@ -354,9 +401,9 @@ Public Class FrmMain
         End If
     End Sub
 
-    Private Sub copyButton2_Click(sender As Object, e As EventArgs) Handles copyButton2.Click
+    Private Sub btnRefCopy_Click(sender As Object, e As EventArgs) Handles btnRefCopy.Click
         Dim doubles As New List(Of Double)
-        Dim source = If(ListBox1.SelectedItems.Count > 0, ListBox1.SelectedItems, ListBox2.Items)
+        Dim source = If(lbInitData.SelectedItems.Count > 0, lbInitData.SelectedItems, lbRefinedData.Items)
 
         For Each itm As Object In source
             Dim txt = itm.ToString()
@@ -376,34 +423,47 @@ Public Class FrmMain
     End Sub
 
 
-    Private Sub clearButton1_Click(sender As Object, e As EventArgs) Handles clearButton1.Click
-        Dim itemCount As Integer = ListBox1.Items.Count
+    Private Sub btnInitClear_Click(sender As Object, e As EventArgs) Handles btnInitClear.Click
 
-        Dim result As DialogResult = MessageBox.Show(
-            $"This will delete all {itemCount} item{If(itemCount <> 1, "s", "")} from the Initial Dataset listbox." & vbCrLf &
-            "This will also delete all items from the Refined Dataset listbox." & vbCrLf & vbCrLf &
+        Dim itemCount As Integer = lbInitData.Items.Count
+        Dim refItemCount As Integer = lbRefinedData.Items.Count
+
+        Dim itemText As String = If(itemCount = 1, "item", "items")
+        Dim refItemText As String = If(refItemCount = 1, "item", "items")
+
+        Dim refMessage As String
+        If refItemCount = 0 Then
+            refMessage = "This will also clear the Refined Dataset listbox."
+        Else
+            refMessage = $"This will also delete all {refItemCount} {refItemText} from the Refined Dataset listbox."
+        End If
+
+        Dim result As DialogResult =
+            MessageBox.Show(
+            $"This will delete all {itemCount} {itemText} from the Initial Dataset listbox." & vbCrLf &
+            refMessage & vbCrLf & vbCrLf &
             "Are you sure you want to proceed?",
             "Delete Confirmation",
-    MessageBoxButtons.YesNo,
-    MessageBoxIcon.Warning
-)
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Warning
+            )
 
         If result = DialogResult.No Then
             Return
         End If
 
 
-        ListBox1.Items.Clear()
-        ListBox2.Items.Clear()
+        lbInitData.Items.Clear()
+        lbRefinedData.Items.Clear()
 
         txtDatasetTitle.Text = ExcelTitlePlaceholder
         txtDatasetTitle.ForeColor = Color.Gray
         txtDatasetTitle.TextAlign = HorizontalAlignment.Center
 
-        TextBox1.Text = String.Empty
+        txtInitAdd.Text = String.Empty
 
-        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
-        UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
+        UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
+        UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
 
         slblKernelWidth.Text = "--"
         slblCalibratedType.Text = "--"
@@ -414,13 +474,16 @@ Public Class FrmMain
 
         slblSeparator2.Visible = False
 
-        lblCnt1.Text = "Count : " & ListBox1.Items.Count
-        lblCnt2.Text = "Count : " & ListBox2.Items.Count
-        TextBox1.Select()
+        lblInitCnt.Text = "Count : " & lbInitData.Items.Count
+        lblRefCnt.Text = "Count : " & lbRefinedData.Items.Count
+
+        slblDesc.Visible = True
+        slblDesc.Text = $"Deleted {itemCount} {itemText} from Initial Dataset and {refItemCount} {refItemText} from Refined Dataset."
+        txtInitAdd.Select()
     End Sub
 
-    Private Sub clearButton2_Click(sender As Object, e As EventArgs) Handles clearButton2.Click
-        Dim itemCount As Integer = ListBox2.Items.Count
+    Private Sub btnRefClear_Click(sender As Object, e As EventArgs) Handles btnRefClear.Click
+        Dim itemCount As Integer = lbRefinedData.Items.Count
 
         Dim result As DialogResult = MessageBox.Show(
     $"This will delete all {itemCount} item{If(itemCount <> 1, "s", "")} from the Refined Dataset listbox." & vbCrLf & vbCrLf &
@@ -434,9 +497,9 @@ Public Class FrmMain
             Return
         End If
 
-        ListBox2.Items.Clear()
-        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
-        UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
+        lbRefinedData.Items.Clear()
+        UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
+        UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
 
         slblKernelWidth.Text = "--"
         slblCalibratedType.Text = "--"
@@ -447,8 +510,8 @@ Public Class FrmMain
 
         slblSeparator2.Visible = False
 
-        lblCnt2.Text = "Count : " & ListBox2.Items.Count
-        ListBox2.Select()
+        lblRefCnt.Text = "Count : " & lbRefinedData.Items.Count
+        lbRefinedData.Select()
     End Sub
 
     Private Async Function DeleteSelectedItemsPreserveSelection(lb As ListBox, progressBar As ProgressBar, lblCount As Label) As Task
@@ -498,14 +561,14 @@ Public Class FrmMain
         progressBar.Value = 0
     End Function
 
-    Private Async Sub deleteButton1_Click(sender As Object, e As EventArgs) Handles deleteButton1.Click
-        Dim selectedCount As Integer = ListBox1.SelectedIndices.Count
-        Dim totalCount As Integer = ListBox1.Items.Count
-        Dim selectedItems As Boolean = ListBox1.SelectedItems.Count > 0
+    Private Async Sub btnInitDelete_Click(sender As Object, e As EventArgs) Handles btnInitDelete.Click
+        Dim selectedCount As Integer = lbInitData.SelectedIndices.Count
+        Dim totalCount As Integer = lbInitData.Items.Count
+        Dim selectedItems As Boolean = lbInitData.SelectedItems.Count > 0
         Dim message As String
 
         If selectedCount = 0 Then
-            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+            UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
             Return
         End If
 
@@ -525,12 +588,12 @@ Public Class FrmMain
         End If
 
         If selectedCount = totalCount Then
-            ListBox1.Items.Clear()
-            ListBox2.Items.Clear()
-            copyButton1.Enabled = False
-            lblCnt1.Text = "Count : " & ListBox1.Items.Count
-            lblCnt2.Text = "Count : " & ListBox2.Items.Count
-            progressBar1.Value = 0
+            lbInitData.Items.Clear()
+            lbRefinedData.Items.Clear()
+            btnInitCopy.Enabled = False
+            lblInitCnt.Text = "Count : " & lbInitData.Items.Count
+            lblRefCnt.Text = "Count : " & lbRefinedData.Items.Count
+            pbMain.Value = 0
 
             txtDatasetTitle.Text = ExcelTitlePlaceholder
             txtDatasetTitle.ForeColor = Color.Gray
@@ -545,28 +608,35 @@ Public Class FrmMain
 
             slblSeparator2.Visible = False
 
-            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
-            UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
+            UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
+            UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
 
-            TextBox1.Select()
+            txtInitAdd.Select()
             Return
         End If
 
-        Await DeleteSelectedItemsPreserveSelection(ListBox1, progressBar1, lblCnt1)
-        lblCnt1.Text = "Count : " & ListBox1.Items.Count
+        Await DeleteSelectedItemsPreserveSelection(lbInitData, pbMain, lblInitCnt)
 
-        ListBox1.Select()
+        If (selectedCount = lbInitData.Items.Count) Then
+            slblDesc.Text = $"Deleted all {selectedCount} items from Initial Dataset and all items from Refined Dataset."
+        Else
+            slblDesc.Text = $"Deleted {selectedCount} selected item{If(selectedCount > 1, "s", "")} from Initial Dataset."
+        End If
 
-        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
-        UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
+        lblInitCnt.Text = "Count : " & lbInitData.Items.Count
+
+        lbInitData.Select()
+
+        UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
+        UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
     End Sub
 
-    Private Async Sub ListBox1_DragDrop(sender As Object, e As DragEventArgs) Handles ListBox1.DragDrop
-        calcButton.Enabled = False
-        progressBar1.Style = ProgressBarStyle.Continuous
-        progressBar1.Minimum = 0
-        progressBar1.Maximum = 100
-        progressBar1.Value = 0
+    Private Async Sub lbInitData_DragDrop(sender As Object, e As DragEventArgs) Handles lbInitData.DragDrop
+        btnCalibrate.Enabled = False
+        pbMain.Style = ProgressBarStyle.Continuous
+        pbMain.Minimum = 0
+        pbMain.Maximum = 100
+        pbMain.Value = 0
 
         Try
             Dim htmlFormat As String = If(e.Data.GetDataPresent("HTML Format"),
@@ -579,7 +649,7 @@ Public Class FrmMain
             regexStripTags.Replace(htmlFormat, ""),
             e.Data.GetData("Text").ToString())
 
-            progressBar1.Value = 10
+            pbMain.Value = 10
 
             If String.IsNullOrWhiteSpace(raw) Then Return
 
@@ -587,7 +657,7 @@ Public Class FrmMain
                 raw = Await Task.Run(Function()
                                          Return regexStripTags.Replace(raw, " ")
                                      End Function)
-                progressBar1.Value = 25
+                pbMain.Value = 25
 
                 If String.IsNullOrWhiteSpace(raw) Then Return
             End If
@@ -611,7 +681,7 @@ Public Class FrmMain
                 .Where(Function(d) Not Double.IsNaN(d)) _
                 .ToArray()
                                                     End Function)
-            progressBar1.Value = 60
+            pbMain.Value = 60
 
             If parsed.Length = 0 Then Return
 
@@ -619,20 +689,20 @@ Public Class FrmMain
             Dim progressReporter As IProgress(Of Integer) = New Progress(Of Integer)(
             Sub(pct)
                 Dim adjustedPct = Math.Max(baseProgress, Math.Min(100, pct))
-                progressBar1.Value = adjustedPct
-                progressBar1.Refresh()
+                pbMain.Value = adjustedPct
+                pbMain.Refresh()
             End Sub)
 
-            Await AddItemsInBatches(ListBox1, parsed, progressReporter, baseProgress)
+            Await AddItemsInBatches(lbInitData, parsed, progressReporter, baseProgress)
 
-            progressBar1.Value = 100
-            lblCnt1.Text = "Count : " & ListBox1.Items.Count
+            pbMain.Value = 100
+            lblInitCnt.Text = "Count : " & lbInitData.Items.Count
             Await Task.Delay(200)
         Finally
-            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+            UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
 
-            progressBar1.Value = 0
-            calcButton.Enabled = True
+            pbMain.Value = 0
+            btnCalibrate.Enabled = True
         End Try
     End Sub
 
@@ -664,29 +734,29 @@ Public Class FrmMain
         box.TopIndex = box.Items.Count - 1
     End Function
 
-    Private Sub ListBox1_DragEnter(sender As Object, e As DragEventArgs) Handles ListBox1.DragEnter
+    Private Sub lbInitData_DragEnter(sender As Object, e As DragEventArgs) Handles lbInitData.DragEnter
         e.Effect = If(
              e.Data.GetDataPresent(DataFormats.Text) OrElse
              e.Data.GetDataPresent("HTML Format"),
              DragDropEffects.Copy, DragDropEffects.None)
     End Sub
 
-    Private Async Sub pasteButton_Click(sender As Object, e As EventArgs) Handles pasteButton.Click
-        progressBar1.Style = ProgressBarStyle.Continuous
-        progressBar1.Minimum = 0
-        progressBar1.Maximum = 100
-        progressBar1.Value = 0
-        calcButton.Enabled = False
+    Private Async Sub btnInitPaste_Click(sender As Object, e As EventArgs) Handles btnInitPaste.Click
+        pbMain.Style = ProgressBarStyle.Continuous
+        pbMain.Minimum = 0
+        pbMain.Maximum = 100
+        pbMain.Value = 0
+        btnCalibrate.Enabled = False
 
         Try
             Dim text As String = Clipboard.GetText()
-            progressBar1.Value = 10
+            pbMain.Value = 10
 
             Dim matches = regexNumbers.Matches(text) _
             .Cast(Of Match)() _
             .Where(Function(m) Not String.IsNullOrEmpty(m.Value)) _
             .ToArray()
-            progressBar1.Value = 30
+            pbMain.Value = 30
 
             Dim values As Double() = Await Task.Run(Function()
                                                         Return matches _
@@ -700,36 +770,36 @@ Public Class FrmMain
                 .ToArray()
                                                     End Function)
 
-            progressBar1.Value = 70
+            pbMain.Value = 70
 
             If values.Length = 0 Then
                 Return
             End If
 
-            ListBox1.BeginUpdate()
-            ListBox1.Items.AddRange(values.Cast(Of Object)().ToArray())
-            ListBox1.EndUpdate()
-            ListBox1.TopIndex = ListBox1.Items.Count - 1
+            lbInitData.BeginUpdate()
+            lbInitData.Items.AddRange(values.Cast(Of Object)().ToArray())
+            lbInitData.EndUpdate()
+            lbInitData.TopIndex = lbInitData.Items.Count - 1
 
-            progressBar1.Value = 100
-            lblCnt1.Text = $"Count : {ListBox1.Items.Count}"
+            pbMain.Value = 100
+            lblInitCnt.Text = $"Count : {lbInitData.Items.Count}"
             Await Task.Delay(200)
         Finally
-            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
-            UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
+            UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
+            UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
 
-            progressBar1.Value = 0
-            calcButton.Enabled = True
+            pbMain.Value = 0
+            btnCalibrate.Enabled = True
         End Try
     End Sub
 
 
-    Private Async Sub selectAll1_Click(sender As Object, e As EventArgs) Handles selectAllButton1.Click
-        Await SelectAllWithProgress(ListBox1, progressBar1)
+    Private Async Sub btnInitSelectAll_Click(sender As Object, e As EventArgs) Handles btnInitSelectAll.Click
+        Await SelectAllWithProgress(lbInitData, pbMain)
     End Sub
 
-    Private Async Sub selectAll2_Click(sender As Object, e As EventArgs) Handles selectAllButton2.Click
-        Await SelectAllWithProgress(ListBox2, progressBar1)
+    Private Async Sub btnRefSelectAll_Click(sender As Object, e As EventArgs) Handles btnRefSelectAll.Click
+        Await SelectAllWithProgress(lbRefinedData, pbMain)
     End Sub
 
 
@@ -765,75 +835,94 @@ Public Class FrmMain
         progressBar.Value = 0
     End Function
 
-    Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
-        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+    Private Sub lbInitData_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbInitData.SelectedIndexChanged
+
+        Dim count As Integer = lbInitData.SelectedItems.Count
+
+        If count = 0 Then
+            Return
+        End If
+
+        slblDesc.Visible = True
+        slblDesc.Text = String.Format("{0} {1} been selected in Initial Dataset.", count, If(count = 1, "item has", "items have"))
+
+        UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
     End Sub
 
-    Private Sub ListBox2_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox2.SelectedIndexChanged
-        UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
+    Private Sub lbRefinedData_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lbRefinedData.SelectedIndexChanged
+        Dim count As Integer = lbRefinedData.SelectedItems.Count
+
+        If count = 0 Then
+            Return
+        End If
+
+        slblDesc.Visible = True
+        slblDesc.Text = String.Format("{0} {1} been selected in Refined Dataset.", count, If(count = 1, "item has", "items have"))
+
+        UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
     End Sub
 
-    Private Sub ListBox1_KeyDown(sender As Object, e As KeyEventArgs) Handles ListBox1.KeyDown
+    Private Sub lbInitData_KeyDown(sender As Object, e As KeyEventArgs) Handles lbInitData.KeyDown
         If e.KeyData = Keys.Delete Then
-            deleteButton1.PerformClick()
-            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+            btnInitDelete.PerformClick()
+            UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
         End If
 
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.Delete Then
-            clearButton1.PerformClick()
-            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+            btnInitClear.PerformClick()
+            UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
         End If
 
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.C Then
-            copyButton1.PerformClick()
+            btnInitCopy.PerformClick()
         End If
 
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.V Then
-            pasteButton.PerformClick()
-            UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+            btnInitPaste.PerformClick()
+            UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
         End If
 
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.A Then
-            selectAllButton1.PerformClick()
+            btnInitSelectAll.PerformClick()
         End If
 
         If (e.KeyData = Keys.F2) Then
-            If ListBox1.SelectedItems.Count >= 0 Then
+            If lbInitData.SelectedItems.Count >= 0 Then
                 FrmModify.ShowDialog(Me)
             End If
         End If
 
         If e.KeyData = Keys.Escape Then
-            sClrButton1.PerformClick()
+            btnInitSelectClr.PerformClick()
         End If
 
-        lblCnt1.Text = "Count : " & ListBox1.Items.Count
+        lblInitCnt.Text = "Count : " & lbInitData.Items.Count
     End Sub
 
 
-    Private Sub ListBox2_KeyDown(sender As Object, e As KeyEventArgs) Handles ListBox2.KeyDown
+    Private Sub lbRefinedData_KeyDown(sender As Object, e As KeyEventArgs) Handles lbRefinedData.KeyDown
 
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.C Then
             e.Handled = True
-            copyButton2.PerformClick()
+            btnRefCopy.PerformClick()
         End If
 
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.A Then
             e.Handled = True
-            UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
+            UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
         End If
 
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.Delete Then
-            clearButton2.PerformClick()
-            UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
+            btnRefClear.PerformClick()
+            UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
         End If
 
         If e.KeyData = Keys.Escape Then
-            sClrButton2.PerformClick()
-            UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
+            btnRefSelectClr.PerformClick()
+            UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
         End If
 
-        lblCnt2.Text = "Count : " & ListBox2.Items.Count
+        lblRefCnt.Text = "Count : " & lbRefinedData.Items.Count
     End Sub
 
     Private Async Function ClearSelectionWithProgress(lb As ListBox, progressBar As ProgressBar, lblCount As Label) As Task
@@ -870,16 +959,26 @@ Public Class FrmMain
         progressBar.Value = 0
     End Function
 
-    Private Async Sub sClrButton1_Click(sender As Object, e As EventArgs) Handles sClrButton1.Click
-        Await ClearSelectionWithProgress(ListBox1, progressBar1, lblCnt1)
+    Private Async Sub btnInitSelectClr_Click(sender As Object, e As EventArgs) Handles btnInitSelectClr.Click
+        Dim deselectedCount As Integer = lbInitData.SelectedIndices.Count
+
+        Await ClearSelectionWithProgress(lbInitData, pbMain, lblInitCnt)
+
+        slblDesc.Text = $"Deselected {deselectedCount} selected item{If(Not deselectedCount = 1, "s", "")} from Refined Dataset."
+        slblDesc.Visible = True
     End Sub
 
-    Private Async Sub sClrButton2_Click(sender As Object, e As EventArgs) Handles sClrButton2.Click
-        Await ClearSelectionWithProgress(ListBox2, progressBar1, lblCnt2)
+    Private Async Sub btnRefSelectClr_Click(sender As Object, e As EventArgs) Handles btnRefSelectClr.Click
+        Dim deselectedCount As Integer = lbRefinedData.SelectedIndices.Count
+
+        Await ClearSelectionWithProgress(lbRefinedData, pbMain, lblRefCnt)
+
+        slblDesc.Text = $"Deselected {deselectedCount} selected item{If(Not deselectedCount = 1, "s", "")} from Refined Dataset."
+        slblDesc.Visible = True
     End Sub
 
-    Private Sub TextBox1_TextChanged(sender As Object, e As EventArgs) Handles TextBox1.TextChanged
-        addButton.Enabled = CBool(TextBox1.TextLength) AndAlso CBool(IsNumeric(TextBox1.Text))
+    Private Sub txtInitAdd_TextChanged(sender As Object, e As EventArgs) Handles txtInitAdd.TextChanged
+        btnInitAdd.Enabled = CBool(txtInitAdd.TextLength) AndAlso CBool(IsNumeric(txtInitAdd.Text))
     End Sub
 
     Private Sub FrmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -891,57 +990,59 @@ Public Class FrmMain
             txtDatasetTitle.ForeColor = Color.Gray
         End If
 
-        AddHandler ListBox1.SelectedIndexChanged, AddressOf UpdateListBox1ButtonsState
-        AddHandler ListBox2.SelectedIndexChanged, AddressOf UpdateListBox2ButtonsState
+        slblDesc.Size = New Size(731 * dpiX / 96, 19 * dpiY / 96)
 
-        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
-        UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
+        AddHandler lbInitData.SelectedIndexChanged, AddressOf UpdatelbInitDataButtonsState
+        AddHandler lbRefinedData.SelectedIndexChanged, AddressOf UpdatelbRefinedDataButtonsState
+
+        UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
+        UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
     End Sub
 
-    Private Sub UpdateListBox1ButtonsState(s As Object, e As EventArgs)
-        Dim hasItems As Boolean = (ListBox1.Items.Count > 0)
-        Dim hasSelection As Boolean = (ListBox1.SelectedItems.Count > 0)
+    Private Sub UpdatelbInitDataButtonsState(s As Object, e As EventArgs)
+        Dim hasItems As Boolean = (lbInitData.Items.Count > 0)
+        Dim hasSelection As Boolean = (lbInitData.SelectedItems.Count > 0)
         Dim titleValid As Boolean = (txtDatasetTitle.TextLength > 0 AndAlso txtDatasetTitle.Text <> ExcelTitlePlaceholder)
-        Dim canSync As Boolean = (ListBox1.Items.Count = ListBox2.Items.Count) AndAlso hasSelection
+        Dim canSync As Boolean = (lbInitData.Items.Count = lbRefinedData.Items.Count) AndAlso hasSelection
 
-        copyButton1.Enabled = hasItems
-        editButton.Enabled = hasSelection
-        deleteButton1.Enabled = hasSelection
-        selectAllButton1.Enabled = hasItems
-        sClrButton1.Enabled = hasSelection
-        clearButton1.Enabled = hasItems
-        calcButton.Enabled = hasItems
+        btnInitCopy.Enabled = hasItems
+        btnInitEdit.Enabled = hasSelection
+        btnInitDelete.Enabled = hasSelection
+        btnInitSelectAll.Enabled = hasItems
+        btnInitSelectClr.Enabled = hasSelection
+        btnInitClear.Enabled = hasItems
+        btnCalibrate.Enabled = hasItems
         btnExport.Enabled = hasItems AndAlso titleValid
-        syncButton1.Enabled = canSync
+        btnInitSelectSync.Enabled = canSync
     End Sub
 
-    Private Sub UpdateListBox2ButtonsState(s As Object, e As EventArgs)
-        Dim hasItems As Boolean = (ListBox2.Items.Count > 0)
-        Dim hasSelection As Boolean = (ListBox2.SelectedItems.Count > 0)
-        Dim canSync As Boolean = (ListBox2.Items.Count = ListBox1.Items.Count) AndAlso hasSelection
-        copyButton2.Enabled = hasItems
-        clearButton2.Enabled = hasItems
-        selectAllButton2.Enabled = hasItems
-        sClrButton2.Enabled = hasSelection
-        syncButton2.Enabled = canSync
+    Private Sub UpdatelbRefinedDataButtonsState(s As Object, e As EventArgs)
+        Dim hasItems As Boolean = (lbRefinedData.Items.Count > 0)
+        Dim hasSelection As Boolean = (lbRefinedData.SelectedItems.Count > 0)
+        Dim canSync As Boolean = (lbRefinedData.Items.Count = lbInitData.Items.Count) AndAlso hasSelection
+        btnRefCopy.Enabled = hasItems
+        btnRefClear.Enabled = hasItems
+        btnRefSelectAll.Enabled = hasItems
+        btnRefSelectClr.Enabled = hasSelection
+        btnRefSelectSync.Enabled = canSync
     End Sub
 
 
-    Private Sub RadioButton2_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton2.CheckedChanged
-        If RadioButton2.Checked Then
+    Private Sub rbtnAllMedian_CheckedChanged(sender As Object, e As EventArgs) Handles rbtnAllMedian.CheckedChanged
+        If rbtnAllMedian.Checked Then
             lblBorderCount.Enabled = False
             cbxBorderCount.Enabled = False
         End If
     End Sub
 
-    Private Sub RadioButton1_CheckedChanged(sender As Object, e As EventArgs) Handles RadioButton1.CheckedChanged
-        If RadioButton1.Checked Then
+    Private Sub rbtnMidMedian_CheckedChanged(sender As Object, e As EventArgs) Handles rbtnMidMedian.CheckedChanged
+        If rbtnMidMedian.Checked Then
             lblBorderCount.Enabled = True
             cbxBorderCount.Enabled = True
         End If
     End Sub
 
-    Private Sub btnEdit_Click(sender As Object, e As EventArgs) Handles editButton.Click
+    Private Sub btnEdit_Click(sender As Object, e As EventArgs) Handles btnInitEdit.Click
         FrmModify.ShowDialog(Me)
     End Sub
 
@@ -949,10 +1050,10 @@ Public Class FrmMain
 
     Private Async Function ExportCsvAsync() As Task
         ' ProgressBar 초기화
-        progressBar1.Style = ProgressBarStyle.Continuous
-        progressBar1.Minimum = 0
-        progressBar1.Maximum = 100
-        progressBar1.Value = 0
+        pbMain.Style = ProgressBarStyle.Continuous
+        pbMain.Minimum = 0
+        pbMain.Maximum = 100
+        pbMain.Value = 0
 
         ' Parameters 읽기
         Dim kernelRadius As Integer
@@ -972,7 +1073,7 @@ Public Class FrmMain
         End If
 
         ' 원본 데이터 파싱
-        Dim initialData = ListBox1.Items.Cast(Of Object)() _
+        Dim initialData = lbInitData.Items.Cast(Of Object)() _
                     .Select(Function(x)
                                 Dim d As Double
                                 Return If(Double.TryParse(x?.ToString(),
@@ -996,8 +1097,8 @@ Public Class FrmMain
 
         sourceList = initialData.ToList()
         Dim middleProg = New Progress(Of Integer)(
-        Sub(v) progressBar1.Value = Math.Max(progressBar1.Minimum,
-                                             Math.Min(v, progressBar1.Maximum))
+        Sub(v) pbMain.Value = Math.Max(pbMain.Minimum,
+                                             Math.Min(v, pbMain.Maximum))
     )
         Await Task.Run(Sub()
                            ComputeMedians(True, kernelRadius, borderCount, middleProg)
@@ -1006,8 +1107,8 @@ Public Class FrmMain
 
         sourceList = initialData.ToList()
         Dim allProg = New Progress(Of Integer)(
-        Sub(v) progressBar1.Value = Math.Max(progressBar1.Minimum,
-                                             Math.Min(v, progressBar1.Maximum))
+        Sub(v) pbMain.Value = Math.Max(pbMain.Minimum,
+                                             Math.Min(v, pbMain.Maximum))
     )
         Await Task.Run(Sub()
                            ComputeMedians(False, kernelRadius, borderCount, allProg)
@@ -1017,11 +1118,12 @@ Public Class FrmMain
         ' 저장 경로 지정
         Dim basePath As String
         Using dlg As New SaveFileDialog()
+            dlg.FileName = $"{txtDatasetTitle.Text}.csv"
             dlg.Filter = "CSV files (*.csv)|*.csv"
             dlg.DefaultExt = "csv"
             dlg.AddExtension = True
             If dlg.ShowDialog(Me) <> DialogResult.OK Then
-                progressBar1.Value = 0
+                pbMain.Value = 0
                 Return
             End If
             basePath = dlg.FileName
@@ -1077,8 +1179,8 @@ Public Class FrmMain
 
                     ' 진행률 업데이트
                     Dim pct = CInt((i + 1) / CSng(n) * 100)
-                    progressBar1.Value = Math.Max(progressBar1.Minimum,
-                                              Math.Min(pct, progressBar1.Maximum))
+                    pbMain.Value = Math.Max(pbMain.Minimum,
+                                              Math.Min(pct, pbMain.Maximum))
                 Next
             End Using
 
@@ -1094,12 +1196,12 @@ Public Class FrmMain
                 Process.Start(New ProcessStartInfo("rundll32.exe",
                        $"shell32.dll,OpenAs_RunDLL ""{file}""") With {
                 .UseShellExecute = True})
-                progressBar1.Value = 0
+                pbMain.Value = 0
                 Return
             Catch ex As Exception
                 MessageBox.Show($"We're sorry, but the file could not be opened : {file}{vbCrLf}{ex.Message}",
                 "Error Opening File", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                progressBar1.Value = 0
+                pbMain.Value = 0
                 Return
             End Try
         Next
@@ -1161,10 +1263,10 @@ Public Class FrmMain
             Await ExportCsvAsync()
             Return
         ElseIf rbtnXLSX.Checked Then
-            progressBar1.Style = ProgressBarStyle.Continuous
-            progressBar1.Minimum = 0
-            progressBar1.Maximum = 100
-            progressBar1.Value = 0
+            pbMain.Style = ProgressBarStyle.Continuous
+            pbMain.Minimum = 0
+            pbMain.Maximum = 100
+            pbMain.Value = 0
 
             ' Kernel / 경계 값 읽기
             Dim kernelRadius As Integer
@@ -1181,7 +1283,7 @@ Public Class FrmMain
                 Return
             End If
 
-            Dim initialData = ListBox1.Items.Cast(Of Object)().
+            Dim initialData = lbInitData.Items.Cast(Of Object)().
             Select(Function(x)
                        Dim d As Double
                        If Double.TryParse(x.ToString(), d) Then Return d Else Return Double.NaN
@@ -1202,7 +1304,7 @@ Public Class FrmMain
             ' Middle Median 계산
             Dim middleMedian(n - 1) As Double
             sourceList = initialData.ToList()
-            Dim middleProgress = New Progress(Of Integer)(Sub(v) progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(v, progressBar1.Maximum)))
+            Dim middleProgress = New Progress(Of Integer)(Sub(v) pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(v, pbMain.Maximum)))
             Await Task.Run(Sub()
                                ComputeMedians(True, kernelWidth, borderCount, middleProgress)
                                medianList.CopyTo(0, middleMedian, 0, n)
@@ -1215,7 +1317,7 @@ Public Class FrmMain
             ' All Median 계산
             Dim allMedian(n - 1) As Double
             sourceList = initialData.ToList()
-            Dim allProgress = New Progress(Of Integer)(Sub(v) progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(v, progressBar1.Maximum)))
+            Dim allProgress = New Progress(Of Integer)(Sub(v) pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(v, pbMain.Maximum)))
             Await Task.Run(Sub()
                                ComputeMedians(False, kernelWidth, borderCount, allProgress)
                                medianList.CopyTo(0, allMedian, 0, n)
@@ -1248,10 +1350,175 @@ Public Class FrmMain
                 wb = workbooks.Add()
                 coms.Push(wb)
 
+                Try
+                    Dim smoothieFlavors As String() = {
+                        "Creamy Data Fusion",
+                        "Velvet Median Harmony",
+                        "Tropical Algorithm Twist",
+                        "Green Symphony Blend",
+                        "Nutty Regression Notes",
+                        "Citrus Curve Balance",
+                        "Minty Mean Melody",
+                        "Silky Quartile Swirl",
+                        "Berry Smooth Variance",
+                        "Avocado Aria"
+                    }
+
+                    Dim rnd As New Random()
+                    Dim randomFlavor As String = smoothieFlavors(rnd.Next(smoothieFlavors.Length))
+
+                    ' Excel 파일의 Built-in 속성에 기록.
+                    ' wb.BuiltinDocumentProperties("Title") = txtDatasetTitle.Text;
+                    ' wb.BuiltinDocumentProperties("Category") = "SonataSmooth Export";
+                    ' wb.BuiltinDocumentProperties("Last Author") = Environment.UserName;
+                    ' wb.BuiltinDocumentProperties("Keywords") = "AvocadoSmoothie, MedianSmoothing, Export";
+                    ' wb.BuiltinDocumentProperties("Subject") = subject;
+                    ' wb.BuiltinDocumentProperties("Comments").Value = "Exported from AvocadoSmoothie application";
+
+                    wb.BuiltinDocumentProperties("Title") = txtDatasetTitle.Text
+                    wb.BuiltinDocumentProperties("Category") = "Smoothie Blend Results"
+                    wb.BuiltinDocumentProperties("Subject") = "AvocadoSmoothie Recipe : Middle Median & All Median, Equal-weight blend"
+                    wb.BuiltinDocumentProperties("Author") = "Barista AvocadoSmoothie"
+                    wb.BuiltinDocumentProperties("Last Author") = Environment.UserName
+                    wb.BuiltinDocumentProperties("Keywords") = "AvocadoSmoothie, Recipe, Blend, MiddleMedian, AllMedian, ExcelExport"
+
+                    Dim comments As String =
+                        "A perfectly balanced blend" & Environment.NewLine &
+                        randomFlavor & Environment.NewLine &
+                        "Freshly pureed by AvocadoSmoothie"
+
+                    If n >= 1048576 Then
+                        comments &= Environment.NewLine & Environment.NewLine &
+                            "Legendary Recipe Unlocked : The Full Sheet Feast" & Environment.NewLine &
+                            "Every single row brimming with flavor."
+                    ElseIf n >= 500000 Then
+                        comments &= Environment.NewLine & Environment.NewLine &
+                            "Secret Recipe Unlocked : The Half-Million Majesty" & Environment.NewLine &
+                            "500,000+ sips of supreme smoothness."
+                    ElseIf n >= 250000 Then
+                        comments &= Environment.NewLine & Environment.NewLine &
+                            "Secret Recipe Unlocked : The Quarter-Million Smooth" & Environment.NewLine &
+                            "250,000+ sips blended to silk."
+                    ElseIf n >= 100000 Then
+                        comments &= Environment.NewLine & Environment.NewLine &
+                            "Secret Recipe Unlocked : The Hectokilo Harmony" & Environment.NewLine &
+                            "100,000+ sips blended into a masterpiece."
+                    ElseIf n >= 50000 Then
+                        comments &= Environment.NewLine & Environment.NewLine &
+                            "Secret Recipe Unlocked : The Grandmaster Blend" & Environment.NewLine &
+                            "50,000+ sips of pure harmony."
+                    ElseIf n >= 40000 Then
+                        comments &= Environment.NewLine & Environment.NewLine &
+                            "Secret Recipe Unlocked : The Forty-K Fusion" & Environment.NewLine &
+                            "A lush mix of 40,000+ data sips."
+                    ElseIf n >= 30000 Then
+                        comments &= Environment.NewLine & Environment.NewLine &
+                            "Secret Recipe Unlocked : The Triple Ten Symphony" & Environment.NewLine &
+                            "30,000+ sips in perfect rhythm."
+                    ElseIf n >= 25000 Then
+                        comments &= Environment.NewLine & Environment.NewLine &
+                            "Secret Recipe Unlocked : The Twenty-Five-K Smooth" & Environment.NewLine &
+                            "25,000+ sips blended to silk."
+                    ElseIf n >= 20000 Then
+                        comments &= Environment.NewLine & Environment.NewLine &
+                            "Secret Recipe Unlocked : The Double Ten Delight" & Environment.NewLine &
+                            "20,000+ sips of creamy balance."
+                    ElseIf n >= 10000 Then
+                        comments &= Environment.NewLine & Environment.NewLine &
+                            "Secret Recipe Unlocked : The Ten-K Treat" & Environment.NewLine &
+                            "10,000+ sips of avocado perfection."
+                    ElseIf n >= 5000 Then
+                        comments &= Environment.NewLine & Environment.NewLine &
+                            "Secret Recipe Unlocked : The Five-K Fusion" & Environment.NewLine &
+                            "5,000+ sips in smooth unison."
+                    ElseIf n >= 1000 Then
+                        comments &= Environment.NewLine & Environment.NewLine &
+                            "Secret Recipe Unlocked : The Kilo-Sip Classic" & Environment.NewLine &
+                            "1,000+ sips of silky satisfaction."
+                    ElseIf n >= 500 Then
+                        comments &= Environment.NewLine & Environment.NewLine &
+                            "Secret Recipe Unlocked : The Half-K Harmony" & Environment.NewLine &
+                            "500+ sips of mellow magic."
+                    ElseIf n >= 100 Then
+                        comments &= Environment.NewLine &
+                            "Secret Recipe Unlocked : The Century Blend" & Environment.NewLine &
+                            "A harmony of 100+ data sips."
+                    End If
+
+                    wb.BuiltinDocumentProperties("Comments") = comments
+
+
+                Catch ex As Exception
+                    ' Excel Interop 에서 발생할 수 있는 주요 예외를 구분하여 처리
+                    If TypeOf ex Is System.Runtime.InteropServices.COMException Then
+                        Dim comEx As System.Runtime.InteropServices.COMException = DirectCast(ex, System.Runtime.InteropServices.COMException)
+                        ' COM 예외 : Excel 이 설치되어 있지 않거나, 권한 문제, 속성 이름 오탈자 등
+                        MessageBox.Show(
+                            "Failed to set Excel document properties (COM error)." & vbCrLf & vbCrLf &
+                            "Excel may not be installed, the property name may be incorrect, or there may be a permissions issue." & vbCrLf & vbCrLf &
+                            "Details : " & comEx.Message,
+                            "Excel Property Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                            )
+                        ' 필요 시 로그 : Debug.WriteLine(comEx)
+
+                    ElseIf TypeOf ex Is ArgumentException Then
+                        Dim argEx As ArgumentException = DirectCast(ex, ArgumentException)
+                        ' 잘못된 속성 이름 등
+                        MessageBox.Show(
+                            "Failed to set Excel document properties (Argument error)." & vbCrLf & vbCrLf &
+                            "The built-in property name is incorrect, or an unsupported value has been assigned." & vbCrLf & vbCrLf &
+                            "Details : " & argEx.Message,
+                            "Excel Property Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                            )
+
+                    ElseIf TypeOf ex Is InvalidCastException Then
+                        Dim castEx As InvalidCastException = DirectCast(ex, InvalidCastException)
+                        ' 잘못된 타입으로 값 할당 시
+                        MessageBox.Show(
+                            "Failed to set Excel document properties (Type error)." & vbCrLf & vbCrLf &
+                            "The type of value assigned to the property is invalid." & vbCrLf & vbCrLf &
+                            "Details : " & castEx.Message,
+                            "Excel Property Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                            )
+
+                    ElseIf TypeOf ex Is System.UnauthorizedAccessException Then
+                        Dim unauthEx As System.UnauthorizedAccessException = DirectCast(ex, System.UnauthorizedAccessException)
+                        ' 파일 또는 속성에 대한 권한 부족
+                        MessageBox.Show(
+                            "Failed to set Excel document properties (Access denied)." & vbCrLf & vbCrLf &
+                            "You do not have sufficient permissions for the Excel file or its properties." & vbCrLf & vbCrLf &
+                            "Details : " & unauthEx.Message,
+                            "Excel Property Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        )
+
+                    Else
+                        ' 기타 예외 처리
+                        MessageBox.Show(
+                            "An unexpected error occurred while setting Excel document properties." & vbCrLf & vbCrLf &
+                            "Details :  " & ex.Message,
+                            "Excel Property Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                            )
+                    End If
+
+                    ' 필요 시 상세 로그 표시
+                    ' System.Diagnostics.Debug.WriteLine(ex.ToString())
+                End Try
+
                 sheets = wb.Worksheets
                 coms.Push(sheets)
 
                 ws = CType(sheets(1), Excel.Worksheet)
+                ws.Name = txtDatasetTitle.Text
                 coms.Push(ws)
 
                 ws.Cells(1, 1) = txtDatasetTitle.Text
@@ -1286,11 +1553,11 @@ Public Class FrmMain
 
                 ' 각 Median 결과를 엑셀에 분산 저장
                 Dim initialRanges = WriteDistributed(initialData, 3, "Initial Data")
-                progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(30, progressBar1.Maximum))
+                pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(30, pbMain.Maximum))
                 Dim middleRanges = WriteDistributed(middleMedian, initialRanges.Last.Item1 + 2, "MiddleMedian")
-                progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(60, progressBar1.Maximum))
+                pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(60, pbMain.Maximum))
                 Dim allRanges = WriteDistributed(allMedian, middleRanges.Last.Item1 + 2, "AllMedian")
-                progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(80, progressBar1.Maximum))
+                pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(80, pbMain.Maximum))
 
                 ' 차트 생성 (원본 로직 유지, 생성한 COM 은 추적)
                 Dim lastCol = Math.Max(Math.Max(initialRanges.Last.Item1, middleRanges.Last.Item1), allRanges.Last.Item1)
@@ -1360,17 +1627,43 @@ Public Class FrmMain
                 AddSeries(middleRanges, "Middle Median")
                 AddSeries(allRanges, "All Median")
 
-                progressBar1.Value = Math.Max(progressBar1.Minimum, Math.Min(100, progressBar1.Maximum))
+                pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(100, pbMain.Maximum))
                 Await Task.Delay(200)
-                progressBar1.Value = 0
+                pbMain.Value = 0
 
                 ' 창 유지 : 사용자에게 권한 이관
                 wb.Saved = False ' 닫기 시 저장 대화상자 표시
                 excel.Visible = True
                 excel.DisplayAlerts = True
 
+            Catch ex As System.Runtime.InteropServices.COMException
+                Dim msg As String = "Excel interop error: " & ex.Message & vbCrLf & vbCrLf &
+                    "Microsoft Excel does not appear to be installed, or there was a problem starting Excel." & vbCrLf &
+                    "If Excel is not installed, you can visit the Microsoft Office website to purchase or install Office." & vbCrLf & vbCrLf &
+                    "Would you like to open the Microsoft Office download page now?"
+                Dim result = MessageBox.Show(msg, "Export Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2)
+                If result = DialogResult.Yes Then
+                    Try
+                        Process.Start(New ProcessStartInfo("https://www.microsoft.com/microsoft-365/buy/compare-all-microsoft-365-products") With {.UseShellExecute = True})
+                    Catch
+                        Exit Sub
+                    End Try
+                End If
+            Catch ex As AggregateException
+                Dim allMessages = String.Join(Environment.NewLine, ex.InnerExceptions.Select(Function(inner) inner.Message))
+                MessageBox.Show("One or more errors occurred during export : " & Environment.NewLine & allMessages, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Catch ex As System.IO.PathTooLongException
+                MessageBox.Show("The file path is too long. Please choose a shorter path.", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Catch ex As System.IO.DirectoryNotFoundException
+                MessageBox.Show("The specified directory was not found. Please check the save location.", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Catch ex As System.IO.IOException
+                MessageBox.Show("An I/O error occurred while saving the file. Please check disk space and permissions.", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Catch ex As System.OutOfMemoryException
+                MessageBox.Show("Not enough memory to complete the export. Try closing other applications.", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Catch ex As System.BadImageFormatException
+                MessageBox.Show("Excel (Office) bitness (32-bit / 64-bit) or Interop DLL mismatch. Please check your Office installation.", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Catch ex As Exception
-                MessageBox.Show("Excel export failed: " & ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                MessageBox.Show("An unexpected error occurred: " & ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Finally
                 ' 생성한 COM 참조를 역순으로 해제
                 ReleaseAll(coms)
@@ -1406,7 +1699,7 @@ Public Class FrmMain
         AboutBox.ShowDialog()
     End Sub
 
-    Private Sub txtExcelTitle_Enter(sender As Object, e As EventArgs) Handles txtDatasetTitle.Enter
+    Private Sub txtDatasetTitle_Enter(sender As Object, e As EventArgs) Handles txtDatasetTitle.Enter
         If txtDatasetTitle.Text = ExcelTitlePlaceholder Then
             txtDatasetTitle.Text = ""
             txtDatasetTitle.ForeColor = Color.Black
@@ -1414,7 +1707,7 @@ Public Class FrmMain
         txtDatasetTitle.TextAlign = HorizontalAlignment.Left
     End Sub
 
-    Private Sub txtExcelTitle_Leave(sender As Object, e As EventArgs) Handles txtDatasetTitle.Leave
+    Private Sub txtDatasetTitle_Leave(sender As Object, e As EventArgs) Handles txtDatasetTitle.Leave
         If String.IsNullOrWhiteSpace(txtDatasetTitle.Text) Then
             txtDatasetTitle.Text = ExcelTitlePlaceholder
             txtDatasetTitle.ForeColor = Color.Gray
@@ -1422,8 +1715,8 @@ Public Class FrmMain
         End If
     End Sub
 
-    Private Sub txtExcelTitle_TextChanged(sender As Object, e As EventArgs) Handles txtDatasetTitle.TextChanged
-        UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
+    Private Sub txtDatasetTitle_TextChanged(sender As Object, e As EventArgs) Handles txtDatasetTitle.TextChanged
+        UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
 
         If txtDatasetTitle.Text = ExcelTitlePlaceholder Then
             txtDatasetTitle.TextAlign = HorizontalAlignment.Center
@@ -1432,44 +1725,402 @@ Public Class FrmMain
         End If
     End Sub
 
-    Private Sub syncButton1_Click(sender As Object, e As EventArgs) Handles syncButton1.Click
-        If ListBox1.Items.Count <> ListBox2.Items.Count Then Return
-        If ListBox1.SelectedIndices.Count = 0 Then Return
+    Private Sub btnInitSelectSync_Click(sender As Object, e As EventArgs) Handles btnInitSelectSync.Click
+        If lbInitData.Items.Count <> lbRefinedData.Items.Count Then Return
+        If lbInitData.SelectedIndices.Count = 0 Then Return
 
-        ListBox2.BeginUpdate()
+        lbRefinedData.BeginUpdate()
         Try
-            ListBox2.ClearSelected()
-            Dim indices = New Integer(ListBox1.SelectedIndices.Count - 1) {}
-            ListBox1.SelectedIndices.CopyTo(indices, 0)
+            lbRefinedData.ClearSelected()
+            Dim indices = New Integer(lbInitData.SelectedIndices.Count - 1) {}
+            lbInitData.SelectedIndices.CopyTo(indices, 0)
             For i As Integer = 0 To indices.Length - 1
-                ListBox2.SetSelected(indices(i), True)
+                lbRefinedData.SetSelected(indices(i), True)
             Next
 
-            If ListBox1.TopIndex >= 0 Then
-                ListBox2.TopIndex = ListBox1.TopIndex
+            If lbInitData.TopIndex >= 0 Then
+                lbRefinedData.TopIndex = lbInitData.TopIndex
             End If
+
+            slblDesc.Text = $"Synchronized {indices.Length} selected item{If(indices.Length > 1, "s", "")} to Refined Dataset."
+            slblDesc.Visible = True
         Finally
-            ListBox2.EndUpdate()
+            lbRefinedData.EndUpdate()
         End Try
     End Sub
 
-    Private Sub syncButton2_Click(sender As Object, e As EventArgs) Handles syncButton2.Click
-        If ListBox2.Items.Count <> ListBox1.Items.Count Then Return
-        If ListBox2.SelectedIndices.Count = 0 Then Return
+    Private Sub btnRefSelectSync_Click(sender As Object, e As EventArgs) Handles btnRefSelectSync.Click
+        If lbRefinedData.Items.Count <> lbInitData.Items.Count Then Return
+        If lbRefinedData.SelectedIndices.Count = 0 Then Return
 
-        ListBox1.BeginUpdate()
+        lbInitData.BeginUpdate()
         Try
-            ListBox1.ClearSelected()
-            Dim indices = New Integer(ListBox2.SelectedIndices.Count - 1) {}
-            ListBox2.SelectedIndices.CopyTo(indices, 0)
+            lbInitData.ClearSelected()
+            Dim indices = New Integer(lbRefinedData.SelectedIndices.Count - 1) {}
+            lbRefinedData.SelectedIndices.CopyTo(indices, 0)
             For i As Integer = 0 To indices.Length - 1
-                ListBox1.SetSelected(indices(i), True)
+                lbInitData.SetSelected(indices(i), True)
             Next
-            If ListBox2.TopIndex >= 0 Then
-                ListBox1.TopIndex = ListBox2.TopIndex
+
+            If lbRefinedData.TopIndex >= 0 Then
+                lbInitData.TopIndex = lbRefinedData.TopIndex
             End If
+
+            slblDesc.Text = $"Synchronized {indices.Length} selected item{If(indices.Length > 1, "s", "")} to Initial Dataset."
+            slblDesc.Visible = True
         Finally
-            ListBox1.EndUpdate()
+            lbInitData.EndUpdate()
         End Try
     End Sub
+
+#Region "Mouse Hover / Leave Handlers"
+    Private Sub MouseLeaveHandler(sender As Object, e As EventArgs)
+        If isRefinedLoading = True Or lbRefinedData.Items.Count = 0 Then
+            slblDesc.Text = "To calibrate, add data to the Initial Dataset, choose a Calibration Method, set Smoothing Parameters."
+            slblDesc.Visible = True
+        Else
+            slblDesc.Visible = False
+        End If
+    End Sub
+
+    Private Sub txtInitAdd_MouseHover(sender As Object, e As EventArgs) Handles txtInitAdd.MouseHover
+        slblDesc.Visible = True
+        slblDesc.Text = "Enter a numeric value to add to the Initial Dataset. Press Enter Key or click the Add button to submit."
+    End Sub
+
+    Private Sub txtInitAdd_MouseLeave(sender As Object, e As EventArgs) Handles txtInitAdd.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnInitAdd_MouseHover(sender As Object, e As EventArgs) Handles btnInitAdd.MouseHover
+        slblDesc.Visible = True
+        slblDesc.Text = "Add the entered value to the Initial Dataset."
+    End Sub
+
+    Private Sub btnInitAdd_MouseLeave(sender As Object, e As EventArgs) Handles btnInitAdd.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub rbtnAllMedian_MouseHover(sender As Object, e As EventArgs) Handles rbtnAllMedian.MouseHover
+        slblDesc.Visible = True
+        slblDesc.Text = "Applies a median filter to the entire dataset, smoothing out noise while preserving overall trends."
+    End Sub
+
+    Private Sub rbtnAllMedian_MouseLeave(sender As Object, e As EventArgs) Handles rbtnAllMedian.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub rbtnMidMedian_MouseHover(sender As Object, e As EventArgs) Handles rbtnMidMedian.MouseHover
+        slblDesc.Visible = True
+        slblDesc.Text = "Applies a median filter to the middle portion of the dataset, focusing on central trends while reducing edge effects."
+    End Sub
+
+    Private Sub rbtnMidMedian_MouseLeave(sender As Object, e As EventArgs) Handles rbtnMidMedian.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub rbtnXLSX_MouseHover(sender As Object, e As EventArgs) Handles rbtnXLSX.MouseHover
+        slblDesc.Visible = True
+        slblDesc.Text = "Exports the smoothed dataset to an Excel file, allowing for further analysis and visualization."
+    End Sub
+
+    Private Sub rbtnXLSX_MouseLeave(sender As Object, e As EventArgs) Handles rbtnXLSX.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub rbtnCSV_MouseHover(sender As Object, e As EventArgs) Handles rbtnCSV.MouseHover
+        slblDesc.Visible = True
+        slblDesc.Text = "Exports the smoothed dataset to a CSV file, providing a simple text format for data exchange."
+    End Sub
+
+    Private Sub rbtnCSV_MouseLeave(sender As Object, e As EventArgs) Handles rbtnCSV.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub lblKernelRadius_MouseHover(sender As Object, e As EventArgs) Handles lblKernelRadius.MouseHover
+        slblDesc.Visible = True
+        slblDesc.Text = "Select the kernel radius for the median filter. A larger radius smooths more but may lose detail."
+    End Sub
+
+    Private Sub lblKernelRadius_MouseLeave(sender As Object, e As EventArgs) Handles lblKernelRadius.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub cbxKernelRadius_MouseHover(sender As Object, e As EventArgs) Handles cbxKernelRadius.MouseHover
+        slblDesc.Visible = True
+        slblDesc.Text = "Select the kernel radius for the median filter. A larger radius smooths more but may lose detail."
+    End Sub
+
+    Private Sub cbxKernelRadius_MouseLeave(sender As Object, e As EventArgs) Handles cbxKernelRadius.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub lblBorderCount_MouseHover(sender As Object, e As EventArgs) Handles lblBorderCount.MouseHover
+        slblDesc.Visible = True
+        slblDesc.Text = "Select the number of border elements to consider when applying the median filter. More borders can help preserve edge details."
+    End Sub
+
+    Private Sub lblBorderCount_MouseLeave(sender As Object, e As EventArgs) Handles lblBorderCount.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub cbxBorderCount_MouseHover(sender As Object, e As EventArgs) Handles cbxBorderCount.MouseHover
+        slblDesc.Visible = True
+        slblDesc.Text = "Select the number of border elements to consider when applying the median filter. More borders can help preserve edge details."
+    End Sub
+
+    Private Sub cbxBorderCount_MouseLeave(sender As Object, e As EventArgs) Handles cbxBorderCount.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnInitClear_MouseHover(sender As Object, e As EventArgs) Handles btnInitClear.MouseHover
+        slblDesc.Visible = True
+        Dim itemCount As Integer = lbInitData.Items.Count
+        Dim refItemCount As Integer = lbRefinedData.Items.Count
+
+        Dim itemText As String = If(itemCount = 1, "item", "items")
+        Dim refItemText As String = If(refItemCount = 1, "item", "items")
+
+        If itemCount = 1 AndAlso refItemCount = 1 Then
+            slblDesc.Text = "Remove the only item from the Initial Dataset listbox. This will also clear the only item from the Refined Dataset listbox."
+        ElseIf itemCount = 1 Then
+            slblDesc.Text = $"Remove the only item from the Initial Dataset listbox. This will also clear all {refItemCount} {refItemText} from the Refined Dataset listbox."
+        ElseIf refItemCount = 1 Then
+            slblDesc.Text = $"Remove all {itemCount} {itemText} from the Initial Dataset listbox. This will also clear the only item from the Refined Dataset listbox."
+        Else
+            slblDesc.Text = $"Remove all {itemCount} {itemText} from the Initial Dataset listbox. This will also clear all {refItemCount} {refItemText} from the Refined Dataset listbox."
+        End If
+    End Sub
+
+    Private Sub btnInitClear_MouseLeave(sender As Object, e As EventArgs) Handles btnInitClear.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnInitCopy_MouseHover(sender As Object, e As EventArgs) Handles btnInitCopy.MouseHover
+        slblDesc.Visible = True
+
+        Dim selCount As Integer = lbInitData.SelectedItems.Count
+
+        If selCount = 0 Then
+            slblDesc.Text = "Copy all items from the Initial Dataset listbox to the clipboard."
+        ElseIf selCount = 1 Then
+            slblDesc.Text = "Copy the selected item from the Initial Dataset listbox to the clipboard."
+        Else
+            slblDesc.Text = $"Copy {selCount} selected items from the Initial Dataset listbox to the clipboard."
+        End If
+    End Sub
+
+    Private Sub btnInitCopy_MouseLeave(sender As Object, e As EventArgs) Handles btnInitCopy.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnInitPaste_MouseHover(sender As Object, e As EventArgs) Handles btnInitPaste.MouseHover
+        slblDesc.Visible = True
+        slblDesc.Text = "Paste numeric values from the clipboard into the Initial Dataset listbox."
+    End Sub
+
+    Private Sub btnInitPaste_MouseLeave(sender As Object, e As EventArgs) Handles btnInitPaste.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnInitEdit_MouseHover(sender As Object, e As EventArgs) Handles btnInitEdit.MouseHover
+        Dim selCount As Integer = lbInitData.SelectedItems.Count
+        slblDesc.Visible = True
+
+        If selCount = 1 Then
+            slblDesc.Text = "Edit the selected item in the Initial Dataset listbox."
+        Else
+            slblDesc.Text = $"Edit {selCount} selected items in the Initial Dataset listbox."
+        End If
+    End Sub
+
+    Private Sub btnInitEdit_MouseLeave(sender As Object, e As EventArgs) Handles btnInitEdit.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnInitDelete_MouseHover(sender As Object, e As EventArgs) Handles btnInitDelete.MouseHover
+        Dim selCount As Integer = lbInitData.SelectedItems.Count
+        slblDesc.Visible = True
+
+        If (selCount = 1) Then
+            slblDesc.Text = "Delete the selected item from the Initial Dataset listbox."
+        Else
+            slblDesc.Text = $"Delete {selCount} selected items from the Initial Dataset listbox."
+        End If
+    End Sub
+
+    Private Sub btnInitDelete_MouseLeave(sender As Object, e As EventArgs) Handles btnInitDelete.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnInitSelectAll_MouseHover(sender As Object, e As EventArgs) Handles btnInitSelectAll.MouseHover
+        Dim itemCount As Integer = lbInitData.Items.Count
+        slblDesc.Visible = True
+
+        If (itemCount = 1) Then
+            slblDesc.Text = "Select the item in the Initial Dataset"
+        ElseIf (itemCount > 1) Then
+            slblDesc.Text = $"Select all items in the Initial Dataset listbox."
+        End If
+    End Sub
+
+    Private Sub btnInitSelectAll_MouseLeave(sender As Object, e As EventArgs) Handles btnInitSelectAll.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnInitSelClear_MouseHover(sender As Object, e As EventArgs)
+        Dim selCount As Integer = lbInitData.SelectedItems.Count
+        slblDesc.Visible = True
+
+        If selCount = 1 Then
+            slblDesc.Text = "Deselect the selected item in the Initial Dataset listbox."
+        Else
+            slblDesc.Text = $"Deselect all {selCount} selected items in the Initial Dataset listbox."
+        End If
+    End Sub
+
+    Private Sub btnInitSelectClr_MouseLeave(sender As Object, e As EventArgs) Handles btnInitSelectClr.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnInitSelectClr_MouseHover(sender As Object, e As EventArgs) Handles btnInitSelectSync.MouseHover, btnInitSelectClr.MouseHover
+        Dim selCount As Integer = lbInitData.SelectedItems.Count
+        slblDesc.Visible = True
+
+        If selCount = 1 Then
+            slblDesc.Text = "Select the corresponding item in the Refined Dataset listbox."
+        Else
+            slblDesc.Text = $"Select {selCount} corresponding items in the Refined Dataset listbox."
+        End If
+    End Sub
+
+    Private Sub btnInitSync_MouseLeave(sender As Object, e As EventArgs) Handles btnInitSelectSync.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub txtDatasetTitle_MouseHover(sender As Object, e As EventArgs) Handles txtDatasetTitle.MouseHover
+        slblDesc.Visible = True
+
+        If txtDatasetTitle.Text = ExcelTitlePlaceholder Then
+            slblDesc.Text = "Enter a title for the Excel document. This will be used as the main title in the first cell."
+        Else
+            slblDesc.Text = "Edit the title for the Excel document. This will be used as the main title in the first cell."
+        End If
+    End Sub
+
+    Private Sub txtDatasetTitle_MouseLeave(sender As Object, e As EventArgs) Handles txtDatasetTitle.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnRefClear_MouseHover(sender As Object, e As EventArgs) Handles btnRefClear.MouseHover
+        slblDesc.Visible = True
+
+        Dim itemCount As Integer = lbRefinedData.Items.Count
+
+        If (itemCount = 1) Then
+            slblDesc.Text = "Remove the only item from the Refined Dataset listbox."
+        Else
+            slblDesc.Text = $"Remove all {itemCount} items from the Refined Dataset listbox."
+        End If
+    End Sub
+
+    Private Sub btnRefClear_MouseLeave(sender As Object, e As EventArgs) Handles btnRefClear.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnRefCopy_MouseHover(sender As Object, e As EventArgs) Handles btnRefCopy.MouseHover
+        slblDesc.Visible = True
+
+        Dim selCount As Integer = lbRefinedData.SelectedItems.Count
+
+        If selCount = 0 Then
+            slblDesc.Text = "Copy all items from the Refined Dataset listbox to the clipboard."
+        ElseIf selCount = 1 Then
+            slblDesc.Text = "Copy the selected item from the Refined Dataset listbox to the clipboard."
+        Else
+            slblDesc.Text = $"Copy {selCount} selected items from the Refined Dataset listbox to the clipboard."
+        End If
+    End Sub
+
+    Private Sub btnRefCopy_MouseLeave(sender As Object, e As EventArgs) Handles btnRefCopy.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnRefSelectAll_MouseHover(sender As Object, e As EventArgs) Handles btnRefSelectAll.MouseHover
+        Dim itemCount As Integer = lbRefinedData.Items.Count
+        slblDesc.Visible = True
+
+        If (itemCount = 1) Then
+            slblDesc.Text = "Select the only item in the Refined Dataset listbox."
+        ElseIf (itemCount > 1) Then
+            slblDesc.Text = $"Select all items in the Refined Dataset listbox."
+        End If
+    End Sub
+
+    Private Sub btnRefSelectAll_MouseLeave(sender As Object, e As EventArgs) Handles btnRefSelectAll.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnRefSelectClr_MouseHover(sender As Object, e As EventArgs) Handles btnRefSelectClr.MouseHover
+        Dim selCount As Integer = lbRefinedData.SelectedItems.Count
+        slblDesc.Visible = True
+
+        If selCount = 1 Then
+            slblDesc.Text = "Deselect the selected item in the Refined Dataset listbox."
+        Else
+            slblDesc.Text = $"Deselect all {selCount} selected items in the Refined Dataset listbox."
+        End If
+    End Sub
+
+    Private Sub btnRefSelectClr_MouseLeave(sender As Object, e As EventArgs) Handles btnRefSelectClr.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnRefSync_MouseHover(sender As Object, e As EventArgs) Handles btnRefSelectSync.MouseHover
+        Dim selCount As Integer = lbRefinedData.SelectedItems.Count
+        slblDesc.Visible = True
+
+        If selCount = 1 Then
+            slblDesc.Text = "Select the corresponding item in the Initial Dataset listbox."
+        Else
+            slblDesc.Text = $"Select {selCount} corresponding items in the Initial Dataset listbox."
+        End If
+    End Sub
+
+    Private Sub btnRefSync_MouseLeave(sender As Object, e As EventArgs) Handles btnRefSelectSync.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnCalibrate_MouseHover(sender As Object, e As EventArgs) Handles btnCalibrate.MouseHover
+        Dim itemCount As Integer = lbInitData.Items.Count
+        slblDesc.Visible = True
+
+        If (itemCount = 0) Then
+            slblDesc.Text = "To calibrate, add data to the Initial Dataset, choose a Calibration Method, set Smoothing Parameters."
+        Else
+            slblDesc.Text = "Click to start the calibration process using the selected smoothing method and parameters."
+        End If
+    End Sub
+
+    Private Sub btnCalibrate_MouseLeave(sender As Object, e As EventArgs) Handles btnCalibrate.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub btnExport_MouseHover(sender As Object, e As EventArgs) Handles btnExport.MouseHover
+        slblDesc.Visible = True
+
+        Dim itemCount As Integer = lbRefinedData.Items.Count
+        If (itemCount = 0) Then
+            slblDesc.Text = "To export, first calibrate the data using the Calibrate button."
+        ElseIf (rbtnXLSX.Checked) Then
+            slblDesc.Text = "Click to export to an Excel file with the specified title and settings."
+        ElseIf (rbtnCSV.Checked) Then
+            slblDesc.Text = "Click to export to a CSV file with the specified title and settings."
+        End If
+    End Sub
+
+    Private Sub btnExport_MouseLeave(sender As Object, e As EventArgs) Handles btnExport.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+#End Region
 End Class

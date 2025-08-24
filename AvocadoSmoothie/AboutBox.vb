@@ -1,10 +1,10 @@
 ﻿Public Class AboutBox
     Private Sub AboutBox_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Label1.Select()
-        lblVersion.Text = " v." & ProductVersion
+        lblAppTtl.Select()
+        lblAppVersion.Text = " v." & ProductVersion
     End Sub
 
-    Private Sub lblCopyright_Click(sender As Object, e As EventArgs) Handles lblCopyright.Click
+    Private Sub lblCopyright_Click(sender As Object, e As EventArgs) Handles slblCopyright.Click
         Process.Start("https://www.github.com/happybono")
     End Sub
 

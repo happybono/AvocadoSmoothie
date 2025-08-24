@@ -23,90 +23,90 @@ Partial Class AboutBox
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(AboutBox))
-        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
-        Me.lblCopyright = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.TextBox1 = New System.Windows.Forms.TextBox()
-        Me.lblVersion = New System.Windows.Forms.Label()
-        Me.Label1 = New System.Windows.Forms.Label()
+        Me.sstripAbout = New System.Windows.Forms.StatusStrip()
+        Me.slblCopyright = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.lblLicenseTerms = New System.Windows.Forms.Label()
+        Me.txtLicenseTerms = New System.Windows.Forms.TextBox()
+        Me.lblAppVersion = New System.Windows.Forms.Label()
+        Me.lblAppTtl = New System.Windows.Forms.Label()
         Me.btnOK = New System.Windows.Forms.Button()
         Me.btnDonation = New System.Windows.Forms.Button()
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
-        Me.StatusStrip1.SuspendLayout()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.picboxAppLogo = New System.Windows.Forms.PictureBox()
+        Me.sstripAbout.SuspendLayout()
+        CType(Me.picboxAppLogo, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'StatusStrip1
+        'sstripAbout
         '
-        Me.StatusStrip1.AutoSize = False
-        Me.StatusStrip1.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
-        Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(24, 24)
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.lblCopyright})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 267)
-        Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(367, 24)
-        Me.StatusStrip1.SizingGrip = False
-        Me.StatusStrip1.Stretch = False
-        Me.StatusStrip1.TabIndex = 23
+        Me.sstripAbout.AutoSize = False
+        Me.sstripAbout.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.sstripAbout.ImageScalingSize = New System.Drawing.Size(24, 24)
+        Me.sstripAbout.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.slblCopyright})
+        Me.sstripAbout.Location = New System.Drawing.Point(0, 267)
+        Me.sstripAbout.Name = "sstripAbout"
+        Me.sstripAbout.Size = New System.Drawing.Size(367, 24)
+        Me.sstripAbout.SizingGrip = False
+        Me.sstripAbout.Stretch = False
+        Me.sstripAbout.TabIndex = 23
         '
-        'lblCopyright
+        'slblCopyright
         '
-        Me.lblCopyright.ActiveLinkColor = System.Drawing.Color.Chartreuse
-        Me.lblCopyright.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
-        Me.lblCopyright.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
-        Me.lblCopyright.DoubleClickEnabled = True
-        Me.lblCopyright.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCopyright.ForeColor = System.Drawing.Color.White
-        Me.lblCopyright.IsLink = True
-        Me.lblCopyright.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
-        Me.lblCopyright.LinkColor = System.Drawing.Color.White
-        Me.lblCopyright.Margin = New System.Windows.Forms.Padding(0)
-        Me.lblCopyright.Name = "lblCopyright"
-        Me.lblCopyright.Size = New System.Drawing.Size(352, 24)
-        Me.lblCopyright.Spring = True
-        Me.lblCopyright.Text = "ⓒ 2025 HappyBono. All rights reserved."
+        Me.slblCopyright.ActiveLinkColor = System.Drawing.Color.Chartreuse
+        Me.slblCopyright.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.slblCopyright.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text
+        Me.slblCopyright.DoubleClickEnabled = True
+        Me.slblCopyright.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.slblCopyright.ForeColor = System.Drawing.Color.White
+        Me.slblCopyright.IsLink = True
+        Me.slblCopyright.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline
+        Me.slblCopyright.LinkColor = System.Drawing.Color.White
+        Me.slblCopyright.Margin = New System.Windows.Forms.Padding(0)
+        Me.slblCopyright.Name = "slblCopyright"
+        Me.slblCopyright.Size = New System.Drawing.Size(352, 24)
+        Me.slblCopyright.Spring = True
+        Me.slblCopyright.Text = "ⓒ 2025 HappyBono. All rights reserved."
         '
-        'Label2
+        'lblLicenseTerms
         '
-        Me.Label2.AutoSize = True
-        Me.Label2.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label2.Location = New System.Drawing.Point(17, 77)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(262, 17)
-        Me.Label2.TabIndex = 22
-        Me.Label2.Text = "Avocado Smoothie Software Licence Terms"
+        Me.lblLicenseTerms.AutoSize = True
+        Me.lblLicenseTerms.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblLicenseTerms.Location = New System.Drawing.Point(17, 77)
+        Me.lblLicenseTerms.Name = "lblLicenseTerms"
+        Me.lblLicenseTerms.Size = New System.Drawing.Size(261, 17)
+        Me.lblLicenseTerms.TabIndex = 22
+        Me.lblLicenseTerms.Text = "Avocado Smoothie Software License Terms"
         '
-        'TextBox1
+        'txtLicenseTerms
         '
-        Me.TextBox1.Font = New System.Drawing.Font("Microsoft NeoGothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TextBox1.Location = New System.Drawing.Point(19, 100)
-        Me.TextBox1.Multiline = True
-        Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.ReadOnly = True
-        Me.TextBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBox1.Size = New System.Drawing.Size(328, 124)
-        Me.TextBox1.TabIndex = 20
-        Me.TextBox1.Text = resources.GetString("TextBox1.Text")
+        Me.txtLicenseTerms.Font = New System.Drawing.Font("Microsoft NeoGothic", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtLicenseTerms.Location = New System.Drawing.Point(19, 100)
+        Me.txtLicenseTerms.Multiline = True
+        Me.txtLicenseTerms.Name = "txtLicenseTerms"
+        Me.txtLicenseTerms.ReadOnly = True
+        Me.txtLicenseTerms.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.txtLicenseTerms.Size = New System.Drawing.Size(328, 124)
+        Me.txtLicenseTerms.TabIndex = 20
+        Me.txtLicenseTerms.Text = resources.GetString("txtLicenseTerms.Text")
         '
-        'lblVersion
+        'lblAppVersion
         '
-        Me.lblVersion.AutoSize = True
-        Me.lblVersion.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblVersion.Location = New System.Drawing.Point(16, 47)
-        Me.lblVersion.Name = "lblVersion"
-        Me.lblVersion.Size = New System.Drawing.Size(67, 20)
-        Me.lblVersion.TabIndex = 19
-        Me.lblVersion.Text = " v.1.0.0.0"
+        Me.lblAppVersion.AutoSize = True
+        Me.lblAppVersion.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblAppVersion.Location = New System.Drawing.Point(16, 47)
+        Me.lblAppVersion.Name = "lblAppVersion"
+        Me.lblAppVersion.Size = New System.Drawing.Size(67, 20)
+        Me.lblAppVersion.TabIndex = 19
+        Me.lblAppVersion.Text = " v.1.0.0.0"
         '
-        'Label1
+        'lblAppTtl
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(15, 9)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(191, 28)
-        Me.Label1.TabIndex = 18
-        Me.Label1.Text = "Avocado Smoothie"
+        Me.lblAppTtl.AutoSize = True
+        Me.lblAppTtl.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblAppTtl.Location = New System.Drawing.Point(15, 9)
+        Me.lblAppTtl.Name = "lblAppTtl"
+        Me.lblAppTtl.Size = New System.Drawing.Size(191, 28)
+        Me.lblAppTtl.TabIndex = 18
+        Me.lblAppTtl.Text = "Avocado Smoothie"
         '
         'btnOK
         '
@@ -128,15 +128,15 @@ Partial Class AboutBox
         Me.btnDonation.Text = "Buy Me a Coffee"
         Me.btnDonation.UseVisualStyleBackColor = True
         '
-        'PictureBox1
+        'picboxAppLogo
         '
-        Me.PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), System.Drawing.Image)
-        Me.PictureBox1.Location = New System.Drawing.Point(282, 9)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(65, 65)
-        Me.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
-        Me.PictureBox1.TabIndex = 26
-        Me.PictureBox1.TabStop = False
+        Me.picboxAppLogo.Image = CType(resources.GetObject("picboxAppLogo.Image"), System.Drawing.Image)
+        Me.picboxAppLogo.Location = New System.Drawing.Point(282, 9)
+        Me.picboxAppLogo.Name = "picboxAppLogo"
+        Me.picboxAppLogo.Size = New System.Drawing.Size(65, 65)
+        Me.picboxAppLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom
+        Me.picboxAppLogo.TabIndex = 26
+        Me.picboxAppLogo.TabStop = False
         '
         'AboutBox
         '
@@ -144,12 +144,12 @@ Partial Class AboutBox
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
         Me.ClientSize = New System.Drawing.Size(367, 291)
-        Me.Controls.Add(Me.PictureBox1)
-        Me.Controls.Add(Me.StatusStrip1)
-        Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.TextBox1)
-        Me.Controls.Add(Me.lblVersion)
-        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.picboxAppLogo)
+        Me.Controls.Add(Me.sstripAbout)
+        Me.Controls.Add(Me.lblLicenseTerms)
+        Me.Controls.Add(Me.txtLicenseTerms)
+        Me.Controls.Add(Me.lblAppVersion)
+        Me.Controls.Add(Me.lblAppTtl)
         Me.Controls.Add(Me.btnOK)
         Me.Controls.Add(Me.btnDonation)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
@@ -158,21 +158,21 @@ Partial Class AboutBox
         Me.Name = "AboutBox"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "About Avocado Smoothie"
-        Me.StatusStrip1.ResumeLayout(False)
-        Me.StatusStrip1.PerformLayout()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.sstripAbout.ResumeLayout(False)
+        Me.sstripAbout.PerformLayout()
+        CType(Me.picboxAppLogo, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
 
-    Friend WithEvents StatusStrip1 As StatusStrip
-    Friend WithEvents lblCopyright As ToolStripStatusLabel
-    Friend WithEvents Label2 As Label
-    Friend WithEvents TextBox1 As TextBox
-    Friend WithEvents lblVersion As Label
-    Friend WithEvents Label1 As Label
+    Friend WithEvents sstripAbout As StatusStrip
+    Friend WithEvents slblCopyright As ToolStripStatusLabel
+    Friend WithEvents lblLicenseTerms As Label
+    Friend WithEvents txtLicenseTerms As TextBox
+    Friend WithEvents lblAppVersion As Label
+    Friend WithEvents lblAppTtl As Label
     Friend WithEvents btnOK As Button
     Friend WithEvents btnDonation As Button
-    Friend WithEvents PictureBox1 As PictureBox
+    Friend WithEvents picboxAppLogo As PictureBox
 End Class

@@ -24,33 +24,34 @@ Partial Class FrmMain
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmMain))
-        Me.ListBox1 = New System.Windows.Forms.ListBox()
-        Me.ListBox2 = New System.Windows.Forms.ListBox()
-        Me.calcButton = New System.Windows.Forms.Button()
-        Me.RadioButton1 = New System.Windows.Forms.RadioButton()
-        Me.RadioButton2 = New System.Windows.Forms.RadioButton()
-        Me.TextBox1 = New System.Windows.Forms.TextBox()
-        Me.addButton = New System.Windows.Forms.Button()
-        Me.copyButton1 = New System.Windows.Forms.Button()
+        Me.lbInitData = New System.Windows.Forms.ListBox()
+        Me.lbRefinedData = New System.Windows.Forms.ListBox()
+        Me.btnCalibrate = New System.Windows.Forms.Button()
+        Me.rbtnMidMedian = New System.Windows.Forms.RadioButton()
+        Me.rbtnAllMedian = New System.Windows.Forms.RadioButton()
+        Me.txtInitAdd = New System.Windows.Forms.TextBox()
+        Me.btnInitAdd = New System.Windows.Forms.Button()
+        Me.btnInitCopy = New System.Windows.Forms.Button()
         Me.cbxBorderCount = New System.Windows.Forms.ComboBox()
-        Me.clearButton1 = New System.Windows.Forms.Button()
-        Me.clearButton2 = New System.Windows.Forms.Button()
-        Me.deleteButton1 = New System.Windows.Forms.Button()
-        Me.pasteButton = New System.Windows.Forms.Button()
-        Me.copyButton2 = New System.Windows.Forms.Button()
-        Me.selectAllButton1 = New System.Windows.Forms.Button()
-        Me.selectAllButton2 = New System.Windows.Forms.Button()
-        Me.GroupBox2 = New System.Windows.Forms.GroupBox()
-        Me.syncButton1 = New System.Windows.Forms.Button()
-        Me.editButton = New System.Windows.Forms.Button()
-        Me.lblCnt1 = New System.Windows.Forms.Label()
-        Me.sClrButton1 = New System.Windows.Forms.Button()
-        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
-        Me.syncButton2 = New System.Windows.Forms.Button()
-        Me.lblCnt2 = New System.Windows.Forms.Label()
-        Me.sClrButton2 = New System.Windows.Forms.Button()
-        Me.progressBar1 = New System.Windows.Forms.ProgressBar()
-        Me.statusStrip1 = New System.Windows.Forms.StatusStrip()
+        Me.btnInitClear = New System.Windows.Forms.Button()
+        Me.btnRefClear = New System.Windows.Forms.Button()
+        Me.btnInitDelete = New System.Windows.Forms.Button()
+        Me.btnInitPaste = New System.Windows.Forms.Button()
+        Me.btnRefCopy = New System.Windows.Forms.Button()
+        Me.btnInitSelectAll = New System.Windows.Forms.Button()
+        Me.btnRefSelectAll = New System.Windows.Forms.Button()
+        Me.gbInitData = New System.Windows.Forms.GroupBox()
+        Me.btnInitSelectSync = New System.Windows.Forms.Button()
+        Me.btnInitEdit = New System.Windows.Forms.Button()
+        Me.lblInitCnt = New System.Windows.Forms.Label()
+        Me.btnInitSelectClr = New System.Windows.Forms.Button()
+        Me.gbRefinedData = New System.Windows.Forms.GroupBox()
+        Me.btnRefSelectSync = New System.Windows.Forms.Button()
+        Me.lblRefCnt = New System.Windows.Forms.Label()
+        Me.btnRefSelectClr = New System.Windows.Forms.Button()
+        Me.pbMain = New System.Windows.Forms.ProgressBar()
+        Me.sstripMain = New System.Windows.Forms.StatusStrip()
+        Me.slblDesc = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tlblCalibratedType = New System.Windows.Forms.ToolStripStatusLabel()
         Me.slblCalibratedType = New System.Windows.Forms.ToolStripStatusLabel()
         Me.slblSeparator1 = New System.Windows.Forms.ToolStripStatusLabel()
@@ -59,125 +60,125 @@ Partial Class FrmMain
         Me.slblSeparator2 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tlblBorderCount = New System.Windows.Forms.ToolStripStatusLabel()
         Me.slblBorderCount = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.groupBox5 = New System.Windows.Forms.GroupBox()
+        Me.gbSmoothParams = New System.Windows.Forms.GroupBox()
         Me.lblBorderCount = New System.Windows.Forms.Label()
         Me.cbxKernelRadius = New System.Windows.Forms.ComboBox()
-        Me.label1 = New System.Windows.Forms.Label()
-        Me.groupBox4 = New System.Windows.Forms.GroupBox()
-        Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
+        Me.lblKernelRadius = New System.Windows.Forms.Label()
+        Me.gbSmoothMtd = New System.Windows.Forms.GroupBox()
+        Me.ttipMain = New System.Windows.Forms.ToolTip(Me.components)
         Me.btnExport = New System.Windows.Forms.Button()
         Me.btnInfo = New System.Windows.Forms.Button()
         Me.txtDatasetTitle = New System.Windows.Forms.TextBox()
-        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.gbExportOpts = New System.Windows.Forms.GroupBox()
         Me.rbtnCSV = New System.Windows.Forms.RadioButton()
         Me.rbtnXLSX = New System.Windows.Forms.RadioButton()
-        Me.GroupBox2.SuspendLayout()
-        Me.GroupBox3.SuspendLayout()
-        Me.statusStrip1.SuspendLayout()
-        Me.groupBox5.SuspendLayout()
-        Me.groupBox4.SuspendLayout()
-        Me.GroupBox1.SuspendLayout()
+        Me.gbInitData.SuspendLayout()
+        Me.gbRefinedData.SuspendLayout()
+        Me.sstripMain.SuspendLayout()
+        Me.gbSmoothParams.SuspendLayout()
+        Me.gbSmoothMtd.SuspendLayout()
+        Me.gbExportOpts.SuspendLayout()
         Me.SuspendLayout()
         '
-        'ListBox1
+        'lbInitData
         '
-        Me.ListBox1.AllowDrop = True
-        Me.ListBox1.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
-        Me.ListBox1.FormattingEnabled = True
-        Me.ListBox1.ItemHeight = 17
-        Me.ListBox1.Location = New System.Drawing.Point(7, 31)
-        Me.ListBox1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.ListBox1.Name = "ListBox1"
-        Me.ListBox1.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.ListBox1.Size = New System.Drawing.Size(294, 497)
-        Me.ListBox1.TabIndex = 4
+        Me.lbInitData.AllowDrop = True
+        Me.lbInitData.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
+        Me.lbInitData.FormattingEnabled = True
+        Me.lbInitData.ItemHeight = 17
+        Me.lbInitData.Location = New System.Drawing.Point(7, 31)
+        Me.lbInitData.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.lbInitData.Name = "lbInitData"
+        Me.lbInitData.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
+        Me.lbInitData.Size = New System.Drawing.Size(294, 514)
+        Me.lbInitData.TabIndex = 4
         '
-        'ListBox2
+        'lbRefinedData
         '
-        Me.ListBox2.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
-        Me.ListBox2.FormattingEnabled = True
-        Me.ListBox2.ItemHeight = 17
-        Me.ListBox2.Location = New System.Drawing.Point(7, 31)
-        Me.ListBox2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.ListBox2.Name = "ListBox2"
-        Me.ListBox2.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.ListBox2.Size = New System.Drawing.Size(294, 497)
-        Me.ListBox2.TabIndex = 21
+        Me.lbRefinedData.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
+        Me.lbRefinedData.FormattingEnabled = True
+        Me.lbRefinedData.ItemHeight = 17
+        Me.lbRefinedData.Location = New System.Drawing.Point(7, 31)
+        Me.lbRefinedData.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.lbRefinedData.Name = "lbRefinedData"
+        Me.lbRefinedData.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
+        Me.lbRefinedData.Size = New System.Drawing.Size(294, 514)
+        Me.lbRefinedData.TabIndex = 21
         '
-        'calcButton
+        'btnCalibrate
         '
-        Me.calcButton.Font = New System.Drawing.Font("Segoe Fluent Icons", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.calcButton.Location = New System.Drawing.Point(14, 782)
-        Me.calcButton.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.calcButton.Name = "calcButton"
-        Me.calcButton.Size = New System.Drawing.Size(465, 40)
-        Me.calcButton.TabIndex = 19
-        Me.calcButton.Text = ""
-        Me.ToolTip1.SetToolTip(Me.calcButton, "Calibrate")
-        Me.calcButton.UseVisualStyleBackColor = True
+        Me.btnCalibrate.Font = New System.Drawing.Font("Segoe Fluent Icons", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCalibrate.Location = New System.Drawing.Point(14, 783)
+        Me.btnCalibrate.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnCalibrate.Name = "btnCalibrate"
+        Me.btnCalibrate.Size = New System.Drawing.Size(466, 30)
+        Me.btnCalibrate.TabIndex = 19
+        Me.btnCalibrate.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnCalibrate, "Calibrate")
+        Me.btnCalibrate.UseVisualStyleBackColor = True
         '
-        'RadioButton1
+        'rbtnMidMedian
         '
-        Me.RadioButton1.Appearance = System.Windows.Forms.Appearance.Button
-        Me.RadioButton1.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
-        Me.RadioButton1.Location = New System.Drawing.Point(175, 24)
-        Me.RadioButton1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.RadioButton1.Name = "RadioButton1"
-        Me.RadioButton1.Size = New System.Drawing.Size(150, 30)
-        Me.RadioButton1.TabIndex = 15
-        Me.RadioButton1.Text = "Middle Median"
-        Me.RadioButton1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        Me.RadioButton1.UseVisualStyleBackColor = True
+        Me.rbtnMidMedian.Appearance = System.Windows.Forms.Appearance.Button
+        Me.rbtnMidMedian.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
+        Me.rbtnMidMedian.Location = New System.Drawing.Point(175, 24)
+        Me.rbtnMidMedian.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.rbtnMidMedian.Name = "rbtnMidMedian"
+        Me.rbtnMidMedian.Size = New System.Drawing.Size(150, 30)
+        Me.rbtnMidMedian.TabIndex = 15
+        Me.rbtnMidMedian.Text = "Middle Median"
+        Me.rbtnMidMedian.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.rbtnMidMedian.UseVisualStyleBackColor = True
         '
-        'RadioButton2
+        'rbtnAllMedian
         '
-        Me.RadioButton2.Appearance = System.Windows.Forms.Appearance.Button
-        Me.RadioButton2.Checked = True
-        Me.RadioButton2.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
-        Me.RadioButton2.Location = New System.Drawing.Point(19, 24)
-        Me.RadioButton2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.RadioButton2.Name = "RadioButton2"
-        Me.RadioButton2.Size = New System.Drawing.Size(150, 30)
-        Me.RadioButton2.TabIndex = 14
-        Me.RadioButton2.TabStop = True
-        Me.RadioButton2.Text = "All Median"
-        Me.RadioButton2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        Me.RadioButton2.UseVisualStyleBackColor = True
+        Me.rbtnAllMedian.Appearance = System.Windows.Forms.Appearance.Button
+        Me.rbtnAllMedian.Checked = True
+        Me.rbtnAllMedian.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
+        Me.rbtnAllMedian.Location = New System.Drawing.Point(19, 24)
+        Me.rbtnAllMedian.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.rbtnAllMedian.Name = "rbtnAllMedian"
+        Me.rbtnAllMedian.Size = New System.Drawing.Size(150, 30)
+        Me.rbtnAllMedian.TabIndex = 14
+        Me.rbtnAllMedian.TabStop = True
+        Me.rbtnAllMedian.Text = "All Median"
+        Me.rbtnAllMedian.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.rbtnAllMedian.UseVisualStyleBackColor = True
         '
-        'TextBox1
+        'txtInitAdd
         '
-        Me.TextBox1.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
-        Me.TextBox1.Location = New System.Drawing.Point(26, 14)
-        Me.TextBox1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(262, 25)
-        Me.TextBox1.TabIndex = 1
+        Me.txtInitAdd.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
+        Me.txtInitAdd.Location = New System.Drawing.Point(26, 16)
+        Me.txtInitAdd.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.txtInitAdd.Name = "txtInitAdd"
+        Me.txtInitAdd.Size = New System.Drawing.Size(262, 25)
+        Me.txtInitAdd.TabIndex = 1
         '
-        'addButton
+        'btnInitAdd
         '
-        Me.addButton.Enabled = False
-        Me.addButton.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.addButton.Location = New System.Drawing.Point(292, 12)
-        Me.addButton.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.addButton.Name = "addButton"
-        Me.addButton.Size = New System.Drawing.Size(67, 30)
-        Me.addButton.TabIndex = 2
-        Me.addButton.Text = ""
-        Me.ToolTip1.SetToolTip(Me.addButton, "Add")
-        Me.addButton.UseVisualStyleBackColor = True
+        Me.btnInitAdd.Enabled = False
+        Me.btnInitAdd.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
+        Me.btnInitAdd.Location = New System.Drawing.Point(292, 14)
+        Me.btnInitAdd.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnInitAdd.Name = "btnInitAdd"
+        Me.btnInitAdd.Size = New System.Drawing.Size(67, 30)
+        Me.btnInitAdd.TabIndex = 2
+        Me.btnInitAdd.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnInitAdd, "Add")
+        Me.btnInitAdd.UseVisualStyleBackColor = True
         '
-        'copyButton1
+        'btnInitCopy
         '
-        Me.copyButton1.Enabled = False
-        Me.copyButton1.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.copyButton1.Location = New System.Drawing.Point(307, 65)
-        Me.copyButton1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.copyButton1.Name = "copyButton1"
-        Me.copyButton1.Size = New System.Drawing.Size(30, 30)
-        Me.copyButton1.TabIndex = 6
-        Me.copyButton1.Text = ""
-        Me.ToolTip1.SetToolTip(Me.copyButton1, "Copy")
-        Me.copyButton1.UseVisualStyleBackColor = True
+        Me.btnInitCopy.Enabled = False
+        Me.btnInitCopy.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
+        Me.btnInitCopy.Location = New System.Drawing.Point(307, 65)
+        Me.btnInitCopy.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnInitCopy.Name = "btnInitCopy"
+        Me.btnInitCopy.Size = New System.Drawing.Size(30, 30)
+        Me.btnInitCopy.TabIndex = 6
+        Me.btnInitCopy.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnInitCopy, "Copy")
+        Me.btnInitCopy.UseVisualStyleBackColor = True
         '
         'cbxBorderCount
         '
@@ -192,233 +193,243 @@ Partial Class FrmMain
         Me.cbxBorderCount.Size = New System.Drawing.Size(80, 25)
         Me.cbxBorderCount.TabIndex = 18
         '
-        'clearButton1
+        'btnInitClear
         '
-        Me.clearButton1.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.clearButton1.Location = New System.Drawing.Point(307, 31)
-        Me.clearButton1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.clearButton1.Name = "clearButton1"
-        Me.clearButton1.Size = New System.Drawing.Size(30, 30)
-        Me.clearButton1.TabIndex = 5
-        Me.clearButton1.Text = ""
-        Me.ToolTip1.SetToolTip(Me.clearButton1, "Clear")
-        Me.clearButton1.UseVisualStyleBackColor = True
+        Me.btnInitClear.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
+        Me.btnInitClear.Location = New System.Drawing.Point(307, 31)
+        Me.btnInitClear.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnInitClear.Name = "btnInitClear"
+        Me.btnInitClear.Size = New System.Drawing.Size(30, 30)
+        Me.btnInitClear.TabIndex = 5
+        Me.btnInitClear.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnInitClear, "Clear")
+        Me.btnInitClear.UseVisualStyleBackColor = True
         '
-        'clearButton2
+        'btnRefClear
         '
-        Me.clearButton2.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.clearButton2.Location = New System.Drawing.Point(307, 31)
-        Me.clearButton2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.clearButton2.Name = "clearButton2"
-        Me.clearButton2.Size = New System.Drawing.Size(30, 30)
-        Me.clearButton2.TabIndex = 22
-        Me.clearButton2.Text = ""
-        Me.ToolTip1.SetToolTip(Me.clearButton2, "Clear")
-        Me.clearButton2.UseVisualStyleBackColor = True
+        Me.btnRefClear.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
+        Me.btnRefClear.Location = New System.Drawing.Point(307, 31)
+        Me.btnRefClear.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnRefClear.Name = "btnRefClear"
+        Me.btnRefClear.Size = New System.Drawing.Size(30, 30)
+        Me.btnRefClear.TabIndex = 22
+        Me.btnRefClear.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnRefClear, "Clear")
+        Me.btnRefClear.UseVisualStyleBackColor = True
         '
-        'deleteButton1
+        'btnInitDelete
         '
-        Me.deleteButton1.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.deleteButton1.Location = New System.Drawing.Point(307, 167)
-        Me.deleteButton1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.deleteButton1.Name = "deleteButton1"
-        Me.deleteButton1.Size = New System.Drawing.Size(30, 30)
-        Me.deleteButton1.TabIndex = 9
-        Me.deleteButton1.Text = ""
-        Me.ToolTip1.SetToolTip(Me.deleteButton1, "Delete")
-        Me.deleteButton1.UseVisualStyleBackColor = True
+        Me.btnInitDelete.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
+        Me.btnInitDelete.Location = New System.Drawing.Point(307, 167)
+        Me.btnInitDelete.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnInitDelete.Name = "btnInitDelete"
+        Me.btnInitDelete.Size = New System.Drawing.Size(30, 30)
+        Me.btnInitDelete.TabIndex = 9
+        Me.btnInitDelete.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnInitDelete, "Delete")
+        Me.btnInitDelete.UseVisualStyleBackColor = True
         '
-        'pasteButton
+        'btnInitPaste
         '
-        Me.pasteButton.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.pasteButton.Location = New System.Drawing.Point(307, 99)
-        Me.pasteButton.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.pasteButton.Name = "pasteButton"
-        Me.pasteButton.Size = New System.Drawing.Size(30, 30)
-        Me.pasteButton.TabIndex = 7
-        Me.pasteButton.Text = ""
-        Me.ToolTip1.SetToolTip(Me.pasteButton, "Paste")
-        Me.pasteButton.UseVisualStyleBackColor = True
+        Me.btnInitPaste.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
+        Me.btnInitPaste.Location = New System.Drawing.Point(307, 99)
+        Me.btnInitPaste.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnInitPaste.Name = "btnInitPaste"
+        Me.btnInitPaste.Size = New System.Drawing.Size(30, 30)
+        Me.btnInitPaste.TabIndex = 7
+        Me.btnInitPaste.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnInitPaste, "Paste")
+        Me.btnInitPaste.UseVisualStyleBackColor = True
         '
-        'copyButton2
+        'btnRefCopy
         '
-        Me.copyButton2.Enabled = False
-        Me.copyButton2.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.copyButton2.Location = New System.Drawing.Point(307, 65)
-        Me.copyButton2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.copyButton2.Name = "copyButton2"
-        Me.copyButton2.Size = New System.Drawing.Size(30, 30)
-        Me.copyButton2.TabIndex = 23
-        Me.copyButton2.Text = ""
-        Me.ToolTip1.SetToolTip(Me.copyButton2, "Copy")
-        Me.copyButton2.UseVisualStyleBackColor = True
+        Me.btnRefCopy.Enabled = False
+        Me.btnRefCopy.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
+        Me.btnRefCopy.Location = New System.Drawing.Point(307, 65)
+        Me.btnRefCopy.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnRefCopy.Name = "btnRefCopy"
+        Me.btnRefCopy.Size = New System.Drawing.Size(30, 30)
+        Me.btnRefCopy.TabIndex = 23
+        Me.btnRefCopy.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnRefCopy, "Copy")
+        Me.btnRefCopy.UseVisualStyleBackColor = True
         '
-        'selectAllButton1
+        'btnInitSelectAll
         '
-        Me.selectAllButton1.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.selectAllButton1.Location = New System.Drawing.Point(307, 201)
-        Me.selectAllButton1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.selectAllButton1.Name = "selectAllButton1"
-        Me.selectAllButton1.Size = New System.Drawing.Size(30, 30)
-        Me.selectAllButton1.TabIndex = 10
-        Me.selectAllButton1.Text = ""
-        Me.ToolTip1.SetToolTip(Me.selectAllButton1, "Select All")
-        Me.selectAllButton1.UseVisualStyleBackColor = True
+        Me.btnInitSelectAll.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
+        Me.btnInitSelectAll.Location = New System.Drawing.Point(307, 201)
+        Me.btnInitSelectAll.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnInitSelectAll.Name = "btnInitSelectAll"
+        Me.btnInitSelectAll.Size = New System.Drawing.Size(30, 30)
+        Me.btnInitSelectAll.TabIndex = 10
+        Me.btnInitSelectAll.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnInitSelectAll, "Select All")
+        Me.btnInitSelectAll.UseVisualStyleBackColor = True
         '
-        'selectAllButton2
+        'btnRefSelectAll
         '
-        Me.selectAllButton2.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.selectAllButton2.Location = New System.Drawing.Point(307, 99)
-        Me.selectAllButton2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.selectAllButton2.Name = "selectAllButton2"
-        Me.selectAllButton2.Size = New System.Drawing.Size(30, 30)
-        Me.selectAllButton2.TabIndex = 24
-        Me.selectAllButton2.Text = ""
-        Me.ToolTip1.SetToolTip(Me.selectAllButton2, "Select All")
-        Me.selectAllButton2.UseVisualStyleBackColor = True
+        Me.btnRefSelectAll.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
+        Me.btnRefSelectAll.Location = New System.Drawing.Point(307, 99)
+        Me.btnRefSelectAll.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnRefSelectAll.Name = "btnRefSelectAll"
+        Me.btnRefSelectAll.Size = New System.Drawing.Size(30, 30)
+        Me.btnRefSelectAll.TabIndex = 24
+        Me.btnRefSelectAll.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnRefSelectAll, "Select All")
+        Me.btnRefSelectAll.UseVisualStyleBackColor = True
         '
-        'GroupBox2
+        'gbInitData
         '
-        Me.GroupBox2.Controls.Add(Me.syncButton1)
-        Me.GroupBox2.Controls.Add(Me.editButton)
-        Me.GroupBox2.Controls.Add(Me.lblCnt1)
-        Me.GroupBox2.Controls.Add(Me.sClrButton1)
-        Me.GroupBox2.Controls.Add(Me.selectAllButton1)
-        Me.GroupBox2.Controls.Add(Me.pasteButton)
-        Me.GroupBox2.Controls.Add(Me.deleteButton1)
-        Me.GroupBox2.Controls.Add(Me.clearButton1)
-        Me.GroupBox2.Controls.Add(Me.copyButton1)
-        Me.GroupBox2.Controls.Add(Me.ListBox1)
-        Me.GroupBox2.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold)
-        Me.GroupBox2.Location = New System.Drawing.Point(14, 52)
-        Me.GroupBox2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.GroupBox2.Size = New System.Drawing.Size(344, 586)
-        Me.GroupBox2.TabIndex = 3
-        Me.GroupBox2.TabStop = False
-        Me.GroupBox2.Text = "Initial Dataset"
+        Me.gbInitData.Controls.Add(Me.btnInitSelectSync)
+        Me.gbInitData.Controls.Add(Me.btnInitEdit)
+        Me.gbInitData.Controls.Add(Me.lblInitCnt)
+        Me.gbInitData.Controls.Add(Me.btnInitSelectClr)
+        Me.gbInitData.Controls.Add(Me.btnInitSelectAll)
+        Me.gbInitData.Controls.Add(Me.btnInitPaste)
+        Me.gbInitData.Controls.Add(Me.btnInitDelete)
+        Me.gbInitData.Controls.Add(Me.btnInitClear)
+        Me.gbInitData.Controls.Add(Me.btnInitCopy)
+        Me.gbInitData.Controls.Add(Me.lbInitData)
+        Me.gbInitData.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold)
+        Me.gbInitData.Location = New System.Drawing.Point(15, 52)
+        Me.gbInitData.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.gbInitData.Name = "gbInitData"
+        Me.gbInitData.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.gbInitData.Size = New System.Drawing.Size(344, 586)
+        Me.gbInitData.TabIndex = 3
+        Me.gbInitData.TabStop = False
+        Me.gbInitData.Text = "Initial Dataset"
         '
-        'syncButton1
+        'btnInitSelectSync
         '
-        Me.syncButton1.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!)
-        Me.syncButton1.Location = New System.Drawing.Point(307, 269)
-        Me.syncButton1.Name = "syncButton1"
-        Me.syncButton1.Size = New System.Drawing.Size(30, 30)
-        Me.syncButton1.TabIndex = 12
-        Me.syncButton1.Text = ""
-        Me.ToolTip1.SetToolTip(Me.syncButton1, "Match Selection" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "( ▶ Refined Dataset )")
-        Me.syncButton1.UseVisualStyleBackColor = True
+        Me.btnInitSelectSync.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!)
+        Me.btnInitSelectSync.Location = New System.Drawing.Point(307, 269)
+        Me.btnInitSelectSync.Name = "btnInitSelectSync"
+        Me.btnInitSelectSync.Size = New System.Drawing.Size(30, 30)
+        Me.btnInitSelectSync.TabIndex = 12
+        Me.btnInitSelectSync.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnInitSelectSync, "Match Selection" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "( ▶ Refined Dataset )")
+        Me.btnInitSelectSync.UseVisualStyleBackColor = True
         '
-        'editButton
+        'btnInitEdit
         '
-        Me.editButton.Enabled = False
-        Me.editButton.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.editButton.Location = New System.Drawing.Point(307, 133)
-        Me.editButton.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
-        Me.editButton.Name = "editButton"
-        Me.editButton.Size = New System.Drawing.Size(30, 30)
-        Me.editButton.TabIndex = 8
-        Me.editButton.Text = ""
-        Me.ToolTip1.SetToolTip(Me.editButton, "Edit")
-        Me.editButton.UseVisualStyleBackColor = True
+        Me.btnInitEdit.Enabled = False
+        Me.btnInitEdit.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnInitEdit.Location = New System.Drawing.Point(307, 133)
+        Me.btnInitEdit.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnInitEdit.Name = "btnInitEdit"
+        Me.btnInitEdit.Size = New System.Drawing.Size(30, 30)
+        Me.btnInitEdit.TabIndex = 8
+        Me.btnInitEdit.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnInitEdit, "Edit")
+        Me.btnInitEdit.UseVisualStyleBackColor = True
         '
-        'lblCnt1
+        'lblInitCnt
         '
-        Me.lblCnt1.AutoSize = True
-        Me.lblCnt1.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
-        Me.lblCnt1.Location = New System.Drawing.Point(7, 555)
-        Me.lblCnt1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
-        Me.lblCnt1.Name = "lblCnt1"
-        Me.lblCnt1.Size = New System.Drawing.Size(65, 19)
-        Me.lblCnt1.TabIndex = 26
-        Me.lblCnt1.Text = "Count : 0"
+        Me.lblInitCnt.AutoSize = True
+        Me.lblInitCnt.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
+        Me.lblInitCnt.Location = New System.Drawing.Point(7, 555)
+        Me.lblInitCnt.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblInitCnt.Name = "lblInitCnt"
+        Me.lblInitCnt.Size = New System.Drawing.Size(65, 19)
+        Me.lblInitCnt.TabIndex = 26
+        Me.lblInitCnt.Text = "Count : 0"
         '
-        'sClrButton1
+        'btnInitSelectClr
         '
-        Me.sClrButton1.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.sClrButton1.Location = New System.Drawing.Point(307, 235)
-        Me.sClrButton1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.sClrButton1.Name = "sClrButton1"
-        Me.sClrButton1.Size = New System.Drawing.Size(30, 30)
-        Me.sClrButton1.TabIndex = 11
-        Me.sClrButton1.Text = ""
-        Me.ToolTip1.SetToolTip(Me.sClrButton1, "Deselect All")
-        Me.sClrButton1.UseVisualStyleBackColor = True
+        Me.btnInitSelectClr.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
+        Me.btnInitSelectClr.Location = New System.Drawing.Point(307, 235)
+        Me.btnInitSelectClr.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnInitSelectClr.Name = "btnInitSelectClr"
+        Me.btnInitSelectClr.Size = New System.Drawing.Size(30, 30)
+        Me.btnInitSelectClr.TabIndex = 11
+        Me.btnInitSelectClr.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnInitSelectClr, "Deselect All")
+        Me.btnInitSelectClr.UseVisualStyleBackColor = True
         '
-        'GroupBox3
+        'gbRefinedData
         '
-        Me.GroupBox3.Controls.Add(Me.syncButton2)
-        Me.GroupBox3.Controls.Add(Me.lblCnt2)
-        Me.GroupBox3.Controls.Add(Me.sClrButton2)
-        Me.GroupBox3.Controls.Add(Me.selectAllButton2)
-        Me.GroupBox3.Controls.Add(Me.copyButton2)
-        Me.GroupBox3.Controls.Add(Me.clearButton2)
-        Me.GroupBox3.Controls.Add(Me.ListBox2)
-        Me.GroupBox3.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold)
-        Me.GroupBox3.Location = New System.Drawing.Point(375, 52)
-        Me.GroupBox3.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.GroupBox3.Size = New System.Drawing.Size(344, 586)
-        Me.GroupBox3.TabIndex = 20
-        Me.GroupBox3.TabStop = False
-        Me.GroupBox3.Text = "Refined Dataset"
+        Me.gbRefinedData.Controls.Add(Me.btnRefSelectSync)
+        Me.gbRefinedData.Controls.Add(Me.lblRefCnt)
+        Me.gbRefinedData.Controls.Add(Me.btnRefSelectClr)
+        Me.gbRefinedData.Controls.Add(Me.btnRefSelectAll)
+        Me.gbRefinedData.Controls.Add(Me.btnRefCopy)
+        Me.gbRefinedData.Controls.Add(Me.btnRefClear)
+        Me.gbRefinedData.Controls.Add(Me.lbRefinedData)
+        Me.gbRefinedData.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold)
+        Me.gbRefinedData.Location = New System.Drawing.Point(376, 52)
+        Me.gbRefinedData.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.gbRefinedData.Name = "gbRefinedData"
+        Me.gbRefinedData.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.gbRefinedData.Size = New System.Drawing.Size(344, 586)
+        Me.gbRefinedData.TabIndex = 20
+        Me.gbRefinedData.TabStop = False
+        Me.gbRefinedData.Text = "Refined Dataset"
         '
-        'syncButton2
+        'btnRefSelectSync
         '
-        Me.syncButton2.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!)
-        Me.syncButton2.Location = New System.Drawing.Point(307, 167)
-        Me.syncButton2.Name = "syncButton2"
-        Me.syncButton2.Size = New System.Drawing.Size(30, 30)
-        Me.syncButton2.TabIndex = 26
-        Me.syncButton2.Text = ""
-        Me.ToolTip1.SetToolTip(Me.syncButton2, "Match Selection " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "( ◀ Initial Dataset )")
-        Me.syncButton2.UseVisualStyleBackColor = True
+        Me.btnRefSelectSync.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!)
+        Me.btnRefSelectSync.Location = New System.Drawing.Point(307, 167)
+        Me.btnRefSelectSync.Name = "btnRefSelectSync"
+        Me.btnRefSelectSync.Size = New System.Drawing.Size(30, 30)
+        Me.btnRefSelectSync.TabIndex = 26
+        Me.btnRefSelectSync.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnRefSelectSync, "Match Selection " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "( ◀ Initial Dataset )")
+        Me.btnRefSelectSync.UseVisualStyleBackColor = True
         '
-        'lblCnt2
+        'lblRefCnt
         '
-        Me.lblCnt2.AutoSize = True
-        Me.lblCnt2.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
-        Me.lblCnt2.Location = New System.Drawing.Point(7, 555)
-        Me.lblCnt2.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
-        Me.lblCnt2.Name = "lblCnt2"
-        Me.lblCnt2.Size = New System.Drawing.Size(65, 19)
-        Me.lblCnt2.TabIndex = 27
-        Me.lblCnt2.Text = "Count : 0"
+        Me.lblRefCnt.AutoSize = True
+        Me.lblRefCnt.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
+        Me.lblRefCnt.Location = New System.Drawing.Point(7, 555)
+        Me.lblRefCnt.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblRefCnt.Name = "lblRefCnt"
+        Me.lblRefCnt.Size = New System.Drawing.Size(65, 19)
+        Me.lblRefCnt.TabIndex = 27
+        Me.lblRefCnt.Text = "Count : 0"
         '
-        'sClrButton2
+        'btnRefSelectClr
         '
-        Me.sClrButton2.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.sClrButton2.Location = New System.Drawing.Point(307, 133)
-        Me.sClrButton2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.sClrButton2.Name = "sClrButton2"
-        Me.sClrButton2.Size = New System.Drawing.Size(30, 30)
-        Me.sClrButton2.TabIndex = 25
-        Me.sClrButton2.Text = ""
-        Me.ToolTip1.SetToolTip(Me.sClrButton2, "Deselect All")
-        Me.sClrButton2.UseVisualStyleBackColor = True
+        Me.btnRefSelectClr.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
+        Me.btnRefSelectClr.Location = New System.Drawing.Point(307, 133)
+        Me.btnRefSelectClr.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnRefSelectClr.Name = "btnRefSelectClr"
+        Me.btnRefSelectClr.Size = New System.Drawing.Size(30, 30)
+        Me.btnRefSelectClr.TabIndex = 25
+        Me.btnRefSelectClr.Text = ""
+        Me.ttipMain.SetToolTip(Me.btnRefSelectClr, "Deselect All")
+        Me.btnRefSelectClr.UseVisualStyleBackColor = True
         '
-        'progressBar1
+        'pbMain
         '
-        Me.progressBar1.Location = New System.Drawing.Point(0, 832)
-        Me.progressBar1.Name = "progressBar1"
-        Me.progressBar1.Size = New System.Drawing.Size(734, 5)
-        Me.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous
-        Me.progressBar1.TabIndex = 28
+        Me.pbMain.Location = New System.Drawing.Point(0, 826)
+        Me.pbMain.Name = "pbMain"
+        Me.pbMain.Size = New System.Drawing.Size(734, 5)
+        Me.pbMain.Style = System.Windows.Forms.ProgressBarStyle.Continuous
+        Me.pbMain.TabIndex = 28
         '
-        'statusStrip1
+        'sstripMain
         '
-        Me.statusStrip1.AutoSize = False
-        Me.statusStrip1.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
-        Me.statusStrip1.ImageScalingSize = New System.Drawing.Size(32, 32)
-        Me.statusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tlblCalibratedType, Me.slblCalibratedType, Me.slblSeparator1, Me.tlblKernelWidth, Me.slblKernelWidth, Me.slblSeparator2, Me.tlblBorderCount, Me.slblBorderCount})
-        Me.statusStrip1.Location = New System.Drawing.Point(0, 837)
-        Me.statusStrip1.Name = "statusStrip1"
-        Me.statusStrip1.Size = New System.Drawing.Size(734, 24)
-        Me.statusStrip1.SizingGrip = False
-        Me.statusStrip1.TabIndex = 29
-        Me.statusStrip1.Text = "statusStrip1"
+        Me.sstripMain.AutoSize = False
+        Me.sstripMain.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.sstripMain.ImageScalingSize = New System.Drawing.Size(32, 32)
+        Me.sstripMain.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.slblDesc, Me.tlblCalibratedType, Me.slblCalibratedType, Me.slblSeparator1, Me.tlblKernelWidth, Me.slblKernelWidth, Me.slblSeparator2, Me.tlblBorderCount, Me.slblBorderCount})
+        Me.sstripMain.Location = New System.Drawing.Point(0, 831)
+        Me.sstripMain.Name = "sstripMain"
+        Me.sstripMain.Size = New System.Drawing.Size(734, 24)
+        Me.sstripMain.SizingGrip = False
+        Me.sstripMain.TabIndex = 29
+        Me.sstripMain.Text = "statusStrip1"
+        '
+        'slblDesc
+        '
+        Me.slblDesc.AutoSize = False
+        Me.slblDesc.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!)
+        Me.slblDesc.ForeColor = System.Drawing.Color.White
+        Me.slblDesc.Name = "slblDesc"
+        Me.slblDesc.Size = New System.Drawing.Size(731, 19)
+        Me.slblDesc.Text = "To calibrate, add data to the Initial Dataset, choose a Calibration Method , set " &
+    "Smoothing Parameters."
         '
         'tlblCalibratedType
         '
@@ -433,7 +444,7 @@ Partial Class FrmMain
         Me.slblCalibratedType.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblCalibratedType.ForeColor = System.Drawing.Color.White
         Me.slblCalibratedType.Name = "slblCalibratedType"
-        Me.slblCalibratedType.Size = New System.Drawing.Size(17, 19)
+        Me.slblCalibratedType.Size = New System.Drawing.Size(17, 16)
         Me.slblCalibratedType.Text = "--"
         '
         'slblSeparator1
@@ -441,7 +452,7 @@ Partial Class FrmMain
         Me.slblSeparator1.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblSeparator1.ForeColor = System.Drawing.Color.White
         Me.slblSeparator1.Name = "slblSeparator1"
-        Me.slblSeparator1.Size = New System.Drawing.Size(16, 19)
+        Me.slblSeparator1.Size = New System.Drawing.Size(16, 16)
         Me.slblSeparator1.Text = " | "
         '
         'tlblKernelWidth
@@ -449,7 +460,7 @@ Partial Class FrmMain
         Me.tlblKernelWidth.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tlblKernelWidth.ForeColor = System.Drawing.Color.White
         Me.tlblKernelWidth.Name = "tlblKernelWidth"
-        Me.tlblKernelWidth.Size = New System.Drawing.Size(173, 19)
+        Me.tlblKernelWidth.Size = New System.Drawing.Size(173, 16)
         Me.tlblKernelWidth.Text = "Noise Reduction Kernel Radius :"
         '
         'slblKernelWidth
@@ -457,7 +468,7 @@ Partial Class FrmMain
         Me.slblKernelWidth.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblKernelWidth.ForeColor = System.Drawing.Color.White
         Me.slblKernelWidth.Name = "slblKernelWidth"
-        Me.slblKernelWidth.Size = New System.Drawing.Size(17, 19)
+        Me.slblKernelWidth.Size = New System.Drawing.Size(17, 16)
         Me.slblKernelWidth.Text = "--"
         '
         'slblSeparator2
@@ -465,7 +476,7 @@ Partial Class FrmMain
         Me.slblSeparator2.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblSeparator2.ForeColor = System.Drawing.Color.White
         Me.slblSeparator2.Name = "slblSeparator2"
-        Me.slblSeparator2.Size = New System.Drawing.Size(16, 19)
+        Me.slblSeparator2.Size = New System.Drawing.Size(16, 16)
         Me.slblSeparator2.Text = " | "
         Me.slblSeparator2.Visible = False
         '
@@ -474,7 +485,7 @@ Partial Class FrmMain
         Me.tlblBorderCount.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tlblBorderCount.ForeColor = System.Drawing.Color.White
         Me.tlblBorderCount.Name = "tlblBorderCount"
-        Me.tlblBorderCount.Size = New System.Drawing.Size(83, 19)
+        Me.tlblBorderCount.Size = New System.Drawing.Size(83, 16)
         Me.tlblBorderCount.Text = "Border Count :"
         Me.tlblBorderCount.Visible = False
         '
@@ -483,23 +494,23 @@ Partial Class FrmMain
         Me.slblBorderCount.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblBorderCount.ForeColor = System.Drawing.Color.White
         Me.slblBorderCount.Name = "slblBorderCount"
-        Me.slblBorderCount.Size = New System.Drawing.Size(17, 19)
+        Me.slblBorderCount.Size = New System.Drawing.Size(17, 16)
         Me.slblBorderCount.Text = "--"
         Me.slblBorderCount.Visible = False
         '
-        'groupBox5
+        'gbSmoothParams
         '
-        Me.groupBox5.Controls.Add(Me.cbxBorderCount)
-        Me.groupBox5.Controls.Add(Me.lblBorderCount)
-        Me.groupBox5.Controls.Add(Me.cbxKernelRadius)
-        Me.groupBox5.Controls.Add(Me.label1)
-        Me.groupBox5.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.groupBox5.Location = New System.Drawing.Point(375, 643)
-        Me.groupBox5.Name = "groupBox5"
-        Me.groupBox5.Size = New System.Drawing.Size(344, 130)
-        Me.groupBox5.TabIndex = 16
-        Me.groupBox5.TabStop = False
-        Me.groupBox5.Text = "Signal Smoothing Parameters"
+        Me.gbSmoothParams.Controls.Add(Me.cbxBorderCount)
+        Me.gbSmoothParams.Controls.Add(Me.lblBorderCount)
+        Me.gbSmoothParams.Controls.Add(Me.cbxKernelRadius)
+        Me.gbSmoothParams.Controls.Add(Me.lblKernelRadius)
+        Me.gbSmoothParams.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.gbSmoothParams.Location = New System.Drawing.Point(376, 644)
+        Me.gbSmoothParams.Name = "gbSmoothParams"
+        Me.gbSmoothParams.Size = New System.Drawing.Size(344, 130)
+        Me.gbSmoothParams.TabIndex = 16
+        Me.gbSmoothParams.TabStop = False
+        Me.gbSmoothParams.Text = "Signal Smoothing Parameters"
         '
         'lblBorderCount
         '
@@ -521,79 +532,79 @@ Partial Class FrmMain
         Me.cbxKernelRadius.IntegralHeight = False
         Me.cbxKernelRadius.ItemHeight = 17
         Me.cbxKernelRadius.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"})
-        Me.cbxKernelRadius.Location = New System.Drawing.Point(232, 42)
-        Me.cbxKernelRadius.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.cbxKernelRadius.Location = New System.Drawing.Point(234, 42)
+        Me.cbxKernelRadius.Margin = New System.Windows.Forms.Padding(2)
         Me.cbxKernelRadius.Name = "cbxKernelRadius"
         Me.cbxKernelRadius.Size = New System.Drawing.Size(80, 25)
         Me.cbxKernelRadius.TabIndex = 17
         '
-        'label1
+        'lblKernelRadius
         '
-        Me.label1.AutoSize = True
-        Me.label1.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.label1.Location = New System.Drawing.Point(32, 45)
-        Me.label1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
-        Me.label1.Name = "label1"
-        Me.label1.Size = New System.Drawing.Size(201, 19)
-        Me.label1.TabIndex = 17
-        Me.label1.Text = "Noise Reduction Kernel Radius : "
+        Me.lblKernelRadius.AutoSize = True
+        Me.lblKernelRadius.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblKernelRadius.Location = New System.Drawing.Point(31, 45)
+        Me.lblKernelRadius.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblKernelRadius.Name = "lblKernelRadius"
+        Me.lblKernelRadius.Size = New System.Drawing.Size(201, 19)
+        Me.lblKernelRadius.TabIndex = 17
+        Me.lblKernelRadius.Text = "Noise Reduction Kernel Radius : "
         '
-        'groupBox4
+        'gbSmoothMtd
         '
-        Me.groupBox4.Controls.Add(Me.RadioButton1)
-        Me.groupBox4.Controls.Add(Me.RadioButton2)
-        Me.groupBox4.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold)
-        Me.groupBox4.Location = New System.Drawing.Point(14, 643)
-        Me.groupBox4.Name = "groupBox4"
-        Me.groupBox4.Size = New System.Drawing.Size(344, 64)
-        Me.groupBox4.TabIndex = 13
-        Me.groupBox4.TabStop = False
-        Me.groupBox4.Text = "Calibration Method"
+        Me.gbSmoothMtd.Controls.Add(Me.rbtnMidMedian)
+        Me.gbSmoothMtd.Controls.Add(Me.rbtnAllMedian)
+        Me.gbSmoothMtd.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold)
+        Me.gbSmoothMtd.Location = New System.Drawing.Point(15, 644)
+        Me.gbSmoothMtd.Name = "gbSmoothMtd"
+        Me.gbSmoothMtd.Size = New System.Drawing.Size(344, 64)
+        Me.gbSmoothMtd.TabIndex = 13
+        Me.gbSmoothMtd.TabStop = False
+        Me.gbSmoothMtd.Text = "Smoothing Method"
         '
         'btnExport
         '
         Me.btnExport.Font = New System.Drawing.Font("Segoe Fluent Icons", 14.75!)
-        Me.btnExport.Location = New System.Drawing.Point(485, 782)
+        Me.btnExport.Location = New System.Drawing.Point(486, 783)
         Me.btnExport.Name = "btnExport"
-        Me.btnExport.Size = New System.Drawing.Size(234, 40)
+        Me.btnExport.Size = New System.Drawing.Size(234, 30)
         Me.btnExport.TabIndex = 31
         Me.btnExport.Tag = ""
         Me.btnExport.Text = ""
-        Me.ToolTip1.SetToolTip(Me.btnExport, "Export")
+        Me.ttipMain.SetToolTip(Me.btnExport, "Export")
         Me.btnExport.UseVisualStyleBackColor = True
         '
         'btnInfo
         '
         Me.btnInfo.Font = New System.Drawing.Font("Segoe Fluent Icons", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnInfo.ForeColor = System.Drawing.Color.DarkOliveGreen
-        Me.btnInfo.Location = New System.Drawing.Point(689, 12)
-        Me.btnInfo.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.btnInfo.Location = New System.Drawing.Point(689, 14)
+        Me.btnInfo.Margin = New System.Windows.Forms.Padding(2)
         Me.btnInfo.Name = "btnInfo"
         Me.btnInfo.Size = New System.Drawing.Size(30, 30)
         Me.btnInfo.TabIndex = 32
         Me.btnInfo.Text = ""
-        Me.ToolTip1.SetToolTip(Me.btnInfo, "About")
+        Me.ttipMain.SetToolTip(Me.btnInfo, "About")
         Me.btnInfo.UseVisualStyleBackColor = True
         '
         'txtDatasetTitle
         '
         Me.txtDatasetTitle.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
-        Me.txtDatasetTitle.Location = New System.Drawing.Point(384, 14)
+        Me.txtDatasetTitle.Location = New System.Drawing.Point(385, 16)
         Me.txtDatasetTitle.Name = "txtDatasetTitle"
         Me.txtDatasetTitle.Size = New System.Drawing.Size(300, 25)
         Me.txtDatasetTitle.TabIndex = 27
         '
-        'GroupBox1
+        'gbExportOpts
         '
-        Me.GroupBox1.Controls.Add(Me.rbtnCSV)
-        Me.GroupBox1.Controls.Add(Me.rbtnXLSX)
-        Me.GroupBox1.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold)
-        Me.GroupBox1.Location = New System.Drawing.Point(14, 709)
-        Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(344, 64)
-        Me.GroupBox1.TabIndex = 28
-        Me.GroupBox1.TabStop = False
-        Me.GroupBox1.Text = "Data Export Options"
+        Me.gbExportOpts.Controls.Add(Me.rbtnCSV)
+        Me.gbExportOpts.Controls.Add(Me.rbtnXLSX)
+        Me.gbExportOpts.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 11.25!, System.Drawing.FontStyle.Bold)
+        Me.gbExportOpts.Location = New System.Drawing.Point(15, 710)
+        Me.gbExportOpts.Name = "gbExportOpts"
+        Me.gbExportOpts.Size = New System.Drawing.Size(344, 64)
+        Me.gbExportOpts.TabIndex = 28
+        Me.gbExportOpts.TabStop = False
+        Me.gbExportOpts.Text = "Data Export Options"
         '
         'rbtnCSV
         '
@@ -628,20 +639,20 @@ Partial Class FrmMain
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
-        Me.ClientSize = New System.Drawing.Size(734, 861)
-        Me.Controls.Add(Me.GroupBox1)
+        Me.ClientSize = New System.Drawing.Size(734, 855)
+        Me.Controls.Add(Me.gbExportOpts)
         Me.Controls.Add(Me.btnInfo)
         Me.Controls.Add(Me.btnExport)
         Me.Controls.Add(Me.txtDatasetTitle)
-        Me.Controls.Add(Me.groupBox4)
-        Me.Controls.Add(Me.groupBox5)
-        Me.Controls.Add(Me.progressBar1)
-        Me.Controls.Add(Me.statusStrip1)
-        Me.Controls.Add(Me.GroupBox3)
-        Me.Controls.Add(Me.GroupBox2)
-        Me.Controls.Add(Me.addButton)
-        Me.Controls.Add(Me.TextBox1)
-        Me.Controls.Add(Me.calcButton)
+        Me.Controls.Add(Me.gbSmoothMtd)
+        Me.Controls.Add(Me.gbSmoothParams)
+        Me.Controls.Add(Me.pbMain)
+        Me.Controls.Add(Me.sstripMain)
+        Me.Controls.Add(Me.gbRefinedData)
+        Me.Controls.Add(Me.gbInitData)
+        Me.Controls.Add(Me.btnInitAdd)
+        Me.Controls.Add(Me.txtInitAdd)
+        Me.Controls.Add(Me.btnCalibrate)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
@@ -649,66 +660,67 @@ Partial Class FrmMain
         Me.Name = "FrmMain"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Avocado Smoothie"
-        Me.GroupBox2.ResumeLayout(False)
-        Me.GroupBox2.PerformLayout()
-        Me.GroupBox3.ResumeLayout(False)
-        Me.GroupBox3.PerformLayout()
-        Me.statusStrip1.ResumeLayout(False)
-        Me.statusStrip1.PerformLayout()
-        Me.groupBox5.ResumeLayout(False)
-        Me.groupBox5.PerformLayout()
-        Me.groupBox4.ResumeLayout(False)
-        Me.GroupBox1.ResumeLayout(False)
+        Me.gbInitData.ResumeLayout(False)
+        Me.gbInitData.PerformLayout()
+        Me.gbRefinedData.ResumeLayout(False)
+        Me.gbRefinedData.PerformLayout()
+        Me.sstripMain.ResumeLayout(False)
+        Me.sstripMain.PerformLayout()
+        Me.gbSmoothParams.ResumeLayout(False)
+        Me.gbSmoothParams.PerformLayout()
+        Me.gbSmoothMtd.ResumeLayout(False)
+        Me.gbExportOpts.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
 
-    Friend WithEvents ListBox1 As ListBox
-    Friend WithEvents ListBox2 As ListBox
-    Friend WithEvents calcButton As Button
-    Friend WithEvents RadioButton1 As RadioButton
-    Friend WithEvents RadioButton2 As RadioButton
-    Friend WithEvents TextBox1 As TextBox
-    Friend WithEvents addButton As Button
-    Friend WithEvents copyButton1 As Button
-    Friend WithEvents clearButton1 As Button
-    Friend WithEvents clearButton2 As Button
-    Friend WithEvents deleteButton1 As Button
-    Friend WithEvents pasteButton As Button
-    Friend WithEvents copyButton2 As Button
-    Friend WithEvents selectAllButton1 As Button
-    Friend WithEvents selectAllButton2 As Button
-    Friend WithEvents GroupBox2 As GroupBox
-    Friend WithEvents GroupBox3 As GroupBox
-    Friend WithEvents sClrButton1 As Button
-    Friend WithEvents sClrButton2 As Button
-    Private WithEvents progressBar1 As ProgressBar
-    Private WithEvents statusStrip1 As StatusStrip
+    Friend WithEvents lbInitData As ListBox
+    Friend WithEvents lbRefinedData As ListBox
+    Friend WithEvents btnCalibrate As Button
+    Friend WithEvents rbtnMidMedian As RadioButton
+    Friend WithEvents rbtnAllMedian As RadioButton
+    Friend WithEvents txtInitAdd As TextBox
+    Friend WithEvents btnInitAdd As Button
+    Friend WithEvents btnInitCopy As Button
+    Friend WithEvents btnInitClear As Button
+    Friend WithEvents btnRefClear As Button
+    Friend WithEvents btnInitDelete As Button
+    Friend WithEvents btnInitPaste As Button
+    Friend WithEvents btnRefCopy As Button
+    Friend WithEvents btnInitSelectAll As Button
+    Friend WithEvents btnRefSelectAll As Button
+    Friend WithEvents gbInitData As GroupBox
+    Friend WithEvents gbRefinedData As GroupBox
+    Friend WithEvents btnInitSelectClr As Button
+    Friend WithEvents btnRefSelectClr As Button
+    Private WithEvents pbMain As ProgressBar
+    Private WithEvents sstripMain As StatusStrip
     Private WithEvents tlblCalibratedType As ToolStripStatusLabel
     Private WithEvents slblSeparator1 As ToolStripStatusLabel
-    Public WithEvents lblCnt1 As Label
-    Private WithEvents lblCnt2 As Label
+    Public WithEvents lblInitCnt As Label
+    Private WithEvents lblRefCnt As Label
     Friend WithEvents cbxBorderCount As ComboBox
-    Private WithEvents groupBox5 As GroupBox
+    Private WithEvents gbSmoothParams As GroupBox
     Private WithEvents lblBorderCount As Label
     Private WithEvents cbxKernelRadius As ComboBox
-    Private WithEvents label1 As Label
-    Private WithEvents groupBox4 As GroupBox
-    Private WithEvents editButton As Button
+    Private WithEvents lblKernelRadius As Label
+    Private WithEvents gbSmoothMtd As GroupBox
+    Private WithEvents btnInitEdit As Button
     Private WithEvents slblCalibratedType As ToolStripStatusLabel
     Private WithEvents tlblKernelWidth As ToolStripStatusLabel
     Private WithEvents slblKernelWidth As ToolStripStatusLabel
     Private WithEvents slblSeparator2 As ToolStripStatusLabel
     Private WithEvents tlblBorderCount As ToolStripStatusLabel
     Private WithEvents slblBorderCount As ToolStripStatusLabel
-    Friend WithEvents ToolTip1 As ToolTip
+    Friend WithEvents ttipMain As ToolTip
     Friend WithEvents txtDatasetTitle As TextBox
     Friend WithEvents btnExport As Button
     Private WithEvents btnInfo As Button
-    Private WithEvents GroupBox1 As GroupBox
+    Private WithEvents gbExportOpts As GroupBox
     Friend WithEvents rbtnCSV As RadioButton
     Friend WithEvents rbtnXLSX As RadioButton
-    Private WithEvents syncButton1 As Button
-    Private WithEvents syncButton2 As Button
+    Private WithEvents btnInitSelectSync As Button
+    Private WithEvents btnRefSelectSync As Button
+    Friend WithEvents slblDesc As ToolStripStatusLabel
 End Class
