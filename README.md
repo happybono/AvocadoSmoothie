@@ -145,13 +145,13 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
  
 ### v4.6.3.8
 #### August 24, 2025  
-> Renamed UI controls for clarity and consistency (e.g., `ListBox1` → `lbInitData`).<br><br>  
-> Added dynamic description label (`slblDesc`) and tooltip support for better user guidance.<br><br>  
-> Deprecated `MiddleMedian()` and `AllMedian()` functions; replaced with unified `ComputeMedians()` logic.<br><br>  
-> Enhanced Excel export with metadata (title, author, comments) and fun flavor-based messages.<br><br>  
-> Improved error handling for Excel export (COM errors, permission issues, etc.).<br><br>  
-> Unified progress bar usage (`pbMain`) across calibration and export processes.<br><br>  
-> Improved selection synchronization and feedback between datasets.<br><br>  
+> Renamed UI controls for clarity and consistency (e.g., `ListBox1` → `lbInitData`).<br><br>
+> Added dynamic description label (`slblDesc`) and tooltip support for better user guidance.<br><br>
+> Deprecated `MiddleMedian()` and `AllMedian()` functions; replaced with unified `ComputeMedians()` logic.<br><br>
+> Enhanced Excel export with metadata (title, author, comments) and fun flavor-based messages.<br><br>
+> Improved error handling for Excel export (COM errors, permission issues, etc.).<br><br>
+> Unified progress bar usage (`pbMain`) across calibration and export processes.<br><br>
+> Improved selection synchronization and feedback between datasets.<br><br>
 > Minor bugs fixed.
 </details>
 
