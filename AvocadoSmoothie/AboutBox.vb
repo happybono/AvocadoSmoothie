@@ -4,7 +4,7 @@
         lblAppVersion.Text = " v." & ProductVersion
     End Sub
 
-    Private Sub lblCopyright_Click(sender As Object, e As EventArgs) Handles slblCopyright.Click
+    Private Sub slblCopyright_Click(sender As Object, e As EventArgs) Handles slblCopyright.Click
         Process.Start("https://www.github.com/happybono")
     End Sub
 
