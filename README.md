@@ -518,7 +518,7 @@ When the user clicks **Calibrate** (`calcButton_Click`) :
 2. Read `cbxKernelRadius` (radius) and compute `KernelRadius = 2 * radius + 1`.  
 3. Read `cbxBorderCount` and parse `borderCount`.  
 4. Validate parameters with `ValidateSmoothingParameters(dataCount, KernelRadius, borderCount, useMiddle)`.  
-5. Initialize `progressBar1` (min=0, max=total count) and create `Progress(Of Integer)` to update it.  
+5. Initialize `progressBar1` (min = 0, max = total count) and create `Progress(Of Integer)` to update it.  
 6. Run `ComputeMedians(useMiddle, KernelRadius, borderCount, progress)` on the thread pool.  
 7. Populate `ListBox2` with the resulting `medianList`, update labels (`lblCnt1`, `lblCnt2`, `slblCalibratedType`, `slblKernelWidth`, `slblBorderCount`), then reset the progress bar.
 
