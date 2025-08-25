@@ -1874,21 +1874,20 @@ Public Class FrmMain
     End Sub
 
     Private Sub btnInitClear_MouseHover(sender As Object, e As EventArgs) Handles btnInitClear.MouseHover
-        slblDesc.Visible = True
-        Dim itemCount As Integer = lbInitData.Items.Count
+
+        Dim initItemCount As Integer = lbInitData.Items.Count
         Dim refItemCount As Integer = lbRefinedData.Items.Count
 
-        Dim itemText As String = If(itemCount = 1, "item", "items")
-        Dim refItemText As String = If(refItemCount = 1, "item", "items")
+        Dim refCountText As String = If(refItemCount = 0, "no Items", $"{refItemCount} items")
 
-        If itemCount = 1 AndAlso refItemCount = 1 Then
-            slblDesc.Text = "Remove the only item from the Initial Dataset listbox. This will also clear the only item from the Refined Dataset listbox."
-        ElseIf itemCount = 1 Then
-            slblDesc.Text = $"Remove the only item from the Initial Dataset listbox. This will also clear all {refItemCount} {refItemText} from the Refined Dataset listbox."
+        If initItemCount = 1 AndAlso refItemCount = 1 Then
+            slblDesc.Text = "Remove the only item from the Initial Dataset. This will also remove the only item from the Refined Dataset."
+        ElseIf initItemCount = 1 Then
+            slblDesc.Text = $"Remove the only item from the Initial Dataset. This will also remove all {refCountText} from the Refined Dataset."
         ElseIf refItemCount = 1 Then
-            slblDesc.Text = $"Remove all {itemCount} {itemText} from the Initial Dataset listbox. This will also clear the only item from the Refined Dataset listbox."
+            slblDesc.Text = $"Remove all {initItemCount} items from the Initial Dataset. This will also remove the only item from the Refined Dataset."
         Else
-            slblDesc.Text = $"Remove all {itemCount} {itemText} from the Initial Dataset listbox. This will also clear all {refItemCount} {refItemText} from the Refined Dataset listbox."
+            slblDesc.Text = $"Remove all {initItemCount} items from the Initial Dataset. This will also remove all {refCountText} from the Refined Dataset."
         End If
     End Sub
 
@@ -1940,12 +1939,21 @@ Public Class FrmMain
 
     Private Sub btnInitDelete_MouseHover(sender As Object, e As EventArgs) Handles btnInitDelete.MouseHover
         Dim selCount As Integer = lbInitData.SelectedItems.Count
+        Dim totalCount As Integer = lbInitData.Items.Count
+        Dim refCount As Integer = lbRefinedData.Items.Count
         slblDesc.Visible = True
 
-        If (selCount = 1) Then
-            slblDesc.Text = "Delete the selected item from the Initial Dataset listbox."
+        If selCount = 1 Then
+            slblDesc.Text = "Delete the selected item from the Initial Dataset."
+        ElseIf selCount = totalCount AndAlso totalCount > 0 Then
+            Dim refMsg As String = If(
+        refCount = 0,
+        "No items will be deleted from the Refined Dataset.",
+        $"This will also delete all {refCount} item{If(refCount <> 1, "s", "")} from the Refined Dataset."
+    )
+            slblDesc.Text = $"Delete all {selCount} items from the Initial Dataset. {refMsg}"
         Else
-            slblDesc.Text = $"Delete {selCount} selected items from the Initial Dataset listbox."
+            slblDesc.Text = $"Delete {selCount} selected items from the Initial Dataset."
         End If
     End Sub
 
