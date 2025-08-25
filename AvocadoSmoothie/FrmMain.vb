@@ -1874,11 +1874,12 @@ Public Class FrmMain
     End Sub
 
     Private Sub btnInitClear_MouseHover(sender As Object, e As EventArgs) Handles btnInitClear.MouseHover
-
         Dim initItemCount As Integer = lbInitData.Items.Count
         Dim refItemCount As Integer = lbRefinedData.Items.Count
 
         Dim refCountText As String = If(refItemCount = 0, "no Items", $"{refItemCount} items")
+
+        slblDesc.Visible = True
 
         If initItemCount = 1 AndAlso refItemCount = 1 Then
             slblDesc.Text = "Remove the only item from the Initial Dataset. This will also remove the only item from the Refined Dataset."
@@ -1941,6 +1942,7 @@ Public Class FrmMain
         Dim selCount As Integer = lbInitData.SelectedItems.Count
         Dim totalCount As Integer = lbInitData.Items.Count
         Dim refCount As Integer = lbRefinedData.Items.Count
+
         slblDesc.Visible = True
 
         If selCount = 1 Then
