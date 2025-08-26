@@ -156,8 +156,8 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 
 ### v4.6.3.9
 #### August 26, 2025
-> Refreshed the graphical user interface with subtle enhancements.
-> Improved status label messaging logic : Added dynamic singular / plural phrasing and corrected punctuation for clearer user feedback.
+> Refreshed the graphical user interface with subtle enhancements.<br><br>
+> Improved status label messaging logic : Added dynamic singular / plural phrasing and corrected punctuation for clearer user feedback.<br><br>
 > Minor bugs fixed.
 </details>
 
