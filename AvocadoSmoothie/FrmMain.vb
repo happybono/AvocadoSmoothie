@@ -186,6 +186,7 @@ Public Class FrmMain
         End If
 
         txtInitAdd.Text = String.Empty
+        txtInitAdd.Select()
     End Sub
 
     Public Sub Quicksort(ByVal list() As Double, ByVal min As Integer, ByVal max As Integer)
@@ -305,7 +306,6 @@ Public Class FrmMain
         btnRefClear.Enabled = False
         btnRefSelectAll.Enabled = False
         btnRefSelectSync.Enabled = False
-        btnExport.Enabled = False
 
         isRefinedLoading = True
         Await Task.Run(Sub()
@@ -345,7 +345,6 @@ Public Class FrmMain
         btnRefClear.Enabled = True
         btnRefSelectAll.Enabled = True
         btnRefSelectSync.Enabled = True
-        btnExport.Enabled = True
 
         UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
         UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
@@ -382,7 +381,9 @@ Public Class FrmMain
 
     Private Sub btnInitCopy_Click(sender As Object, e As EventArgs) Handles btnInitCopy.Click
         Dim doubles As New List(Of Double)
-        Dim source = If(lbInitData.SelectedItems.Count > 0, lbInitData.SelectedItems, lbInitData.Items)
+        Dim source = If(lbInitData.SelectedItems.Count > 0,
+                    lbInitData.SelectedItems,
+                    lbInitData.Items)
 
         For Each itm As Object In source
             Dim txt = itm.ToString()
@@ -391,19 +392,28 @@ Public Class FrmMain
                 doubles.Add(num)
             Else
                 MessageBox.Show($"The value '{txt}' could not be converted to a number.",
-                                "Copy Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                            "Copy Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return
             End If
         Next
 
         If doubles.Any() Then
             Clipboard.SetText(String.Join(Environment.NewLine, doubles))
+
+            Dim copiedCount As Integer = doubles.Count
+            slblDesc.Visible = True
+            slblDesc.Text = If(copiedCount = 1,
+                           "Successfully copied 1 item.",
+                           $"Successfully copied {copiedCount} items.")
         End If
     End Sub
 
+
     Private Sub btnRefCopy_Click(sender As Object, e As EventArgs) Handles btnRefCopy.Click
         Dim doubles As New List(Of Double)
-        Dim source = If(lbInitData.SelectedItems.Count > 0, lbInitData.SelectedItems, lbRefinedData.Items)
+        Dim source = If(lbRefinedData.SelectedItems.Count > 0,
+                    lbRefinedData.SelectedItems,
+                    lbRefinedData.Items)
 
         For Each itm As Object In source
             Dim txt = itm.ToString()
@@ -412,13 +422,19 @@ Public Class FrmMain
                 doubles.Add(num)
             Else
                 MessageBox.Show($"The value '{txt}' could not be converted to a number.",
-                                "Copy Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                            "Copy Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 Return
             End If
         Next
 
         If doubles.Any() Then
             Clipboard.SetText(String.Join(Environment.NewLine, doubles))
+
+            Dim copiedCount As Integer = doubles.Count
+            slblDesc.Visible = True
+            slblDesc.Text = If(copiedCount = 1,
+                           "Successfully copied 1 item.",
+                           $"Successfully copied {copiedCount} items.")
         End If
     End Sub
 
@@ -431,18 +447,22 @@ Public Class FrmMain
         Dim itemText As String = If(itemCount = 1, "item", "items")
         Dim refItemText As String = If(refItemCount = 1, "item", "items")
 
-        Dim refMessage As String
-        If refItemCount = 0 Then
-            refMessage = "This will also clear the Refined Dataset listbox."
+        Dim refMessage As String = If(refItemCount = 0,
+                             String.Empty,
+                             $"This will also delete all {refItemCount} {refItemText} from the Refined Dataset.")
+
+        Dim message As String
+
+        If String.IsNullOrEmpty(refMessage) Then
+            message = $"You are about to delete all {itemCount} {itemText} from the Initial Dataset." &
+              $"{vbCrLf}{vbCrLf}Are you sure you want to proceed?"
         Else
-            refMessage = $"This will also delete all {refItemCount} {refItemText} from the Refined Dataset listbox."
+            message = $"You are about to delete all {itemCount} {itemText} from the Initial Dataset." &
+              $"{vbCrLf}{refMessage}{vbCrLf}{vbCrLf}Are you sure you want to proceed?"
         End If
 
-        Dim result As DialogResult =
-            MessageBox.Show(
-            $"This will delete all {itemCount} {itemText} from the Initial Dataset listbox." & vbCrLf &
-            refMessage & vbCrLf & vbCrLf &
-            "Are you sure you want to proceed?",
+        Dim result As DialogResult = MessageBox.Show(
+            message,
             "Delete Confirmation",
             MessageBoxButtons.YesNo,
             MessageBoxIcon.Warning
@@ -478,20 +498,34 @@ Public Class FrmMain
         lblRefCnt.Text = "Count : " & lbRefinedData.Items.Count
 
         slblDesc.Visible = True
-        slblDesc.Text = $"Deleted {itemCount} {itemText} from Initial Dataset and {refItemCount} {refItemText} from Refined Dataset."
+
+        Dim initialMsg As String = $"Deleted all {itemCount} item{If(itemCount <> 1, "s", "")} from the initial dataset"
+        Dim finalMsg As String = initialMsg
+
+        If refItemCount > 0 Then
+            finalMsg &= $" and Deleted all {refItemCount} item{If(refItemCount <> 1, "s", "")} from the Refined Dataset"
+        End If
+
+        ' 마침표 추가
+        slblDesc.Text = finalMsg + "."
+
+
         txtInitAdd.Select()
     End Sub
 
     Private Sub btnRefClear_Click(sender As Object, e As EventArgs) Handles btnRefClear.Click
         Dim itemCount As Integer = lbRefinedData.Items.Count
 
+        Dim message As String = $"You are about to delete all {itemCount} item{If(itemCount <> 1, "s", "")} from the Refined Dataset." &
+                        vbCrLf & vbCrLf &
+                        "Are you sure you want to proceed?"
+
         Dim result As DialogResult = MessageBox.Show(
-    $"This will delete all {itemCount} item{If(itemCount <> 1, "s", "")} from the Refined Dataset listbox." & vbCrLf & vbCrLf &
-    "Are you sure you want to proceed?",
-    "Delete Confirmation",
-    MessageBoxButtons.YesNo,
-    MessageBoxIcon.Warning
-)
+            message,
+            "Delete Confirmation",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Warning
+            )
 
         If result = DialogResult.No Then
             Return
@@ -509,6 +543,9 @@ Public Class FrmMain
         slblBorderCount.Visible = False
 
         slblSeparator2.Visible = False
+
+        slblDesc.Text = $"Deleted all {itemCount} item{If(itemCount <> 1, "s", "")} from Refined Dataset."
+        slblDesc.Visible = True
 
         lblRefCnt.Text = "Count : " & lbRefinedData.Items.Count
         lbRefinedData.Select()
@@ -562,27 +599,38 @@ Public Class FrmMain
     End Function
 
     Private Async Sub btnInitDelete_Click(sender As Object, e As EventArgs) Handles btnInitDelete.Click
-        Dim selectedCount As Integer = lbInitData.SelectedIndices.Count
         Dim totalCount As Integer = lbInitData.Items.Count
-        Dim selectedItems As Boolean = lbInitData.SelectedItems.Count > 0
-        Dim message As String
+        Dim refinedCount As Integer = lbRefinedData.Items.Count
+        Dim selectedCount As Integer = lbInitData.SelectedItems.Count
 
+        Dim totalItemText As String = If(totalCount = 1, "item", "items")
+        Dim selectedItemText As String = If(selectedCount = 1, "item", "items")
+        Dim refItemText As String = If(refinedCount = 1, "item", "items")
+
+        Dim refMessage As String = If(refinedCount = 0,
+                               String.Empty,
+                               $"This will also delete all {refinedCount} {refItemText} from the Refined Dataset.")
+
+        Dim body As String
         If selectedCount = 0 Then
-            UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
-            Return
-        End If
-
-        If selectedCount = totalCount Then
-            message = $"You are about to delete all {totalCount} item{If(totalCount <> 1, "s", "")} from the Initial Dataset listbox." & vbCrLf &
-                "This will also delete all items from the Refined Dataset listbox." & vbCrLf & vbCrLf &
-                "Are you sure you want to proceed?"
+            body = "No items selected to delete."
+        ElseIf selectedCount = totalCount Then
+            body = $"You are about to delete all {selectedCount} {totalItemText} from the Initial Dataset." &
+           If(String.IsNullOrEmpty(refMessage),
+              String.Empty,
+              vbCrLf & refMessage)
         Else
-            message = $"You are about to delete {selectedCount} selected item{If(selectedCount <> 1, "s", "")} from the Initial Dataset listbox." &
-                      vbCrLf & vbCrLf & "Are you sure you want to proceed?"
+            body = $"You are about to delete {selectedCount} selected {selectedItemText} from the Initial Dataset."
         End If
 
-        Dim result As DialogResult = MessageBox.Show(message, "Delete Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+        Dim message As String = body & vbCrLf & vbCrLf & "Are you sure you want to proceed?"
 
+        Dim result As DialogResult = MessageBox.Show(
+            message,
+            "Delete Confirmation",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Warning
+)
         If result = DialogResult.No Then
             Return
         End If
@@ -612,16 +660,25 @@ Public Class FrmMain
             UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
 
             txtInitAdd.Select()
-            Return
         End If
 
         Await DeleteSelectedItemsPreserveSelection(lbInitData, pbMain, lblInitCnt)
 
-        If (selectedCount = lbInitData.Items.Count) Then
-            slblDesc.Text = $"Deleted all {selectedCount} items from Initial Dataset and all items from Refined Dataset."
+        slblDesc.Visible = True
+
+        Dim descMessage As String
+
+        If selectedCount = totalCount Then
+            Dim refPart As String = If(refinedCount = 0,
+                               String.Empty,
+                               $" and all {refinedCount} {refItemText} from Refined Dataset")
+            descMessage = $"Deleted all {totalCount} {totalItemText} from Initial Dataset{refPart}."
         Else
-            slblDesc.Text = $"Deleted {selectedCount} selected item{If(selectedCount > 1, "s", "")} from Initial Dataset."
+            descMessage = $"Deleted {selectedCount} selected {selectedItemText} from Initial Dataset."
         End If
+
+        slblDesc.Visible = True
+        slblDesc.Text = descMessage
 
         lblInitCnt.Text = "Count : " & lbInitData.Items.Count
 
@@ -632,6 +689,7 @@ Public Class FrmMain
     End Sub
 
     Private Async Sub lbInitData_DragDrop(sender As Object, e As DragEventArgs) Handles lbInitData.DragDrop
+        Dim beforeCount As Integer = lbInitData.Items.Count
         btnCalibrate.Enabled = False
         pbMain.Style = ProgressBarStyle.Continuous
         pbMain.Minimum = 0
@@ -703,6 +761,7 @@ Public Class FrmMain
 
             pbMain.Value = 0
             btnCalibrate.Enabled = True
+            UpdateStatusLabel(beforeCount)
         End Try
     End Sub
 
@@ -741,12 +800,29 @@ Public Class FrmMain
              DragDropEffects.Copy, DragDropEffects.None)
     End Sub
 
+    Private Sub UpdateStatusLabel(beforeCount As Integer)
+        Dim added As Integer = lbInitData.Items.Count - beforeCount
+
+        If added = 0 Then
+            slblDesc.Text = "No items have been added to Initial Dataset."
+        ElseIf added = 1 Then
+            slblDesc.Text = "1 item has been added to Initial Dataset."
+        Else
+            slblDesc.Text = $"{added} items have been added to Initial Dataset."
+        End If
+
+        slblDesc.Visible = True
+    End Sub
+
     Private Async Sub btnInitPaste_Click(sender As Object, e As EventArgs) Handles btnInitPaste.Click
         pbMain.Style = ProgressBarStyle.Continuous
         pbMain.Minimum = 0
         pbMain.Maximum = 100
         pbMain.Value = 0
         btnCalibrate.Enabled = False
+
+        Dim beforeCount As Integer = lbInitData.Items.Count
+        Dim addedCount As Integer = 0
 
         Try
             Dim text As String = Clipboard.GetText()
@@ -787,6 +863,8 @@ Public Class FrmMain
         Finally
             UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
             UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
+
+            UpdateStatusLabel(beforeCount)
 
             pbMain.Value = 0
             btnCalibrate.Enabled = True
@@ -1874,22 +1952,24 @@ Public Class FrmMain
     End Sub
 
     Private Sub btnInitClear_MouseHover(sender As Object, e As EventArgs) Handles btnInitClear.MouseHover
+        slblDesc.Visible = True
+
         Dim initItemCount As Integer = lbInitData.Items.Count
         Dim refItemCount As Integer = lbRefinedData.Items.Count
 
-        Dim refCountText As String = If(refItemCount = 0, "no Items", $"{refItemCount} items")
+        Dim initialMsg As String = If(initItemCount = 1,
+                                  "Delete the item from the Initial Dataset",
+                                  $"Delete all {initItemCount} items from the Initial Dataset")
 
-        slblDesc.Visible = True
+        Dim refinedMsg As String = If(refItemCount = 0,
+                                 String.Empty,
+                                 If(refItemCount = 1,
+                                    "and Delete the item from the Refined Dataset",
+                                    $"and Delete all {refItemCount} items from the Refined Dataset"))
 
-        If initItemCount = 1 AndAlso refItemCount = 1 Then
-            slblDesc.Text = "Remove the only item from the Initial Dataset. This will also remove the only item from the Refined Dataset."
-        ElseIf initItemCount = 1 Then
-            slblDesc.Text = $"Remove the only item from the Initial Dataset. This will also remove all {refCountText} from the Refined Dataset."
-        ElseIf refItemCount = 1 Then
-            slblDesc.Text = $"Remove all {initItemCount} items from the Initial Dataset. This will also remove the only item from the Refined Dataset."
-        Else
-            slblDesc.Text = $"Remove all {initItemCount} items from the Initial Dataset. This will also remove all {refCountText} from the Refined Dataset."
-        End If
+        slblDesc.Text = If(String.IsNullOrEmpty(refinedMsg),
+                       initialMsg & ".",
+                       $"{initialMsg} {refinedMsg}.")
     End Sub
 
     Private Sub btnInitClear_MouseLeave(sender As Object, e As EventArgs) Handles btnInitClear.MouseLeave
@@ -1897,17 +1977,15 @@ Public Class FrmMain
     End Sub
 
     Private Sub btnInitCopy_MouseHover(sender As Object, e As EventArgs) Handles btnInitCopy.MouseHover
+        Dim selCount As Integer = lbInitData.SelectedItems.Count
+        Dim totalCount As Integer = lbInitData.Items.Count
         slblDesc.Visible = True
 
-        Dim selCount As Integer = lbInitData.SelectedItems.Count
-
-        If selCount = 0 Then
-            slblDesc.Text = "Copy all items from the Initial Dataset listbox to the clipboard."
-        ElseIf selCount = 1 Then
-            slblDesc.Text = "Copy the selected item from the Initial Dataset listbox to the clipboard."
-        Else
-            slblDesc.Text = $"Copy {selCount} selected items from the Initial Dataset listbox to the clipboard."
-        End If
+        slblDesc.Text = If(selCount = 0 OrElse selCount = totalCount,
+                       $"Copy all {totalCount} items from the Refined Dataset to the clipboard.",
+                       If(selCount = 1,
+                          "Copy the selected item from the Refined Dataset to the clipboard.",
+                          $"Copy {selCount} selected items from the Refined Dataset to the clipboard."))
     End Sub
 
     Private Sub btnInitCopy_MouseLeave(sender As Object, e As EventArgs) Handles btnInitCopy.MouseLeave
@@ -1916,7 +1994,7 @@ Public Class FrmMain
 
     Private Sub btnInitPaste_MouseHover(sender As Object, e As EventArgs) Handles btnInitPaste.MouseHover
         slblDesc.Visible = True
-        slblDesc.Text = "Paste numeric values from the clipboard into the Initial Dataset listbox."
+        slblDesc.Text = "Paste numeric values from the clipboard into the Initial Dataset."
     End Sub
 
     Private Sub btnInitPaste_MouseLeave(sender As Object, e As EventArgs) Handles btnInitPaste.MouseLeave
@@ -1928,9 +2006,9 @@ Public Class FrmMain
         slblDesc.Visible = True
 
         If selCount = 1 Then
-            slblDesc.Text = "Edit the selected item in the Initial Dataset listbox."
+            slblDesc.Text = "Edit the selected item in the Initial Dataset."
         Else
-            slblDesc.Text = $"Edit {selCount} selected items in the Initial Dataset listbox."
+            slblDesc.Text = $"Edit {selCount} selected items in the Initial Dataset."
         End If
     End Sub
 
@@ -1939,23 +2017,28 @@ Public Class FrmMain
     End Sub
 
     Private Sub btnInitDelete_MouseHover(sender As Object, e As EventArgs) Handles btnInitDelete.MouseHover
+        slblDesc.Visible = True
+
         Dim selCount As Integer = lbInitData.SelectedItems.Count
         Dim totalCount As Integer = lbInitData.Items.Count
         Dim refCount As Integer = lbRefinedData.Items.Count
 
-        slblDesc.Visible = True
-
         If selCount = 1 Then
-            slblDesc.Text = "Delete the selected item from the Initial Dataset."
+            slblDesc.Text = "Delete the selected item from the Initial Dataset"
         ElseIf selCount = totalCount AndAlso totalCount > 0 Then
-            Dim refMsg As String = If(
-        refCount = 0,
-        "No items will be deleted from the Refined Dataset.",
-        $"This will also delete all {refCount} item{If(refCount <> 1, "s", "")} from the Refined Dataset."
-    )
-            slblDesc.Text = $"Delete all {selCount} items from the Initial Dataset. {refMsg}"
+            Dim initMsg As String = $"Delete all {selCount} items from the Initial Dataset"
+
+            If refCount > 0 Then
+                Dim refMsg As String = If(refCount = 1,
+                                  " and Delete the item from the Refined Dataset",
+                                  $" and Delete all {refCount} items from the Refined Dataset")
+                slblDesc.Text = initMsg & refMsg & "."
+            Else
+                slblDesc.Text = initMsg & "."
+            End If
         Else
-            slblDesc.Text = $"Delete {selCount} selected items from the Initial Dataset."
+            Dim selText As String = If(selCount = 1, "item", "items")
+            slblDesc.Text = $"Delete {selCount} selected {selText} from the Initial Dataset."
         End If
     End Sub
 
@@ -1970,7 +2053,7 @@ Public Class FrmMain
         If (itemCount = 1) Then
             slblDesc.Text = "Select the item in the Initial Dataset"
         ElseIf (itemCount > 1) Then
-            slblDesc.Text = $"Select all items in the Initial Dataset listbox."
+            slblDesc.Text = $"Select all items in the Initial Dataset."
         End If
     End Sub
 
@@ -1983,9 +2066,9 @@ Public Class FrmMain
         slblDesc.Visible = True
 
         If selCount = 1 Then
-            slblDesc.Text = "Deselect the selected item in the Initial Dataset listbox."
+            slblDesc.Text = "Deselect the selected item in the Initial Dataset."
         Else
-            slblDesc.Text = $"Deselect all {selCount} selected items in the Initial Dataset listbox."
+            slblDesc.Text = $"Deselect all {selCount} selected items in the Initial Dataset."
         End If
     End Sub
 
@@ -1998,9 +2081,9 @@ Public Class FrmMain
         slblDesc.Visible = True
 
         If selCount = 1 Then
-            slblDesc.Text = "Select the corresponding item in the Refined Dataset listbox."
+            slblDesc.Text = "Deselect the selected item in the Initial Dataset."
         Else
-            slblDesc.Text = $"Select {selCount} corresponding items in the Refined Dataset listbox."
+            slblDesc.Text = $"Deselect all {selCount} selected items in the Initial Dataset."
         End If
     End Sub
 
@@ -2028,9 +2111,9 @@ Public Class FrmMain
         Dim itemCount As Integer = lbRefinedData.Items.Count
 
         If (itemCount = 1) Then
-            slblDesc.Text = "Remove the only item from the Refined Dataset listbox."
+            slblDesc.Text = "Delete the item from the Refined Dataset."
         Else
-            slblDesc.Text = $"Remove all {itemCount} items from the Refined Dataset listbox."
+            slblDesc.Text = $"Delete all {itemCount} items from the Refined Dataset."
         End If
     End Sub
 
@@ -2039,17 +2122,15 @@ Public Class FrmMain
     End Sub
 
     Private Sub btnRefCopy_MouseHover(sender As Object, e As EventArgs) Handles btnRefCopy.MouseHover
+        Dim selCount As Integer = lbRefinedData.SelectedItems.Count
+        Dim totalCount As Integer = lbRefinedData.Items.Count
         slblDesc.Visible = True
 
-        Dim selCount As Integer = lbRefinedData.SelectedItems.Count
-
-        If selCount = 0 Then
-            slblDesc.Text = "Copy all items from the Refined Dataset listbox to the clipboard."
-        ElseIf selCount = 1 Then
-            slblDesc.Text = "Copy the selected item from the Refined Dataset listbox to the clipboard."
-        Else
-            slblDesc.Text = $"Copy {selCount} selected items from the Refined Dataset listbox to the clipboard."
-        End If
+        slblDesc.Text = If(selCount = 0 OrElse selCount = totalCount,
+                       $"Copy all {totalCount} items from the Refined Dataset to the clipboard.",
+                       If(selCount = 1,
+                          "Copy the selected item from the Refined Dataset to the clipboard.",
+                          $"Copy {selCount} selected items from the Refined Dataset to the clipboard."))
     End Sub
 
     Private Sub btnRefCopy_MouseLeave(sender As Object, e As EventArgs) Handles btnRefCopy.MouseLeave
@@ -2061,9 +2142,9 @@ Public Class FrmMain
         slblDesc.Visible = True
 
         If (itemCount = 1) Then
-            slblDesc.Text = "Select the only item in the Refined Dataset listbox."
+            slblDesc.Text = "Select the item in the Refined Dataset."
         ElseIf (itemCount > 1) Then
-            slblDesc.Text = $"Select all items in the Refined Dataset listbox."
+            slblDesc.Text = $"Select all items in the Refined Dataset."
         End If
     End Sub
 
@@ -2076,9 +2157,9 @@ Public Class FrmMain
         slblDesc.Visible = True
 
         If selCount = 1 Then
-            slblDesc.Text = "Deselect the selected item in the Refined Dataset listbox."
+            slblDesc.Text = "Deselect the selected item in the Refined Dataset."
         Else
-            slblDesc.Text = $"Deselect all {selCount} selected items in the Refined Dataset listbox."
+            slblDesc.Text = $"Deselect all {selCount} selected items in the Refined Dataset."
         End If
     End Sub
 
@@ -2091,9 +2172,9 @@ Public Class FrmMain
         slblDesc.Visible = True
 
         If selCount = 1 Then
-            slblDesc.Text = "Select the corresponding item in the Initial Dataset listbox."
+            slblDesc.Text = "Select the corresponding item in the Initial Dataset."
         Else
-            slblDesc.Text = $"Select {selCount} corresponding items in the Initial Dataset listbox."
+            slblDesc.Text = $"Select {selCount} corresponding items in the Initial Dataset."
         End If
     End Sub
 

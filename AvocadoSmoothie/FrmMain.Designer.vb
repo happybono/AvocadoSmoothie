@@ -187,7 +187,7 @@ Partial Class FrmMain
         Me.cbxBorderCount.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
         Me.cbxBorderCount.FormattingEnabled = True
         Me.cbxBorderCount.IntegralHeight = False
-        Me.cbxBorderCount.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"})
+        Me.cbxBorderCount.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"})
         Me.cbxBorderCount.Location = New System.Drawing.Point(193, 80)
         Me.cbxBorderCount.Name = "cbxBorderCount"
         Me.cbxBorderCount.Size = New System.Drawing.Size(80, 25)
@@ -531,7 +531,7 @@ Partial Class FrmMain
         Me.cbxKernelRadius.FormattingEnabled = True
         Me.cbxKernelRadius.IntegralHeight = False
         Me.cbxKernelRadius.ItemHeight = 17
-        Me.cbxKernelRadius.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21"})
+        Me.cbxKernelRadius.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"})
         Me.cbxKernelRadius.Location = New System.Drawing.Point(234, 42)
         Me.cbxKernelRadius.Margin = New System.Windows.Forms.Padding(2)
         Me.cbxKernelRadius.Name = "cbxKernelRadius"
