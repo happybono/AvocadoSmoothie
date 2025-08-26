@@ -57,3 +57,18 @@ D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\Avoc
 D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\AvocadoSmoothie.exe
 D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\AvocadoSmoothie.xml
 D:\AvocadoSmoothie-Eng\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\AvocadoSmoothie.pdb
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\bin\x64\Release\AvocadoSmoothie.exe.config
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\bin\x64\Release\AvocadoSmoothie.exe
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\bin\x64\Release\AvocadoSmoothie.pdb
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\bin\x64\Release\AvocadoSmoothie.xml
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\AvocadoSmoothie.vbproj.AssemblyReference.cache
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\AvocadoSmoothie.exe.config
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\AvocadoSmoothie.AboutBox.resources
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\AvocadoSmoothie.FrmMain.resources
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\AvocadoSmoothie.FrmModify.resources
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\AvocadoSmoothie.Resources.resources
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\AvocadoSmoothie.vbproj.GenerateResource.cache
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\AvocadoSmoothie.vbproj.CoreCompileInputs.cache
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\AvocadoSmoothie.exe
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\AvocadoSmoothie.xml
+C:\Users\happybono\Downloads\AvocadoSmoothie-main (4)\AvocadoSmoothie-main\AvocadoSmoothie\obj\x64\Release\AvocadoSmoothie.pdb
