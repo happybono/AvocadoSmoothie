@@ -153,6 +153,12 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 > Unified progress bar usage (`pbMain`) across calibration and export processes.<br><br>
 > Improved selection synchronization and feedback between datasets.<br><br>
 > Minor bugs fixed.
+
+### v4.6.3.9
+#### August 26, 2025
+> Refreshed the graphical user interface with subtle enhancements.
+> Improved status label messaging logic : Added dynamic singular / plural phrasing and corrected punctuation for clearer user feedback.
+> Minor bugs fixed.
 </details>
 
 ## Required Components & Setup
