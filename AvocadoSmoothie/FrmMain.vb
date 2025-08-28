@@ -21,6 +21,9 @@ Public Class FrmMain
 
     Private Const ExcelTitlePlaceholder As String = "Click here to enter a title for your dataset."
 
+    Private _isShowingTitleValidationMessage As Boolean
+    Private _lastInvalidTitle As String
+
     Private sourceList As New List(Of Double)
     Private medianList As New List(Of Double)
 
@@ -32,6 +35,7 @@ Public Class FrmMain
     Private Shared ReadOnly regexNumbers As New Regex(patternFindNumbers, RegexOptions.Compiled)
     Private Shared ReadOnly regexHtmlNumbers As New Regex(patternHtmlParse, RegexOptions.Compiled)
     Private Shared ReadOnly regexStripTags As New Regex("<.*?>", RegexOptions.Compiled)
+
 
     Public Sub New()
         InitializeComponent()
@@ -1786,11 +1790,94 @@ Public Class FrmMain
     End Sub
 
     Private Sub txtDatasetTitle_Leave(sender As Object, e As EventArgs) Handles txtDatasetTitle.Leave
-        If String.IsNullOrWhiteSpace(txtDatasetTitle.Text) Then
+        Dim raw As String = txtDatasetTitle.Text
+        Dim title As String = If(raw IsNot Nothing, raw.Trim(), String.Empty)
+
+        If title = ExcelTitlePlaceholder OrElse String.IsNullOrEmpty(raw) Then
             txtDatasetTitle.Text = ExcelTitlePlaceholder
             txtDatasetTitle.ForeColor = Color.Gray
             txtDatasetTitle.TextAlign = HorizontalAlignment.Center
+            Exit Sub
         End If
+
+        Const MaxLength As Integer = 31
+        Dim invalidChars As String = ":\/?*["
+        Dim winInvalidChars As Char() = Path.GetInvalidFileNameChars()
+        Dim reservedNames As String() = {
+            "CON", "PRN", "AUX", "NUL",
+            "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+            "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"
+        }
+
+        Dim titleUpper As String = title.ToUpperInvariant()
+        Dim errors As New List(Of String)()
+
+        If String.IsNullOrWhiteSpace(title) Then
+            errors.Add("The name cannot be blank.")
+        End If
+
+        If title.Length > MaxLength Then
+            errors.Add($"The name must not exceed {MaxLength} characters.")
+        End If
+
+        Dim hasInvalidChar As Boolean = title.IndexOfAny(invalidChars.ToCharArray()) >= 0 OrElse title.Contains("]")
+        Dim hasWinInvalidChar As Boolean = title.IndexOfAny(winInvalidChars) >= 0
+
+        If hasInvalidChar OrElse hasWinInvalidChar Then
+            Dim winCharsDisplay = String.Join(" ",
+                winInvalidChars.
+                    Select(Function(c)
+                               If c = " "c Then
+                                   Return "<space>"
+                               Else
+                                   Return c.ToString()
+                               End If
+                           End Function).
+                    ToArray()
+            )
+
+            errors.Add(
+                "The name cannot contain any of the following characters: : \ / ? * [ ]" & vbCrLf &
+                "or any Windows file name invalid characters: " & winCharsDisplay
+            )
+        End If
+
+        If reservedNames.Any(Function(rn) titleUpper.Equals(rn, StringComparison.OrdinalIgnoreCase)) Then
+            errors.Add("The name cannot be a reserved Windows file name (e.g., CON, PRN, AUX, NUL, COM1, LPT1, etc.).")
+        End If
+
+        If errors.Count > 0 Then
+            If _isShowingTitleValidationMessage OrElse
+               String.Equals(_lastInvalidTitle, title, StringComparison.Ordinal) Then
+
+                txtDatasetTitle.Text = ExcelTitlePlaceholder
+                txtDatasetTitle.ForeColor = Color.Gray
+                txtDatasetTitle.TextAlign = HorizontalAlignment.Center
+                Exit Sub
+            End If
+
+            _isShowingTitleValidationMessage = True
+            _lastInvalidTitle = title
+            Try
+                txtDatasetTitle.Text = ExcelTitlePlaceholder
+                txtDatasetTitle.ForeColor = Color.Gray
+                txtDatasetTitle.TextAlign = HorizontalAlignment.Center
+                MessageBox.Show(
+                    String.Join(vbCrLf & vbCrLf, errors),
+                    "Invalid Title",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                )
+            Finally
+                _isShowingTitleValidationMessage = False
+            End Try
+
+            Exit Sub
+        End If
+
+        _lastInvalidTitle = Nothing
+        txtDatasetTitle.ForeColor = SystemColors.WindowText
+        txtDatasetTitle.TextAlign = HorizontalAlignment.Left
     End Sub
 
     Private Sub txtDatasetTitle_TextChanged(sender As Object, e As EventArgs) Handles txtDatasetTitle.TextChanged
