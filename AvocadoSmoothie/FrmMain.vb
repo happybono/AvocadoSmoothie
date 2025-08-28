@@ -24,8 +24,8 @@ Public Class FrmMain
     Private _isShowingTitleValidationMessage As Boolean
     Private _lastInvalidTitle As String
 
-    Private sourceList As New List(Of Double)
-    Private medianList As New List(Of Double)
+    Private initList As New List(Of Double)
+    Private refinedList As New List(Of Double)
 
     Private Shared ReadOnly patternFindNumbers As String =
         "[+-]?(\d+(,\d{3})*|(?=\.\d))((\.\d+([eE][+-]\d+)?)|)"
@@ -44,10 +44,10 @@ Public Class FrmMain
     End Sub
 
     'Sub MiddleMedian()
-    '    Dim n = sourceList.Count
+    '    Dim n = initList.Count
     '    If n = 0 Then Return
 
-    '    Dim arr = sourceList.ToArray()
+    '    Dim arr = initList.ToArray()
     '    Dim buffer(n - 1) As Double
 
     '    buffer(0) = arr(0)
@@ -65,16 +65,16 @@ Public Class FrmMain
     '                               buffer(i) = win(2)
     '                           End Sub)
 
-    '    medianList.Clear()
-    '    medianList.AddRange(buffer)
+    '    refinedList.Clear()
+    '    refinedList.AddRange(buffer)
     'End Sub
 
 
     'Sub AllMedian()
-    '    Dim n = sourceList.Count
+    '    Dim n = initList.Count
     '    If n = 0 Then Return
 
-    '    Dim arr = sourceList.ToArray()
+    '    Dim arr = initList.ToArray()
     '    Dim buffer(n - 1) As Double
 
     '    Parallel.For(0, n, Sub(i)
@@ -90,9 +90,18 @@ Public Class FrmMain
     '                           buffer(i) = win(2)
     '                       End Sub)
 
-    '    medianList.Clear()
-    '    medianList.AddRange(buffer)
+    '    refinedList.Clear()
+    '    refinedList.AddRange(buffer)
     'End Sub
+
+
+    ' ---------------------------------------------------------------
+    ' ComputeMedians  : initList 로부터 이동 중간 값을 계산해 refinedList 에 출력합니다.
+    ' useMiddle       : True 일 경우, 첫 시작 부분과 마지막 끝 부분은 borderCount 구간에 대해 원본 값 사용
+    ' KernelRadius    : 중앙 값을 계산할 윈도우 (커널 계수) 의 크기
+    ' borderCount     : 보정하지 않고 원본 값을 사용할 요소 개수
+    ' progress        : 계산 진행률을 보고할 IProgress(Of Integer) 
+    ' ---------------------------------------------------------------
 
     Private Sub ComputeMedians(
         useMiddle As Boolean,
@@ -100,26 +109,38 @@ Public Class FrmMain
         borderCount As Integer,
         progress As IProgress(Of Integer)
     )
-        Dim n = sourceList.Count
+
+        ' 전체 데이터 개수 취득
+        Dim n = initList.Count
+
+        ' 데이터가 없으면 진행률 0 보고 후 반환
         If n = 0 Then
             progress.Report(0)
             Return
         End If
 
-        Dim arr = sourceList.ToArray()
+        ' 원본 데이터를 배열 형태로 복사
+        Dim arr = initList.ToArray()
+
+        ' 결과를 저장할 버퍼 배열
         Dim buffer(n - 1) As Double
 
+        ' 커널 (Kernel) 반경을 양쪽으로 분리 (홀수 · 짝수 창 모두 지원)
         Dim offsetLow = (KernelRadius - 1) \ 2
         Dim offsetHigh = (KernelRadius - 1) - offsetLow
 
+        ' 진행 중 항목 수 계산 및 보고 간격 설정 (약 0.5 % 단위)
         Dim processed As Integer = 0
         Dim reportInterval = Math.Max(1, n \ 200)
         progress.Report(0)
 
+        ' 각 Thread 마다 고유한 윈도우 배열을 제공하는 ThreadLocal
         Dim localWin As New ThreadLocal(Of Double())(
             Function() New Double(KernelRadius - 1) {}
         )
 
+        ' 보정하지 않고 원본 값을 사용할 요소 구간 개수를 원본 그대로 유지
+        ' (useMiddle = True 인 경우에 한함)
         If useMiddle Then
             For i As Integer = 0 To borderCount - 1
                 buffer(i) = arr(i)
@@ -131,38 +152,62 @@ Public Class FrmMain
             Next
         End If
 
+        ' 중간 값 계산을 시작할 인덱스와 끝 인덱스 결정
         Dim startIdx = If(useMiddle, borderCount, 0)
         Dim endIdx = If(useMiddle, n - borderCount - 1, n - 1)
 
+        ' 병렬 처리로 각 위치별 window 를 수집 한 후 중간 값 계산
         Parallel.For(startIdx, endIdx + 1, Sub(i)
+
+                                               ' 각 Thread 가 공유하지 않는 Window Buffer 확보
                                                Dim win = localWin.Value
 
+                                               ' 윈도우의 실제 범위(배열 경계를 넘지 않도록 조정)
                                                Dim iMin = Math.Max(0, i - offsetLow)
                                                Dim iMax = Math.Min(n - 1, i + offsetHigh)
                                                Dim length = iMax - iMin + 1
 
+                                               ' 윈도우 안의 값을 win 배열에 복사
                                                For k As Integer = 0 To length - 1
                                                    win(k) = arr(iMin + k)
                                                Next
 
+                                               ' 중간 값 계산 함수 호출
                                                buffer(i) = GetWindowMedian(win, length)
 
+                                               ' 진행 상태 업데이트
                                                Dim cnt = Interlocked.Increment(processed)
                                                If cnt Mod reportInterval = 0 Then
                                                    progress.Report(cnt)
                                                End If
                                            End Sub)
 
+        ' 최종 진행률 보고
         progress.Report(n)
 
-        medianList.Clear()
-        medianList.AddRange(buffer)
+        ' 기존 refinedList 에 항목이 존재하는 경우, 전체 삭제 후 보정된 항목으로 대체
+        refinedList.Clear()
+        refinedList.AddRange(buffer)
     End Sub
 
+    ' ---------------------------------------------------------------
+    ' GetWindowMedian  : 주어진 배열 조각에서 중간 값을 반환합니다.
+    ' win()            : 값이 채워진 배열 (KernelRadius × 2 + 1)
+    ' length           : 유효한 값이 들어 있는 요소 개수
+    ' ---------------------------------------------------------------
     Private Function GetWindowMedian(win() As Double, length As Integer) As Double
+        ' 유효 구간만 잘라낸 새 배열 생성
         Dim slice = win.Take(length).ToArray()
+
+        ' 오름차순 정렬
         Array.Sort(slice)
+
+        ' 중간 인덱스 계산
         Dim mid = length \ 2
+
+        ' 짝수인 경우 인접 두 값의 평균, 홀수일 때 가운데 값 반환
+        ' 업데이트를 통해 (v4.2.7.0) KernelWidth 에서, kernelRadius 로 변경함에 따라 실질적으로 홀수 창만 사용됨
+        ' 사용을 원하는 경우 짝수 창도 함께 사용 및 구현할 수 있도록 Method 는 유지.
         If length Mod 2 = 0 Then
             Return (slice(mid - 1) + slice(mid)) / 2.0
         Else
@@ -261,8 +306,8 @@ Public Class FrmMain
             End If
         Next
 
-        sourceList = parsedList
-        Dim total = sourceList.Count
+        initList = parsedList
+        Dim total = initList.Count
         Dim useMiddle = rbtnMidMedian.Checked
 
         Dim radius As Integer
@@ -324,12 +369,12 @@ Public Class FrmMain
 
         lbRefinedData.BeginUpdate()
         lbRefinedData.Items.Clear()
-        lbRefinedData.Items.AddRange(medianList.Cast(Of Object).ToArray())
+        lbRefinedData.Items.AddRange(refinedList.Cast(Of Object).ToArray())
         lbRefinedData.EndUpdate()
         lbRefinedData.TopIndex = lbRefinedData.Items.Count - 1
 
         lblInitCnt.Text = $"Count : {total}"
-        lblRefCnt.Text = $"Count : {medianList.Count}"
+        lblRefCnt.Text = $"Count : {refinedList.Count}"
         slblCalibratedType.Text = If(useMiddle, "Middle Median", "All Median")
         slblKernelWidth.Text = Integer.Parse(cbxKernelRadius.Text)
         slblBorderCount.Text = $"{borderCount}"
@@ -1177,24 +1222,24 @@ Public Class FrmMain
         Dim middleMedian(n - 1) As Double
         Dim allMedian(n - 1) As Double
 
-        sourceList = initialData.ToList()
+        initList = initialData.ToList()
         Dim middleProg = New Progress(Of Integer)(
         Sub(v) pbMain.Value = Math.Max(pbMain.Minimum,
                                              Math.Min(v, pbMain.Maximum))
     )
         Await Task.Run(Sub()
                            ComputeMedians(True, kernelRadius, borderCount, middleProg)
-                           medianList.CopyTo(0, middleMedian, 0, n)
+                           refinedList.CopyTo(0, middleMedian, 0, n)
                        End Sub)
 
-        sourceList = initialData.ToList()
+        initList = initialData.ToList()
         Dim allProg = New Progress(Of Integer)(
         Sub(v) pbMain.Value = Math.Max(pbMain.Minimum,
                                              Math.Min(v, pbMain.Maximum))
     )
         Await Task.Run(Sub()
                            ComputeMedians(False, kernelRadius, borderCount, allProg)
-                           medianList.CopyTo(0, allMedian, 0, n)
+                           refinedList.CopyTo(0, allMedian, 0, n)
                        End Sub)
 
         ' 저장 경로 지정
@@ -1294,7 +1339,7 @@ Public Class FrmMain
         Dim windowSize As Integer = kernelWidth
         Dim borderTotalWidth As Integer = borderCount * If(useMiddle, 2, 0)
 
-        ' radius로 인한 windowSize 초과 검사
+        ' radius 로 인한 windowSize 초과 검사
         If windowSize > dataCount Then
             MessageBox.Show(
             $"Kernel radius is too large.{Environment.NewLine}{Environment.NewLine}" &
@@ -1385,11 +1430,11 @@ Public Class FrmMain
 
             ' Middle Median 계산
             Dim middleMedian(n - 1) As Double
-            sourceList = initialData.ToList()
+            initList = initialData.ToList()
             Dim middleProgress = New Progress(Of Integer)(Sub(v) pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(v, pbMain.Maximum)))
             Await Task.Run(Sub()
                                ComputeMedians(True, kernelWidth, borderCount, middleProgress)
-                               medianList.CopyTo(0, middleMedian, 0, n)
+                               refinedList.CopyTo(0, middleMedian, 0, n)
                            End Sub)
 
             If Not ValidateSmoothingParameters(n, kernelRadius, borderCount, False) Then
@@ -1398,11 +1443,11 @@ Public Class FrmMain
 
             ' All Median 계산
             Dim allMedian(n - 1) As Double
-            sourceList = initialData.ToList()
+            initList = initialData.ToList()
             Dim allProgress = New Progress(Of Integer)(Sub(v) pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(v, pbMain.Maximum)))
             Await Task.Run(Sub()
                                ComputeMedians(False, kernelWidth, borderCount, allProgress)
-                               medianList.CopyTo(0, allMedian, 0, n)
+                               refinedList.CopyTo(0, allMedian, 0, n)
                            End Sub)
 
             ' COM 참조 관리 추가
