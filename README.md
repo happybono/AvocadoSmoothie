@@ -159,11 +159,11 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 > Refreshed the graphical user interface with subtle enhancements.<br><br>
 > Improved status label messaging logic : Added dynamic singular / plural phrasing and corrected punctuation for clearer user feedback.<br><br>
 > Minor bugs fixed.
+</details>
 
 ### v4.6.5.0
 #### August 28, 2025
 >	Implemented dataset title validation : including checks for length, invalid characters, and reserved names. Alongside dynamic placeholder behavior and conditional enabling of the export button.
-</details>
 
 ## Required Components & Setup
 ### Prerequisites
