@@ -238,49 +238,72 @@ Public Class FrmMain
         txtInitAdd.Select()
     End Sub
 
+    ' ---------------------------------------------------------------            
+    ' 빠른 정렬 (QuickSort) 알고리즘
+    ' list() : 정렬할 실수 배열
+    ' min    : 정렬 구간의 시작 Index
+    ' max    : 정렬 구간의 끝 Index    
+    ' ---------------------------------------------------------------
     Public Sub Quicksort(ByVal list() As Double, ByVal min As Integer, ByVal max As Integer)
-        Dim random_number As New Random
-        Dim med_value As Double
-        Dim hi As Integer
-        Dim lo As Integer
-        Dim i As Integer
+        Dim random_number As New Random  ' 무작위 Pivot 값 선택을 위한 Random 객체
+        Dim med_value As Double          ' 피벗 값 저장 변수
+        Dim hi As Integer                ' 오른쪽 Index
+        Dim lo As Integer                ' 왼쪽 Index
+        Dim i As Integer                 ' 피벗 위치를 선택할 임시 변수
 
+        ' 최소 구간이 최대 구간 이상이면 정렬 불필요
         If min >= max Then Exit Sub
 
+        ' 피벗 위치를 무작위로 선택
         i = random_number.Next(min, max + 1)
-        med_value = list(i)
+        med_value = list(i)              ' Pivot 값 저장
+
 
         list(i) = list(min)
 
+        ' 좌 / 우 포인터 초기화
         lo = min
         hi = max
+
+        ' 파티션 나누기
         Do
+            ' 오른쪽 포인터를 Pivot 보다 작은 값을 찾을 때까지 이동                       
             Do While list(hi) >= med_value
                 hi = hi - 1
                 If hi <= lo Then Exit Do
             Loop
+
+           ' 포인터가 교차되는 지점이 Pivot 위치
             If hi <= lo Then
                 list(lo) = med_value
                 Exit Do
             End If
 
+            ' 작은 값을 왼쪽으로 이동 
             list(lo) = list(hi)
 
+            ' 왼쪽 포인터에 대해 Pivot 보다 크거나 같은 값을 찾을 때까지 이동
             lo = lo + 1
             Do While list(lo) < med_value
                 lo = lo + 1
-                If lo >= hi Then Exit Do
+                If lo >= hi Then Exit Do ' 포인터 교차되는 지점에서 중단
             Loop
+
+            ' 포인터가 교차되는 지점이 Pivot 위치                                
             If lo >= hi Then
                 lo = hi
                 list(hi) = med_value
                 Exit Do
             End If
 
+            ' 큰 값을 오른쪽으로 이동                                    
             list(hi) = list(lo)
         Loop
-
+                                            
+        ' Pivot 을 기준으로 왼쪽 구간 정렬
         Quicksort(list, min, lo - 1)
+                                            
+        ' Pivot 을 기준으로 오른쪽 구간 정렬
         Quicksort(list, lo + 1, max)
     End Sub
 
@@ -2346,4 +2369,5 @@ Public Class FrmMain
         MouseLeaveHandler(sender, e)
     End Sub
 #End Region
+
 End Class
