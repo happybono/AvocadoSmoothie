@@ -90,7 +90,7 @@ Partial Class FrmMain
         Me.lbInitData.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.lbInitData.Name = "lbInitData"
         Me.lbInitData.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.lbInitData.Size = New System.Drawing.Size(294, 514)
+        Me.lbInitData.Size = New System.Drawing.Size(294, 497)
         Me.lbInitData.TabIndex = 4
         '
         'lbRefinedData
@@ -102,7 +102,7 @@ Partial Class FrmMain
         Me.lbRefinedData.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.lbRefinedData.Name = "lbRefinedData"
         Me.lbRefinedData.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.lbRefinedData.Size = New System.Drawing.Size(294, 514)
+        Me.lbRefinedData.Size = New System.Drawing.Size(294, 497)
         Me.lbRefinedData.TabIndex = 21
         '
         'btnCalibrate
@@ -187,7 +187,7 @@ Partial Class FrmMain
         Me.cbxBorderCount.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
         Me.cbxBorderCount.FormattingEnabled = True
         Me.cbxBorderCount.IntegralHeight = False
-        Me.cbxBorderCount.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"})
+        Me.cbxBorderCount.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"})
         Me.cbxBorderCount.Location = New System.Drawing.Point(193, 80)
         Me.cbxBorderCount.Name = "cbxBorderCount"
         Me.cbxBorderCount.Size = New System.Drawing.Size(80, 25)
@@ -316,7 +316,7 @@ Partial Class FrmMain
         Me.btnInitEdit.Enabled = False
         Me.btnInitEdit.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnInitEdit.Location = New System.Drawing.Point(307, 133)
-        Me.btnInitEdit.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnInitEdit.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.btnInitEdit.Name = "btnInitEdit"
         Me.btnInitEdit.Size = New System.Drawing.Size(30, 30)
         Me.btnInitEdit.TabIndex = 8
@@ -444,7 +444,7 @@ Partial Class FrmMain
         Me.slblCalibratedType.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblCalibratedType.ForeColor = System.Drawing.Color.White
         Me.slblCalibratedType.Name = "slblCalibratedType"
-        Me.slblCalibratedType.Size = New System.Drawing.Size(17, 16)
+        Me.slblCalibratedType.Size = New System.Drawing.Size(17, 19)
         Me.slblCalibratedType.Text = "--"
         '
         'slblSeparator1
@@ -452,7 +452,7 @@ Partial Class FrmMain
         Me.slblSeparator1.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblSeparator1.ForeColor = System.Drawing.Color.White
         Me.slblSeparator1.Name = "slblSeparator1"
-        Me.slblSeparator1.Size = New System.Drawing.Size(16, 16)
+        Me.slblSeparator1.Size = New System.Drawing.Size(16, 19)
         Me.slblSeparator1.Text = " | "
         '
         'tlblKernelWidth
@@ -460,7 +460,7 @@ Partial Class FrmMain
         Me.tlblKernelWidth.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tlblKernelWidth.ForeColor = System.Drawing.Color.White
         Me.tlblKernelWidth.Name = "tlblKernelWidth"
-        Me.tlblKernelWidth.Size = New System.Drawing.Size(173, 16)
+        Me.tlblKernelWidth.Size = New System.Drawing.Size(173, 19)
         Me.tlblKernelWidth.Text = "Noise Reduction Kernel Radius :"
         '
         'slblKernelWidth
@@ -468,7 +468,7 @@ Partial Class FrmMain
         Me.slblKernelWidth.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblKernelWidth.ForeColor = System.Drawing.Color.White
         Me.slblKernelWidth.Name = "slblKernelWidth"
-        Me.slblKernelWidth.Size = New System.Drawing.Size(17, 16)
+        Me.slblKernelWidth.Size = New System.Drawing.Size(17, 19)
         Me.slblKernelWidth.Text = "--"
         '
         'slblSeparator2
@@ -476,7 +476,7 @@ Partial Class FrmMain
         Me.slblSeparator2.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblSeparator2.ForeColor = System.Drawing.Color.White
         Me.slblSeparator2.Name = "slblSeparator2"
-        Me.slblSeparator2.Size = New System.Drawing.Size(16, 16)
+        Me.slblSeparator2.Size = New System.Drawing.Size(16, 19)
         Me.slblSeparator2.Text = " | "
         Me.slblSeparator2.Visible = False
         '
@@ -485,7 +485,7 @@ Partial Class FrmMain
         Me.tlblBorderCount.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tlblBorderCount.ForeColor = System.Drawing.Color.White
         Me.tlblBorderCount.Name = "tlblBorderCount"
-        Me.tlblBorderCount.Size = New System.Drawing.Size(83, 16)
+        Me.tlblBorderCount.Size = New System.Drawing.Size(83, 19)
         Me.tlblBorderCount.Text = "Border Count :"
         Me.tlblBorderCount.Visible = False
         '
@@ -494,7 +494,7 @@ Partial Class FrmMain
         Me.slblBorderCount.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblBorderCount.ForeColor = System.Drawing.Color.White
         Me.slblBorderCount.Name = "slblBorderCount"
-        Me.slblBorderCount.Size = New System.Drawing.Size(17, 16)
+        Me.slblBorderCount.Size = New System.Drawing.Size(17, 19)
         Me.slblBorderCount.Text = "--"
         Me.slblBorderCount.Visible = False
         '
@@ -533,7 +533,7 @@ Partial Class FrmMain
         Me.cbxKernelRadius.ItemHeight = 17
         Me.cbxKernelRadius.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"})
         Me.cbxKernelRadius.Location = New System.Drawing.Point(234, 42)
-        Me.cbxKernelRadius.Margin = New System.Windows.Forms.Padding(2)
+        Me.cbxKernelRadius.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.cbxKernelRadius.Name = "cbxKernelRadius"
         Me.cbxKernelRadius.Size = New System.Drawing.Size(80, 25)
         Me.cbxKernelRadius.TabIndex = 17
@@ -578,7 +578,7 @@ Partial Class FrmMain
         Me.btnInfo.Font = New System.Drawing.Font("Segoe Fluent Icons", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnInfo.ForeColor = System.Drawing.Color.DarkOliveGreen
         Me.btnInfo.Location = New System.Drawing.Point(689, 14)
-        Me.btnInfo.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnInfo.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
         Me.btnInfo.Name = "btnInfo"
         Me.btnInfo.Size = New System.Drawing.Size(30, 30)
         Me.btnInfo.TabIndex = 32
