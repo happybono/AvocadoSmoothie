@@ -163,11 +163,16 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 ### v4.6.5.0
 #### August 28, 2025
 >	Implemented dataset title validation : including checks for length, invalid characters, and reserved names. Alongside dynamic placeholder behavior and conditional enabling of the export button.
-</details>
 
 ### v4.6.5.1
 #### September 2, 2025
 > Minor bugs fixed.
+</details>
+
+### v4.6.6.0
+#### September 2, 2025
+> With the transition to ARM64 native based on `.NET Framework 4.8.1`, PCs running in this environment now deliver improved performance.<br><br>
+> Since version v4.6.3.8, the correction value miscalculated when selecting the MiddleMedian method has been fixed to calculate correctly.
 
 ## Required Components & Setup
 ### Prerequisites
