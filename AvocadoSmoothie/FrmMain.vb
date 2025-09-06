@@ -338,7 +338,7 @@ Public Class FrmMain
         ' 모드 결정 (Middle / All)
         Dim useMiddle As Boolean = rbtnMidMedian.Checked
 
-        ' 커널 파라미터 (UI는 radius를 받음 → width로 변환)
+        ' 커널 파라미터 (radius 기준 → width 로 변환)
         Dim radius As Integer
         If Not Integer.TryParse(cbxKernelRadius.Text, radius) Then
             MessageBox.Show("Please select a kernel radius.", "Avocado Smoothie",
@@ -381,7 +381,7 @@ Public Class FrmMain
         btnRefSelectAll.Enabled = False
         btnRefSelectSync.Enabled = False
 
-        ' 계산 실행 (이 클래스의 ComputeMedians 호출)
+        ' 계산 실행 (ComputeMedians 호출)
         isRefinedLoading = True
         Try
             Await Task.Run(Sub()
@@ -396,7 +396,7 @@ Public Class FrmMain
             isRefinedLoading = False
         End Try
 
-        ' 결과 UI 반영 (refinedList는 ComputeMedians 내부에서 채움)
+        ' 결과 UI 반영 (refinedList 는 ComputeMedians 내부에서 채움)
         lbRefinedData.BeginUpdate()
         lbRefinedData.Items.Clear()
         lbRefinedData.Items.AddRange(refinedList.Cast(Of Object).ToArray())
@@ -2380,4 +2380,5 @@ Public Class FrmMain
 #End Region
 
 End Class
+
 
