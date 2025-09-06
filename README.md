@@ -170,7 +170,7 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 </details>
 
 ### v4.6.6.0
-#### September 2, 2025
+#### September 7, 2025
 > With the transition to ARM64 native based on `.NET Framework 4.8.1`, PCs running in this environment now deliver improved performance.<br><br>
 > Since version v4.6.3.8, the correction value miscalculated when selecting the MiddleMedian method has been fixed to calculate correctly.
 
