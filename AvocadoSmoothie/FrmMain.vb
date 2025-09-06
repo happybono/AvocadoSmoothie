@@ -307,22 +307,21 @@ Public Class FrmMain
         Quicksort(list, lo + 1, max)
     End Sub
 
-    ' Running Median 이동 중간 값 보정 (Calibrate) 버튼 클릭 이벤트                                       
+    ' Running Median 이동 중간 값 보정 (Calibrate) 버튼 클릭 이벤트
     Private Async Sub btnCalibrate_Click(sender As Object, e As EventArgs) Handles btnCalibrate.Click
-        ' 초기 데이터 리스트박스에 항목이 존재하지 않는 경우 보정 불가 (종료) 
+        ' 초기 데이터 유효성
         If lbInitData.Items.Count = 0 Then
             Return
         End If
 
-        ' ListBox 내 항목들을 모두 Double 형식의 리스트로 변환
+        ' 원본 데이터 파싱
         Dim parsedList As New List(Of Double)
         For Each item As Object In lbInitData.Items
-            Dim strValue As String = item.ToString()
+            Dim strValue As String = item?.ToString()
             Dim dValue As Double
             If Double.TryParse(strValue, dValue) Then
                 parsedList.Add(dValue)
             Else
-                ' 변환 도중 실패하는 경우 메시지박스를 통한 경고 메시지 표시 후 종료
                 MessageBox.Show(
                 $"The value '{strValue}' could not be converted to a number.",
                 "Avocado Smoothie",
@@ -332,54 +331,43 @@ Public Class FrmMain
                 Return
             End If
         Next
-                                        
-        ' 초기 데이터 (유효 값 리스트) 저장
+
         initList = parsedList
-        Dim total = initList.Count
+        Dim total As Integer = initList.Count
 
-        ' 중간 값 보정 방식 선택
-        ' (초기 처음 시작 혹은 말기 마지막 데이터 원본 유지 후 중앙 데이터 보정 / 전체 데이터 보정)                                  
-        Dim useMiddle = rbtnMidMedian.Checked
+        ' 모드 결정 (Middle / All)
+        Dim useMiddle As Boolean = rbtnMidMedian.Checked
 
-        ' 커널 (Kernel) 반경 값 취득                      
-        Dim radius As Integer                                        
+        ' 커널 파라미터 (UI는 radius를 받음 → width로 변환)
+        Dim radius As Integer
         If Not Integer.TryParse(cbxKernelRadius.Text, radius) Then
-            MessageBox.Show(
-        "Please select a kernel radius.",
-        "Avocado Smoothie",
-        MessageBoxButtons.OK,
-        MessageBoxIcon.Information
-    )
+            MessageBox.Show("Please select a kernel radius.", "Avocado Smoothie",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information)
             Return
         End If
+        Dim kernelWidth As Integer = 2 * radius + 1
 
-        Dim KernelRadius As Integer = 2 * radius + 1  ' 실제 커널 너비 = 반경 × 2 + 1 (실질적으로 홀수 값)
-
+        ' 경계 개수
         Dim borderCount As Integer
         If Not Integer.TryParse(cbxBorderCount.Text, borderCount) Then
-            MessageBox.Show(
-            "Please select a border count.",
-            "Avocado Smoothie",
-            MessageBoxButtons.OK,
-            MessageBoxIcon.Information
-        )
+            MessageBox.Show("Please select a border count.", "Avocado Smoothie",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information)
             Return
         End If
 
-        ' Parameter 입력 조건 유효성 검증 로직
-        If Not ValidateSmoothingParameters(total, KernelRadius, borderCount, useMiddle) Then
+        ' 파라미터 검증
+        If Not ValidateSmoothingParameters(total, kernelWidth, borderCount, useMiddle) Then
             Return
         End If
 
-        ' ProgressBar 초기화 + 진행 상태 표시를 위한 업데이트 반영
-        pbMain.Minimum = 0                        ' 최소 값 0
-        pbMain.Maximum = total                    ' 최대값 = 데이터 개수
+        ' 진행률 표시 초기화
+        pbMain.Minimum = 0
+        pbMain.Maximum = total
         pbMain.Value = 0
-                                        
-        ' Progress(Of Integer) 를 통해 백그라운드 작업 시 UI 로 진행률 전달
-        Dim progress = New Progress(Of Integer)(
-        Sub(v) pbMain.Value = Math.Min(v, total)  ' 범위 초과 방지
-    )
+
+        Dim progress = New Progress(Of Integer)(Sub(v)
+                                                    pbMain.Value = Math.Min(v, total)
+                                                End Sub)
 
         ' 연산 중 버튼 비활성화
         btnCalibrate.Enabled = False
@@ -393,19 +381,22 @@ Public Class FrmMain
         btnRefSelectAll.Enabled = False
         btnRefSelectSync.Enabled = False
 
-        ' 중앙값 계산 실행 (비동기)
+        ' 계산 실행 (이 클래스의 ComputeMedians 호출)
         isRefinedLoading = True
-        Await Task.Run(Sub()
-                           ComputeMedians(
-                           useMiddle:=useMiddle,
-                           KernelRadius:=KernelRadius,
-                           borderCount:=borderCount,
-                           progress:=progress
-                       )
-                       End Sub)
-        isRefinedLoading = False
+        Try
+            Await Task.Run(Sub()
+                               ComputeMedians(
+                               useMiddle:=useMiddle,
+                               KernelRadius:=kernelWidth,   ' 내부 구현은 width로 동작
+                               borderCount:=borderCount,
+                               progress:=progress
+                           )
+                           End Sub)
+        Finally
+            isRefinedLoading = False
+        End Try
 
-        ' 보정 결과 UI 반영                                    
+        ' 결과 UI 반영 (refinedList는 ComputeMedians 내부에서 채움)
         lbRefinedData.BeginUpdate()
         lbRefinedData.Items.Clear()
         lbRefinedData.Items.AddRange(refinedList.Cast(Of Object).ToArray())
@@ -415,15 +406,15 @@ Public Class FrmMain
         lblInitCnt.Text = $"Count : {total}"
         lblRefCnt.Text = $"Count : {refinedList.Count}"
         slblCalibratedType.Text = If(useMiddle, "Middle Median", "All Median")
-        slblKernelWidth.Text = Integer.Parse(cbxKernelRadius.Text)
+        slblKernelWidth.Text = Integer.Parse(cbxKernelRadius.Text) ' 화면엔 radius 그대로 표기
         slblBorderCount.Text = $"{borderCount}"
 
-        ' 중간 값 계산 방식에 따른 UI (StatusLabel) 표시 조정
+        ' Middle 모드일 때만 Border UI 표시
         slblBorderCount.Visible = useMiddle
         tlblBorderCount.Visible = useMiddle
         slblSeparator2.Visible = useMiddle
 
-        ' 보정 완료 후 버튼 활성화
+        ' 버튼 재활성화
         slblDesc.Visible = False
         btnInitPaste.Enabled = True
         btnCalibrate.Enabled = True
@@ -436,7 +427,7 @@ Public Class FrmMain
         btnRefSelectAll.Enabled = True
         btnRefSelectSync.Enabled = True
 
-        ' 버튼 상태 업데이트
+        ' 상태 반영
         UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
         UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
 
@@ -444,7 +435,6 @@ Public Class FrmMain
         Await Task.Delay(200)
         pbMain.Value = 0
     End Sub
-
 
     Private Sub txtInitAdd_KeyDown(sender As Object, e As KeyEventArgs) Handles txtInitAdd.KeyDown
         If e.KeyCode = Keys.Enter Then
