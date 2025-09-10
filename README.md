@@ -172,7 +172,7 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 ### v4.6.6.0
 #### September 7, 2025
 > With the transition to ARM64 native based on `.NET Framework 4.8.1`, PCs running in this environment now deliver improved performance.<br><br>
-> Since version [v4.6.3.8](https://github.com/happybono/AvocadoSmoothie?tab=readme-ov-file#v4638), the correction value miscalculated when selecting the MiddleMedian method has been fixed to calculate correctly.
+> Since version `v4.6.3.8`, the correction value miscalculated when selecting the MiddleMedian method has been fixed to calculate correctly.
 
 ## Required Components & Setup
 ### Prerequisites
