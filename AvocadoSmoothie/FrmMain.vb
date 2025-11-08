@@ -52,7 +52,7 @@ Public Class FrmMain
         End Select
     End Function
 
-    ' Canonical message builders (advanced)
+    ' 표준 메시지 빌더 (고급)
     Private Shared Function BuildParamErrorWindowTooLarge(radius As Integer, windowSize As Integer, dataCount As Integer) As String
         Return $"Kernel radius is too large.{Environment.NewLine}{Environment.NewLine}" &
                $"Window size formula : (2 × radius) + 1{Environment.NewLine}" &
@@ -75,14 +75,14 @@ Public Class FrmMain
                $"Result : 2 × {borderCount} < {windowSize} → Violation"
     End Function
 
-    ' KernelWidthFromRadius with overflow guard
+    ' KernelWidthFromRadius - Overflow 방지 기능 포함
     Private Shared Function KernelWidthFromRadius(radius As Integer) As Integer
         Dim w64 As Long = CLng(radius) * 2L + 1L
         If w64 > Integer.MaxValue Then Throw New ArgumentOutOfRangeException(NameOf(radius), "Radius is too large.")
         Return CInt(w64)
     End Function
 
-    ' Smoothing parameter validation (throws on invalid)
+    ' 매개변수 검증 (잘못된 경우 예외 발생)
     Private Shared Sub ThrowIfInvalidSmoothingParameters(dataCount As Integer,
                                                          windowSize As Integer,
                                                          radius As Integer,
@@ -98,13 +98,13 @@ Public Class FrmMain
         If borderCount > dataCount Then
             Throw New InvalidOperationException(BuildParamErrorBorderTooLarge(borderCount, dataCount))
         End If
-        ' Avoid overflow: 2*b >= W  <=>  b >= ceil(W/2) = (W + 1) \ 2
+        ' Overflow 방지 : 2 * b >= W  <=>  b >= ceil(W / 2) = (W + 1) \ 2
         If useMiddle AndAlso borderCount >= (windowSize + 1) \ 2 Then
             Throw New InvalidOperationException(BuildParamErrorBorderWidth(borderCount, windowSize))
         End If
     End Sub
 
-    ' Show-once gate to avoid duplicate MessageBoxes
+    ' 중복된 메시지 박스 표시를 피하기 위한 1 회 표시
     Private NotInheritable Class MessageOnceGate
         Private Sub New()
         End Sub
@@ -128,7 +128,7 @@ Public Class FrmMain
         End Function
     End Class
 
-    ' Wrapper used by UI: validates and shows canonical messages
+    ' UI 에서 사용하는 Wrapper : 검증 후 표준 메시지를 표시
     Private Function ValidateSmoothingParametersCanonical(dataCount As Integer,
                                                           radius As Integer,
                                                           borderCount As Integer,
@@ -146,7 +146,7 @@ Public Class FrmMain
         End Try
     End Function
 
-    ' Boundary value synthesis identical to SignatureMedian.GetValueWithBoundary
+    ' Boundary value 합성은 SignatureMedian.GetValueWithBoundary 와 동일
     Private Shared Function GetValueWithBoundary(data As Double(), idx As Integer, mode As BoundaryMode) As Double
         Dim n As Integer = If(data Is Nothing, 0, data.Length)
         If n = 0 Then Return 0.0
@@ -173,7 +173,7 @@ Public Class FrmMain
                 Return data(idx)
 
             Case BoundaryMode.Adaptive
-                ' For direct sampling in Adaptive, use same reflection as Symmetric (only used when needed elsewhere)
+            ' Adaptive 모드로 직접 샘플링하는 경우, Symmetric 과 동일한 반사 로직으로 사용 
                 If n = 1 Then Return data(0)
                 Dim period As Long = 2L * (CLng(n) - 1L)
                 Dim m As Long = CLng(idx) Mod period
@@ -332,7 +332,7 @@ Public Class FrmMain
                                                    Next
                                                    buffer(i) = GetWindowMedian(win, length)
                                                Else
-                                                   ' AllMedian: BoundaryMode 적용
+                                                   ' AllMedian : BoundaryMode 적용
                                                    If boundaryMode = BoundaryMode.Adaptive Then
                                                        Dim desiredW As Integer = kernelWidth
                                                        Dim W As Integer = Math.Min(desiredW, n)
@@ -381,7 +381,7 @@ Public Class FrmMain
         Dim mid = length \ 2
 
         ' 짝수인 경우 인접 두 값의 평균, 홀수일 때 가운데 값 반환
-        ' 업데이트를 통해 (v4.2.7.0) KernelWidth 에서, kernelRadius 로 변경함에 따라 실질적으로 홀수 창만 사용됨
+        ' KernelWidth 에서, kernelRadius 로 변경함에 따라 실질적으로 홀수 창만 사용됨
         ' 사용을 원하는 경우 짝수 창도 함께 사용 및 구현할 수 있도록 Method 는 유지.
         If length Mod 2 = 0 Then
             Return (slice(mid - 1) + slice(mid)) / 2.0
@@ -2604,4 +2604,5 @@ Public Class FrmMain
 #End Region
 
 End Class
+
 
