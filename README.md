@@ -167,12 +167,18 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 ### v4.6.5.1
 #### September 2, 2025
 > Minor bugs fixed.
-</details>
 
 ### v4.6.6.0
 #### September 7, 2025
 > With the transition to ARM64 native based on `.NET Framework 4.8.1`, PCs running in this environment now deliver improved performance.<br><br>
 > Since version `v4.6.3.8`, the correction value miscalculated when selecting the MiddleMedian method has been fixed to calculate correctly.
+</details>
+
+### v5.0.0.0
+#### November 8, 2025
+> Added boundary handling options : Symmetric (Mirror), Adaptive, Replicate (Nearest), Zero-Pad.<br><br>
+> BoundaryMode enum and GetIndex method updated to support All-Median mode.<br><br>
+> Minor bug fixes, performance improvements, and user interface enhancements.
 
 ## Required Components & Setup
 ### Prerequisites
