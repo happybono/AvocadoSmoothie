@@ -36,6 +36,160 @@ Public Class FrmMain
     Private Shared ReadOnly regexHtmlNumbers As New Regex(patternHtmlParse, RegexOptions.Compiled)
     Private Shared ReadOnly regexStripTags As New Regex("<.*?>", RegexOptions.Compiled)
 
+    Private Enum BoundaryMode
+        Symmetric
+        Replicate
+        ZeroPad
+        Adaptive
+    End Enum
+
+    Private Function GetSelectedBoundaryMode() As BoundaryMode
+        Select Case cbxBoundaryMethod.SelectedItem?.ToString()
+            Case "Adaptive" : Return BoundaryMode.Adaptive
+            Case "Replicate" : Return BoundaryMode.Replicate
+            Case "Zero Padding" : Return BoundaryMode.ZeroPad
+            Case Else : Return BoundaryMode.Symmetric
+        End Select
+    End Function
+
+    ' Canonical message builders (advanced)
+    Private Shared Function BuildParamErrorWindowTooLarge(radius As Integer, windowSize As Integer, dataCount As Integer) As String
+        Return $"Kernel radius is too large.{Environment.NewLine}{Environment.NewLine}" &
+               $"Window size formula : (2 × radius) + 1{Environment.NewLine}" &
+               $"Current : (2 × {radius}) + 1 = {windowSize}{Environment.NewLine}" &
+               $"Data count : {dataCount}{Environment.NewLine}{Environment.NewLine}" &
+               $"Rule : windowSize ≤ dataCount{Environment.NewLine}" &
+               $"Result : {windowSize} ≤ {dataCount} → Violation"
+    End Function
+
+    Private Shared Function BuildParamErrorBorderTooLarge(borderCount As Integer, dataCount As Integer) As String
+        Return $"Border count is too large.{Environment.NewLine}{Environment.NewLine}" &
+               $"Rule : borderCount ≤ dataCount{Environment.NewLine}" &
+               $"Result : {borderCount} ≤ {dataCount} → Violation"
+    End Function
+
+    Private Shared Function BuildParamErrorBorderWidth(borderCount As Integer, windowSize As Integer) As String
+        Return $"Border width is too large relative to the window size.{Environment.NewLine}{Environment.NewLine}" &
+               $"Tip : windowSize = (2 × radius) + 1{Environment.NewLine}" &
+               $"Rule : 2 × borderCount < windowSize{Environment.NewLine}" &
+               $"Result : 2 × {borderCount} < {windowSize} → Violation"
+    End Function
+
+    ' KernelWidthFromRadius with overflow guard
+    Private Shared Function KernelWidthFromRadius(radius As Integer) As Integer
+        Dim w64 As Long = CLng(radius) * 2L + 1L
+        If w64 > Integer.MaxValue Then Throw New ArgumentOutOfRangeException(NameOf(radius), "Radius is too large.")
+        Return CInt(w64)
+    End Function
+
+    ' Smoothing parameter validation (throws on invalid)
+    Private Shared Sub ThrowIfInvalidSmoothingParameters(dataCount As Integer,
+                                                         windowSize As Integer,
+                                                         radius As Integer,
+                                                         borderCount As Integer,
+                                                         useMiddle As Boolean)
+        If dataCount < 0 Then Throw New ArgumentOutOfRangeException(NameOf(dataCount), "Data count cannot be negative.")
+        If windowSize <= 0 Then Throw New ArgumentOutOfRangeException(NameOf(windowSize), "Window size must be >= 1.")
+        If borderCount < 0 Then Throw New ArgumentOutOfRangeException(NameOf(borderCount), "Border count cannot be negative.")
+
+        If windowSize > dataCount Then
+            Throw New InvalidOperationException(BuildParamErrorWindowTooLarge(radius, windowSize, dataCount))
+        End If
+        If borderCount > dataCount Then
+            Throw New InvalidOperationException(BuildParamErrorBorderTooLarge(borderCount, dataCount))
+        End If
+        ' Avoid overflow: 2*b >= W  <=>  b >= ceil(W/2) = (W + 1) \ 2
+        If useMiddle AndAlso borderCount >= (windowSize + 1) \ 2 Then
+            Throw New InvalidOperationException(BuildParamErrorBorderWidth(borderCount, windowSize))
+        End If
+    End Sub
+
+    ' Show-once gate to avoid duplicate MessageBoxes
+    Private NotInheritable Class MessageOnceGate
+        Private Sub New()
+        End Sub
+        Private Shared ReadOnly _shown As New HashSet(Of String)(StringComparer.Ordinal)
+        Private Shared ReadOnly _sync As New Object()
+        Public Shared Function TryEnter(message As String, Optional holdMillis As Integer = 2000) As Boolean
+            SyncLock _sync
+                If _shown.Contains(message) Then Return False
+                _shown.Add(message)
+                Dim t As System.Threading.Timer = Nothing
+                t = New System.Threading.Timer(
+                    Sub(state As Object)
+                        SyncLock _sync
+                            _shown.Remove(message)
+                        End SyncLock
+                        t.Dispose()
+                    End Sub,
+                    Nothing, holdMillis, Threading.Timeout.Infinite)
+                Return True
+            End SyncLock
+        End Function
+    End Class
+
+    ' Wrapper used by UI: validates and shows canonical messages
+    Private Function ValidateSmoothingParametersCanonical(dataCount As Integer,
+                                                          radius As Integer,
+                                                          borderCount As Integer,
+                                                          useMiddle As Boolean) As Boolean
+        Try
+            Dim windowSize = KernelWidthFromRadius(radius)
+            ThrowIfInvalidSmoothingParameters(dataCount, windowSize, radius, borderCount, useMiddle)
+            Return True
+        Catch ex As Exception
+            Dim msg = ex.Message
+            If MessageOnceGate.TryEnter(msg) Then
+                MessageBox.Show(msg, "Parameter Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
+            Return False
+        End Try
+    End Function
+
+    ' Boundary value synthesis identical to SignatureMedian.GetValueWithBoundary
+    Private Shared Function GetValueWithBoundary(data As Double(), idx As Integer, mode As BoundaryMode) As Double
+        Dim n As Integer = If(data Is Nothing, 0, data.Length)
+        If n = 0 Then Return 0.0
+
+        Select Case mode
+            Case BoundaryMode.Symmetric
+                If n = 1 Then Return data(0)
+                Dim period As Long = 2L * (CLng(n) - 1L)
+                Dim m As Long = CLng(idx) Mod period
+                If m < 0 Then m += period
+                Dim mapped As Long = If(m < n, m, 2L * (CLng(n) - 1L) - m)
+                Return data(CInt(mapped))
+
+            Case BoundaryMode.Replicate
+                If idx < 0 Then
+                    idx = 0
+                ElseIf idx >= n Then
+                    idx = n - 1
+                End If
+                Return data(idx)
+
+            Case BoundaryMode.ZeroPad
+                If idx < 0 OrElse idx >= n Then Return 0.0
+                Return data(idx)
+
+            Case BoundaryMode.Adaptive
+                ' For direct sampling in Adaptive, use same reflection as Symmetric (only used when needed elsewhere)
+                If n = 1 Then Return data(0)
+                Dim period As Long = 2L * (CLng(n) - 1L)
+                Dim m As Long = CLng(idx) Mod period
+                If m < 0 Then m += period
+                Dim mapped As Long = If(m < n, m, 2L * (CLng(n) - 1L) - m)
+                Return data(CInt(mapped))
+
+            Case Else
+                If n = 1 Then Return data(0)
+                Dim period As Long = 2L * (CLng(n) - 1L)
+                Dim m As Long = CLng(idx) Mod period
+                If m < 0 Then m += period
+                Dim mapped As Long = If(m < n, m, 2L * (CLng(n) - 1L) - m)
+                Return data(CInt(mapped))
+        End Select
+    End Function
 
     Public Sub New()
         InitializeComponent()
@@ -107,7 +261,8 @@ Public Class FrmMain
         useMiddle As Boolean,
         KernelRadius As Integer,
         borderCount As Integer,
-        progress As IProgress(Of Integer)
+        progress As IProgress(Of Integer),
+        Optional boundaryMode As BoundaryMode = BoundaryMode.Symmetric
     )
 
         ' 전체 데이터 개수 취득
@@ -120,6 +275,7 @@ Public Class FrmMain
         End If
 
         ' 원본 데이터를 배열 형태로 복사
+        Dim kernelWidth As Integer = KernelRadius
         Dim arr = initList.ToArray()
 
         ' 결과를 저장할 버퍼 배열
@@ -147,7 +303,7 @@ Public Class FrmMain
                 buffer(n - 1 - i) = arr(n - 1 - i)
                 processed += 2
                 If processed Mod reportInterval = 0 Then
-                    progress.Report(processed)
+                    progress.Report(Math.Min(processed, n))
                 End If
             Next
         End If
@@ -156,30 +312,49 @@ Public Class FrmMain
         Dim startIdx = If(useMiddle, borderCount, 0)
         Dim endIdx = If(useMiddle, n - borderCount - 1, n - 1)
 
-        ' 병렬 처리로 각 위치별 window 를 수집 한 후 중간 값 계산
-        Parallel.For(startIdx, endIdx + 1, Sub(i)
+        If startIdx > endIdx Then
+            refinedList.Clear()
+            refinedList.AddRange(arr)
+            progress.Report(n)
+            Return
+        End If
 
-                                               ' 각 Thread 가 공유하지 않는 Window Buffer 확보
+        Parallel.For(startIdx, endIdx + 1, Sub(i)
                                                Dim win = localWin.Value
 
-                                               ' 윈도우의 실제 범위(배열 경계를 넘지 않도록 조정)
-                                               Dim iMin = Math.Max(0, i - offsetLow)
-                                               Dim iMax = Math.Min(n - 1, i + offsetHigh)
-                                               Dim length = iMax - iMin + 1
-
-                                               ' 윈도우 안의 값을 win 배열에 복사
-                                               For k As Integer = 0 To length - 1
-                                                   win(k) = arr(iMin + k)
-                                               Next
-
-                                               ' 중간 값 계산 함수 호출
-                                               buffer(i) = GetWindowMedian(win, length)
-
-                                               ' 진행 상태 업데이트
-                                               Dim cnt = Interlocked.Increment(processed)
-                                               If cnt Mod reportInterval = 0 Then
-                                                   progress.Report(cnt)
+                                               If useMiddle Then
+                                                   ' 가장자리 근처의 Legacy 동작 (가변 길이, 클램프됨)
+                                                   Dim iMin = Math.Max(0, i - offsetLow)
+                                                   Dim iMax = Math.Min(n - 1, i + offsetHigh)
+                                                   Dim length = iMax - iMin + 1
+                                                   For k As Integer = 0 To length - 1
+                                                       win(k) = arr(iMin + k)
+                                                   Next
+                                                   buffer(i) = GetWindowMedian(win, length)
+                                               Else
+                                                   ' AllMedian: BoundaryMode 적용
+                                                   If boundaryMode = BoundaryMode.Adaptive Then
+                                                       Dim desiredW As Integer = kernelWidth
+                                                       Dim W As Integer = Math.Min(desiredW, n)
+                                                       Dim start As Integer = i - offsetLow
+                                                       If start < 0 Then start = 0
+                                                       If start > n - W Then start = n - W
+                                                       If start < 0 Then start = 0
+                                                       For pos As Integer = 0 To W - 1
+                                                           win(pos) = arr(start + pos)
+                                                       Next
+                                                       buffer(i) = GetWindowMedian(win, W)
+                                                   Else
+                                                       For pos As Integer = 0 To kernelWidth - 1
+                                                           Dim k As Integer = pos - offsetLow
+                                                           win(pos) = GetValueWithBoundary(arr, i + k, boundaryMode)
+                                                       Next
+                                                       buffer(i) = GetWindowMedian(win, kernelWidth)
+                                                   End If
                                                End If
+
+                                               Dim cnt = Interlocked.Increment(processed)
+                                               If cnt Mod reportInterval = 0 Then progress.Report(Math.Min(n, cnt))
                                            End Sub)
 
         ' 최종 진행률 보고
@@ -338,7 +513,7 @@ Public Class FrmMain
         ' 모드 결정 (Middle / All)
         Dim useMiddle As Boolean = rbtnMidMedian.Checked
 
-        ' 커널 파라미터 (UI는 radius를 받음 → width로 변환)
+        ' 커널 파라미터 (UI 는 radius 를 받음 → width 로 변환)
         Dim radius As Integer
         If Not Integer.TryParse(cbxKernelRadius.Text, radius) Then
             MessageBox.Show("Please select a kernel radius.", "Avocado Smoothie",
@@ -356,7 +531,7 @@ Public Class FrmMain
         End If
 
         ' 파라미터 검증
-        If Not ValidateSmoothingParameters(total, kernelWidth, borderCount, useMiddle) Then
+        If Not ValidateSmoothingParametersCanonical(total, radius, borderCount, useMiddle) Then
             Return
         End If
 
@@ -381,22 +556,23 @@ Public Class FrmMain
         btnRefSelectAll.Enabled = False
         btnRefSelectSync.Enabled = False
 
+
         ' 계산 실행 (이 클래스의 ComputeMedians 호출)
         isRefinedLoading = True
         Try
+            Dim boundary As BoundaryMode = If(useMiddle, BoundaryMode.Symmetric, GetSelectedBoundaryMode())
             Await Task.Run(Sub()
-                               ComputeMedians(
-                               useMiddle:=useMiddle,
-                               KernelRadius:=kernelWidth,   ' 내부 구현은 width로 동작
-                               borderCount:=borderCount,
-                               progress:=progress
-                           )
+                               If useMiddle Then
+                                   ComputeMedians(True, kernelWidth, borderCount, progress)
+                               Else
+                                   ComputeMedians(False, kernelWidth, borderCount, progress, boundary)
+                               End If
                            End Sub)
         Finally
             isRefinedLoading = False
         End Try
 
-        ' 결과 UI 반영 (refinedList는 ComputeMedians 내부에서 채움)
+        ' 결과 UI 반영 (refinedList 는 ComputeMedians 내부에서 채움)
         lbRefinedData.BeginUpdate()
         lbRefinedData.Items.Clear()
         lbRefinedData.Items.AddRange(refinedList.Cast(Of Object).ToArray())
@@ -1143,6 +1319,7 @@ Public Class FrmMain
     Private Sub FrmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         cbxBorderCount.SelectedIndex = 0
         cbxKernelRadius.SelectedItem = "5"
+        If cbxBoundaryMethod.SelectedIndex < 0 Then cbxBoundaryMethod.SelectedIndex = 0
 
         If String.IsNullOrWhiteSpace(txtDatasetTitle.Text) Then
             txtDatasetTitle.Text = ExcelTitlePlaceholder
@@ -1191,6 +1368,7 @@ Public Class FrmMain
         If rbtnAllMedian.Checked Then
             lblBorderCount.Enabled = False
             cbxBorderCount.Enabled = False
+            cbxBoundaryMethod.Enabled = True
         End If
     End Sub
 
@@ -1198,6 +1376,7 @@ Public Class FrmMain
         If rbtnMidMedian.Checked Then
             lblBorderCount.Enabled = True
             cbxBorderCount.Enabled = True
+            cbxBoundaryMethod.Enabled = False
         End If
     End Sub
 
@@ -1250,27 +1429,27 @@ Public Class FrmMain
             Return
         End If
 
+        ' Validate for both modes before computing
+        If Not ValidateSmoothingParametersCanonical(n, kernelRadius, borderCount, True) Then Return
+        If Not ValidateSmoothingParametersCanonical(n, kernelRadius, borderCount, False) Then Return
+
+        Dim boundary = GetSelectedBoundaryMode()
+
         ' All Median / Middle Median 계산
         Dim middleMedian(n - 1) As Double
         Dim allMedian(n - 1) As Double
 
         initList = initialData.ToList()
-        Dim middleProg = New Progress(Of Integer)(
-        Sub(v) pbMain.Value = Math.Max(pbMain.Minimum,
-                                             Math.Min(v, pbMain.Maximum))
-    )
+        Dim middleProg = New Progress(Of Integer)(Sub(v) pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(v, pbMain.Maximum)))
         Await Task.Run(Sub()
-                           ComputeMedians(True, kernelRadius, borderCount, middleProg)
+                           ComputeMedians(True, 2 * kernelRadius + 1, borderCount, middleProg) ' no boundary
                            refinedList.CopyTo(0, middleMedian, 0, n)
                        End Sub)
 
         initList = initialData.ToList()
-        Dim allProg = New Progress(Of Integer)(
-        Sub(v) pbMain.Value = Math.Max(pbMain.Minimum,
-                                             Math.Min(v, pbMain.Maximum))
-    )
+        Dim allProg = New Progress(Of Integer)(Sub(v) pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(v, pbMain.Maximum)))
         Await Task.Run(Sub()
-                           ComputeMedians(False, kernelRadius, borderCount, allProg)
+                           ComputeMedians(False, kernelWidth, borderCount, allProg, boundary)
                            refinedList.CopyTo(0, allMedian, 0, n)
                        End Sub)
 
@@ -1290,7 +1469,7 @@ Public Class FrmMain
 
         ' 분할 저장 설정
         Const EXCEL_MAX_ROW As Integer = 1048576
-        Const HEADER_LINES As Integer = 11
+        Const HEADER_LINES As Integer = 12
         Dim maxDataRows = EXCEL_MAX_ROW - HEADER_LINES - 1
         Dim partCount = CInt(Math.Ceiling(n / CDbl(maxDataRows)))
 
@@ -1312,36 +1491,64 @@ Public Class FrmMain
                 filePath = basePath
             End If
 
-            Using fs As New FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None),
+
+            Dim wrote As Boolean = False
+            Do
+                Try
+                    Using fs As New FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None),
               sw As New StreamWriter(fs, Encoding.UTF8)
 
-                ' 제목 & Parameters
-                sw.WriteLine(txtDatasetTitle.Text)
-                sw.WriteLine($"Part {part + 1} of {partCount}")
-                sw.WriteLine()
-                sw.WriteLine("Smoothing Parameters")
-                sw.WriteLine($"Kernel Radius : {kernelRadius}")
-                sw.WriteLine($"Kernel Width : {kernelWidth}")
-                sw.WriteLine($"Border Count : {borderCount}")
-                sw.WriteLine()
-                sw.WriteLine($"Generated : {DateTime.Now.ToString("G", CultureInfo.CurrentCulture)}")
-                sw.WriteLine()
-                sw.WriteLine("Initial Data,MiddleMedian,AllMedian")
+                        ' 제목 & Parameters
+                        sw.WriteLine(txtDatasetTitle.Text)
+                        sw.WriteLine($"Part {part + 1} of {partCount}")
+                        sw.WriteLine()
+                        sw.WriteLine("Smoothing Parameters")
+                        sw.WriteLine($"Kernel Radius : {kernelRadius}")
+                        sw.WriteLine($"Kernel Width : {kernelWidth}")
+                        sw.WriteLine($"Border Count : {borderCount}")
+                        sw.WriteLine($"Boundary Method : {boundary.ToString()}")
+                        sw.WriteLine()
+                        sw.WriteLine($"Generated : {DateTime.Now.ToString("G", CultureInfo.CurrentCulture)}")
+                        sw.WriteLine()
+                        sw.WriteLine("Initial Data,MiddleMedian,AllMedian")
 
-                ' 데이터 쓰기
-                For i = startIdx To startIdx + count - 1
-                    Dim line = String.Join(",",
+                        ' 데이터 쓰기
+                        For i = startIdx To startIdx + count - 1
+                            Dim line = String.Join(",",
                         initialData(i).ToString("G17", CultureInfo.InvariantCulture),
                         middleMedian(i).ToString("G17", CultureInfo.InvariantCulture),
                         allMedian(i).ToString("G17", CultureInfo.InvariantCulture))
-                    sw.WriteLine(line)
+                            sw.WriteLine(line)
 
-                    ' 진행률 업데이트
-                    Dim pct = CInt((i + 1) / CSng(n) * 100)
-                    pbMain.Value = Math.Max(pbMain.Minimum,
-                                              Math.Min(pct, pbMain.Maximum))
-                Next
-            End Using
+                            ' 진행률 업데이트
+                            Dim pct = CInt((i + 1) / CSng(n) * 100)
+                            pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(pct, pbMain.Maximum))
+
+                            If pct >= 100 Then
+                                ' 100% 채워졌을 때 잠시 표시 유지 후 0 으로 리셋
+                                Await Task.Delay(200) ' 필요시 ms 조정 가능
+                                pbMain.Value = 0
+                            End If
+                        Next
+                    End Using
+
+                    wrote = True
+                Catch ex As IOException
+                    Dim res = MessageBox.Show(Me,
+                        $"The file '{filePath}' is being used by another process.{Environment.NewLine}{Environment.NewLine}" &
+                        "Close the file and click Retry, or click Cancel to abort export.",
+                        "Export CSV - File In Use",
+                        MessageBoxButtons.RetryCancel,
+                        MessageBoxIcon.Warning)
+
+                    If res = DialogResult.Retry Then
+                        Continue Do
+                    Else
+                        pbMain.Value = 0
+                        Return
+                    End If
+                End Try
+            Loop Until wrote
 
             createdFiles.Add(filePath)   ' 추가
         Next
@@ -1456,29 +1663,27 @@ Public Class FrmMain
                 Return
             End If
 
-            If Not ValidateSmoothingParameters(n, kernelWidth, borderCount, True) Then
-                Return
-            End If
+            If Not ValidateSmoothingParametersCanonical(n, kernelRadius, borderCount, True) Then Return
+
+            Dim boundary = GetSelectedBoundaryMode()
 
             ' Middle Median 계산
             Dim middleMedian(n - 1) As Double
             initList = initialData.ToList()
             Dim middleProgress = New Progress(Of Integer)(Sub(v) pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(v, pbMain.Maximum)))
             Await Task.Run(Sub()
-                               ComputeMedians(True, kernelWidth, borderCount, middleProgress)
+                               ComputeMedians(True, kernelWidth, borderCount, middleProgress) ' no boundary
                                refinedList.CopyTo(0, middleMedian, 0, n)
                            End Sub)
 
-            If Not ValidateSmoothingParameters(n, kernelRadius, borderCount, False) Then
-                Return
-            End If
+            If Not ValidateSmoothingParametersCanonical(n, kernelRadius, borderCount, False) Then Return
 
             ' All Median 계산
             Dim allMedian(n - 1) As Double
             initList = initialData.ToList()
             Dim allProgress = New Progress(Of Integer)(Sub(v) pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(v, pbMain.Maximum)))
             Await Task.Run(Sub()
-                               ComputeMedians(False, kernelWidth, borderCount, allProgress)
+                               ComputeMedians(False, kernelWidth, borderCount, allProgress, boundary)
                                refinedList.CopyTo(0, allMedian, 0, n)
                            End Sub)
 
@@ -1685,6 +1890,7 @@ Public Class FrmMain
                 ws.Cells(4, 1) = $"Kernel Radius : {kernelRadius}"
                 ws.Cells(5, 1) = $"Kernel Width : {kernelWidth}"
                 ws.Cells(6, 1) = $"Border Count : {borderCount}"
+                ws.Cells(7, 1) = $"Boundary Method : {boundary.ToString()}"
 
                 ' 데이터를 분산 저장하는 함수
                 Dim WriteDistributed =
@@ -2375,6 +2581,24 @@ Public Class FrmMain
     End Sub
 
     Private Sub btnExport_MouseLeave(sender As Object, e As EventArgs) Handles btnExport.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub lblBoundaryMethod_MouseHover(sender As Object, e As EventArgs) Handles lblBoundaryMethod.MouseHover
+        slblDesc.Visible = True
+        slblDesc.Text = "Specifies how edge data points are treated during smoothing : Symmetric, Replicate, Adaptive, or Zero-Pad."
+    End Sub
+
+    Private Sub cbxBoundaryMethod_MouseLeave(sender As Object, e As EventArgs) Handles cbxBoundaryMethod.MouseLeave
+        MouseLeaveHandler(sender, e)
+    End Sub
+
+    Private Sub cbxBoundaryMethod_MouseHover(sender As Object, e As EventArgs) Handles cbxBoundaryMethod.MouseHover
+        slblDesc.Visible = True
+        slblDesc.Text = "Specifies how edge data points are treated during smoothing : Symmetric, Replicate, Adaptive, or Zero-Pad."
+    End Sub
+
+    Private Sub lblBoundaryMethod_MouseLeave(sender As Object, e As EventArgs) Handles lblBoundaryMethod.MouseLeave
         MouseLeaveHandler(sender, e)
     End Sub
 #End Region
