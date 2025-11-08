@@ -33,7 +33,6 @@ D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\bin\ARM64\Debug\AvocadoSmoothie.
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\bin\ARM64\Debug\AvocadoSmoothie.pdb
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\bin\ARM64\Debug\AvocadoSmoothie.xml
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\obj\ARM64\Debug\AvocadoSmoothie.vbproj.AssemblyReference.cache
-D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\obj\ARM64\Debug\AvocadoSmoothie.exe.config
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\obj\ARM64\Debug\AvocadoSmoothie.AboutBox.resources
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\obj\ARM64\Debug\AvocadoSmoothie.FrmMain.resources
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\obj\ARM64\Debug\AvocadoSmoothie.FrmModify.resources
