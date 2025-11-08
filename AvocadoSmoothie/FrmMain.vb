@@ -173,7 +173,7 @@ Public Class FrmMain
                 Return data(idx)
 
             Case BoundaryMode.Adaptive
-            ' Adaptive 모드로 직접 샘플링하는 경우, Symmetric 과 동일한 반사 로직으로 사용 
+                ' Adaptive 모드로 직접 샘플링하는 경우, Symmetric 과 동일한 반사 로직으로 사용 
                 If n = 1 Then Return data(0)
                 Dim period As Long = 2L * (CLng(n) - 1L)
                 Dim m As Long = CLng(idx) Mod period
@@ -248,23 +248,23 @@ Public Class FrmMain
     '    refinedList.AddRange(buffer)
     'End Sub
 
-
     ' ---------------------------------------------------------------
-    ' ComputeMedians  : initList 로부터 이동 중간 값을 계산해 refinedList 에 출력합니다.
-    ' useMiddle       : True 일 경우, 첫 시작 부분과 마지막 끝 부분은 borderCount 구간에 대해 원본 값 사용
-    ' KernelRadius    : 중앙 값을 계산할 윈도우 (커널 계수) 의 크기
-    ' borderCount     : 보정하지 않고 원본 값을 사용할 요소 개수
-    ' progress        : 계산 진행률을 보고할 IProgress(Of Integer) 
+    ' ComputeMedians  : initList에서 refinedList로 이동하며 실행 중간값을 계산합니다.
+    ' useMiddle       : True일 경우, 처음과 끝의 'borderCount' 개 요소는 원래 값 그대로 유지합니다.
+    ' kernelSize      : 중간값 커널의 윈도우 길이(보통 홀수). 반지름 r이 있으면
+    '                   kernelSize = (2 * r) + 1 로 계산합니다.
+    ' borderCount     : Middle 모드에서 양쪽 경계에 그대로 남겨둘 요소의 개수.
+    ' progress        : 진행 상황을 보고하기 위한 IProgress(Of Integer).
+    ' boundaryMode    : 경계 처리 모드 (useMiddle = False일 때만 사용).
     ' ---------------------------------------------------------------
 
     Private Sub ComputeMedians(
-        useMiddle As Boolean,
-        KernelRadius As Integer,
-        borderCount As Integer,
-        progress As IProgress(Of Integer),
-        Optional boundaryMode As BoundaryMode = BoundaryMode.Symmetric
-    )
-
+    useMiddle As Boolean,
+    kernelSize As Integer,
+    borderCount As Integer,
+    progress As IProgress(Of Integer),
+    Optional boundaryMode As BoundaryMode = BoundaryMode.Symmetric
+)
         ' 전체 데이터 개수 취득
         Dim n = initList.Count
 
@@ -275,15 +275,14 @@ Public Class FrmMain
         End If
 
         ' 원본 데이터를 배열 형태로 복사
-        Dim kernelWidth As Integer = KernelRadius
         Dim arr = initList.ToArray()
 
         ' 결과를 저장할 버퍼 배열
         Dim buffer(n - 1) As Double
 
         ' 커널 (Kernel) 반경을 양쪽으로 분리 (홀수 · 짝수 창 모두 지원)
-        Dim offsetLow = (KernelRadius - 1) \ 2
-        Dim offsetHigh = (KernelRadius - 1) - offsetLow
+        Dim offsetLow = (kernelSize - 1) \ 2
+        Dim offsetHigh = (kernelSize - 1) - offsetLow
 
         ' 진행 중 항목 수 계산 및 보고 간격 설정 (약 0.5 % 단위)
         Dim processed As Integer = 0
@@ -292,8 +291,8 @@ Public Class FrmMain
 
         ' 각 Thread 마다 고유한 윈도우 배열을 제공하는 ThreadLocal
         Dim localWin As New ThreadLocal(Of Double())(
-            Function() New Double(KernelRadius - 1) {}
-        )
+        Function() New Double(kernelSize - 1) {}
+    )
 
         ' 보정하지 않고 원본 값을 사용할 요소 구간 개수를 원본 그대로 유지
         ' (useMiddle = True 인 경우에 한함)
@@ -332,9 +331,9 @@ Public Class FrmMain
                                                    Next
                                                    buffer(i) = GetWindowMedian(win, length)
                                                Else
-                                                   ' AllMedian : BoundaryMode 적용
+                                                   ' AllMedian: BoundaryMode 적용
                                                    If boundaryMode = BoundaryMode.Adaptive Then
-                                                       Dim desiredW As Integer = kernelWidth
+                                                       Dim desiredW As Integer = kernelSize
                                                        Dim W As Integer = Math.Min(desiredW, n)
                                                        Dim start As Integer = i - offsetLow
                                                        If start < 0 Then start = 0
@@ -345,11 +344,11 @@ Public Class FrmMain
                                                        Next
                                                        buffer(i) = GetWindowMedian(win, W)
                                                    Else
-                                                       For pos As Integer = 0 To kernelWidth - 1
+                                                       For pos As Integer = 0 To kernelSize - 1
                                                            Dim k As Integer = pos - offsetLow
                                                            win(pos) = GetValueWithBoundary(arr, i + k, boundaryMode)
                                                        Next
-                                                       buffer(i) = GetWindowMedian(win, kernelWidth)
+                                                       buffer(i) = GetWindowMedian(win, kernelSize)
                                                    End If
                                                End If
 
@@ -363,6 +362,26 @@ Public Class FrmMain
         ' 기존 refinedList 에 항목이 존재하는 경우, 전체 삭제 후 보정된 항목으로 대체
         refinedList.Clear()
         refinedList.AddRange(buffer)
+    End Sub
+
+    ' ---------------------------------------------------------------
+    ' 반지름 (radius) 값을 받아 (2 * radius + 1) 윈도우 길이로 변환 후
+    ' 내부 메서드 <see cref="ComputeMedians"/> 를 호출하는 간단한 Wrapper 입니다
+    ' useMiddle    : True이면 Middle 모드로 양쪽에서 <paramref name="borderCount"/> 개 원소를 원본 그대로 둡니다.
+    ' radius       : 커널 반지름 값. 실제 윈도우 길이는 (2 * radius) + 1 로 변환됩니다.
+    ' borderCount  : Middle 모드에서 양쪽 경계에 보존할 원소 개수.
+    ' progress     : 진행 상황을 보고할 IProgress(Of Integer) 구현.
+    ' boundaryMode : useMiddle = False (All 모드) 일 경우 적용할 경계 처리 방식.
+    ' ---------------------------------------------------------------
+    Private Sub ComputeMediansByRadius(
+    useMiddle As Boolean,
+    radius As Integer,
+    borderCount As Integer,
+    progress As IProgress(Of Integer),
+    Optional boundaryMode As BoundaryMode = BoundaryMode.Symmetric
+)
+        Dim windowSize As Integer = KernelWidthFromRadius(radius)
+        ComputeMedians(useMiddle, windowSize, borderCount, progress, boundaryMode)
     End Sub
 
     ' ---------------------------------------------------------------
@@ -381,8 +400,7 @@ Public Class FrmMain
         Dim mid = length \ 2
 
         ' 짝수인 경우 인접 두 값의 평균, 홀수일 때 가운데 값 반환
-        ' KernelWidth 에서, kernelRadius 로 변경함에 따라 실질적으로 홀수 창만 사용됨
-        ' 사용을 원하는 경우 짝수 창도 함께 사용 및 구현할 수 있도록 Method 는 유지.
+        ' (짝수 창도 지원하지만 일반적으로 홀수 창을 권장)
         If length Mod 2 = 0 Then
             Return (slice(mid - 1) + slice(mid)) / 2.0
         Else
@@ -582,7 +600,7 @@ Public Class FrmMain
         lblInitCnt.Text = $"Count : {total}"
         lblRefCnt.Text = $"Count : {refinedList.Count}"
         slblCalibratedType.Text = If(useMiddle, "Middle Median", "All Median")
-        slblKernelWidth.Text = Integer.Parse(cbxKernelRadius.Text) ' 화면엔 radius 그대로 표기
+        slblKernelRadius.Text = Integer.Parse(cbxKernelRadius.Text) ' 화면엔 radius 그대로 표기
         slblBorderCount.Text = $"{borderCount}"
 
         ' Middle 모드일 때만 Border UI 표시
@@ -742,7 +760,7 @@ Public Class FrmMain
         UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
         UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
 
-        slblKernelWidth.Text = "--"
+        slblKernelRadius.Text = "--"
         slblCalibratedType.Text = "--"
         slblBorderCount.Text = "--"
 
@@ -792,7 +810,7 @@ Public Class FrmMain
         UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
         UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
 
-        slblKernelWidth.Text = "--"
+        slblKernelRadius.Text = "--"
         slblCalibratedType.Text = "--"
         slblBorderCount.Text = "--"
 
@@ -904,7 +922,7 @@ Public Class FrmMain
             txtDatasetTitle.ForeColor = Color.Gray
             txtDatasetTitle.TextAlign = HorizontalAlignment.Center
 
-            slblKernelWidth.Text = "--"
+            slblKernelRadius.Text = "--"
             slblCalibratedType.Text = "--"
             slblBorderCount.Text = "--"
 
@@ -2604,5 +2622,4 @@ Public Class FrmMain
 #End Region
 
 End Class
-
 
