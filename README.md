@@ -176,8 +176,8 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 
 ### v5.0.0.0
 #### November 8, 2025
-> Added boundary handling options : Symmetric (Mirror), Adaptive, Replicate (Nearest), Zero-Pad.<br><br>
-> BoundaryMode enum and GetIndex method updated to support All-Median mode.<br><br>
+> Added boundary handling options : `Symmetric` (Mirror), `Adaptive`, `Replicate` (Nearest), `Zero-Pad`.<br><br>
+> `ComputeMedians` method was updated to support the 'All Median' mode, while `BoundaryMode` enum and `GetValueWithBoundary` function remain unchanged."<br><br>
 > Minor bug fixes, performance improvements, and user interface enhancements.
 
 ## Required Components & Setup
