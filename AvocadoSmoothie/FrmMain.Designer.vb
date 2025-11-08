@@ -55,8 +55,8 @@ Partial Class FrmMain
         Me.tlblCalibratedType = New System.Windows.Forms.ToolStripStatusLabel()
         Me.slblCalibratedType = New System.Windows.Forms.ToolStripStatusLabel()
         Me.slblSeparator1 = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.tlblKernelWidth = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.slblKernelWidth = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.tlblKernelRadius = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.slblKernelRadius = New System.Windows.Forms.ToolStripStatusLabel()
         Me.slblSeparator2 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tlblBorderCount = New System.Windows.Forms.ToolStripStatusLabel()
         Me.slblBorderCount = New System.Windows.Forms.ToolStripStatusLabel()
@@ -190,9 +190,9 @@ Partial Class FrmMain
         Me.cbxBorderCount.FormattingEnabled = True
         Me.cbxBorderCount.IntegralHeight = False
         Me.cbxBorderCount.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"})
-        Me.cbxBorderCount.Location = New System.Drawing.Point(193, 115)
+        Me.cbxBorderCount.Location = New System.Drawing.Point(225, 115)
         Me.cbxBorderCount.Name = "cbxBorderCount"
-        Me.cbxBorderCount.Size = New System.Drawing.Size(80, 25)
+        Me.cbxBorderCount.Size = New System.Drawing.Size(103, 25)
         Me.cbxBorderCount.TabIndex = 18
         '
         'btnInitClear
@@ -415,7 +415,7 @@ Partial Class FrmMain
         Me.sstripMain.AutoSize = False
         Me.sstripMain.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
         Me.sstripMain.ImageScalingSize = New System.Drawing.Size(32, 32)
-        Me.sstripMain.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.slblDesc, Me.tlblCalibratedType, Me.slblCalibratedType, Me.slblSeparator1, Me.tlblKernelWidth, Me.slblKernelWidth, Me.slblSeparator2, Me.tlblBorderCount, Me.slblBorderCount})
+        Me.sstripMain.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.slblDesc, Me.tlblCalibratedType, Me.slblCalibratedType, Me.slblSeparator1, Me.tlblKernelRadius, Me.slblKernelRadius, Me.slblSeparator2, Me.tlblBorderCount, Me.slblBorderCount})
         Me.sstripMain.Location = New System.Drawing.Point(0, 847)
         Me.sstripMain.Name = "sstripMain"
         Me.sstripMain.Size = New System.Drawing.Size(734, 24)
@@ -457,21 +457,21 @@ Partial Class FrmMain
         Me.slblSeparator1.Size = New System.Drawing.Size(16, 16)
         Me.slblSeparator1.Text = " | "
         '
-        'tlblKernelWidth
+        'tlblKernelRadius
         '
-        Me.tlblKernelWidth.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.tlblKernelWidth.ForeColor = System.Drawing.Color.White
-        Me.tlblKernelWidth.Name = "tlblKernelWidth"
-        Me.tlblKernelWidth.Size = New System.Drawing.Size(170, 16)
-        Me.tlblKernelWidth.Text = "Noise Reduction Kernel Width :"
+        Me.tlblKernelRadius.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.tlblKernelRadius.ForeColor = System.Drawing.Color.White
+        Me.tlblKernelRadius.Name = "tlblKernelRadius"
+        Me.tlblKernelRadius.Size = New System.Drawing.Size(173, 16)
+        Me.tlblKernelRadius.Text = "Noise Reduction Kernel Radius :"
         '
-        'slblKernelWidth
+        'slblKernelRadius
         '
-        Me.slblKernelWidth.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.slblKernelWidth.ForeColor = System.Drawing.Color.White
-        Me.slblKernelWidth.Name = "slblKernelWidth"
-        Me.slblKernelWidth.Size = New System.Drawing.Size(17, 16)
-        Me.slblKernelWidth.Text = "--"
+        Me.slblKernelRadius.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.slblKernelRadius.ForeColor = System.Drawing.Color.White
+        Me.slblKernelRadius.Name = "slblKernelRadius"
+        Me.slblKernelRadius.Size = New System.Drawing.Size(17, 16)
+        Me.slblKernelRadius.Text = "--"
         '
         'slblSeparator2
         '
@@ -525,7 +525,7 @@ Partial Class FrmMain
         Me.cbxBoundaryMethod.IntegralHeight = False
         Me.cbxBoundaryMethod.ItemHeight = 17
         Me.cbxBoundaryMethod.Items.AddRange(New Object() {"Symmetric", "Adaptive", "Replicate", "Zero Padding"})
-        Me.cbxBoundaryMethod.Location = New System.Drawing.Point(215, 75)
+        Me.cbxBoundaryMethod.Location = New System.Drawing.Point(225, 76)
         Me.cbxBoundaryMethod.Name = "cbxBoundaryMethod"
         Me.cbxBoundaryMethod.Size = New System.Drawing.Size(103, 25)
         Me.cbxBoundaryMethod.TabIndex = 25
@@ -533,7 +533,7 @@ Partial Class FrmMain
         'lblBoundaryMethod
         '
         Me.lblBoundaryMethod.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
-        Me.lblBoundaryMethod.Location = New System.Drawing.Point(26, 79)
+        Me.lblBoundaryMethod.Location = New System.Drawing.Point(25, 79)
         Me.lblBoundaryMethod.Name = "lblBoundaryMethod"
         Me.lblBoundaryMethod.Size = New System.Drawing.Size(183, 19)
         Me.lblBoundaryMethod.TabIndex = 24
@@ -544,7 +544,7 @@ Partial Class FrmMain
         Me.lblBorderCount.AutoSize = True
         Me.lblBorderCount.Enabled = False
         Me.lblBorderCount.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
-        Me.lblBorderCount.Location = New System.Drawing.Point(72, 118)
+        Me.lblBorderCount.Location = New System.Drawing.Point(76, 118)
         Me.lblBorderCount.Name = "lblBorderCount"
         Me.lblBorderCount.Size = New System.Drawing.Size(98, 19)
         Me.lblBorderCount.TabIndex = 20
@@ -559,17 +559,17 @@ Partial Class FrmMain
         Me.cbxKernelRadius.IntegralHeight = False
         Me.cbxKernelRadius.ItemHeight = 17
         Me.cbxKernelRadius.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"})
-        Me.cbxKernelRadius.Location = New System.Drawing.Point(231, 35)
+        Me.cbxKernelRadius.Location = New System.Drawing.Point(225, 37)
         Me.cbxKernelRadius.Margin = New System.Windows.Forms.Padding(2)
         Me.cbxKernelRadius.Name = "cbxKernelRadius"
-        Me.cbxKernelRadius.Size = New System.Drawing.Size(80, 25)
+        Me.cbxKernelRadius.Size = New System.Drawing.Size(103, 25)
         Me.cbxKernelRadius.TabIndex = 17
         '
         'lblKernelRadius
         '
         Me.lblKernelRadius.AutoSize = True
         Me.lblKernelRadius.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblKernelRadius.Location = New System.Drawing.Point(28, 38)
+        Me.lblKernelRadius.Location = New System.Drawing.Point(17, 40)
         Me.lblKernelRadius.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblKernelRadius.Name = "lblKernelRadius"
         Me.lblKernelRadius.Size = New System.Drawing.Size(201, 19)
@@ -735,8 +735,8 @@ Partial Class FrmMain
     Private WithEvents gbSmoothMtd As GroupBox
     Private WithEvents btnInitEdit As Button
     Private WithEvents slblCalibratedType As ToolStripStatusLabel
-    Private WithEvents tlblKernelWidth As ToolStripStatusLabel
-    Private WithEvents slblKernelWidth As ToolStripStatusLabel
+    Private WithEvents tlblKernelRadius As ToolStripStatusLabel
+    Private WithEvents slblKernelRadius As ToolStripStatusLabel
     Private WithEvents slblSeparator2 As ToolStripStatusLabel
     Private WithEvents tlblBorderCount As ToolStripStatusLabel
     Private WithEvents slblBorderCount As ToolStripStatusLabel
