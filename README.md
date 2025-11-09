@@ -46,7 +46,7 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 | Index i (outside) | Symmetric Example | Replicate Example | Zero Padding Example | Adaptive Example |
 |-------------------|-------------------|-------------------|------------------|------------------|
 | -1                | maps to 1 (mirror) | maps to 0         | 0.0              | window cropped; value excluded |
-| n                 | maps to n-2       | maps to n - 1       | 0.0              | window cropped; value excluded |
+| n                 | maps to n - 2      | maps to n - 1     | 0.0              | window cropped; value excluded |
 
 Implementation details :
 - Non-Adaptive modes always build a full kernel-size window, synthesizing each out-of-range slot via `GetValueWithBoundary`.
