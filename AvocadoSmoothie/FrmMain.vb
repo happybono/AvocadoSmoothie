@@ -366,11 +366,11 @@ Public Class FrmMain
     ' ---------------------------------------------------------------
     ' 반지름 (radius) 값을 받아 (2 * radius + 1) 윈도우 길이로 변환 후
     ' 내부 메서드 <see cref="ComputeMedians"/> 를 호출하는 간단한 Wrapper 입니다
-    ' useMiddle    : True 이면 Middle 모드로 양쪽에서 <paramref name="borderCount"/> 개 원소를 원본 그대로 둡니다.
+    ' useMiddle    : True 이면 Middle 모드로 양쪽에서 <paramref name="borderCount"/> 개 항목을 원본 그대로 둡니다.
     ' radius       : 커널 반지름 값. 실제 윈도우 길이는 (2 * radius) + 1 로 변환됩니다.
-    ' borderCount  : Middle 모드에서 양쪽 경계에 보존할 원소 개수.
+    ' borderCount  : Middle 모드에서 양쪽 경계에 보존할 항목 개수.
     ' progress     : 진행 상황을 보고할 IProgress(Of Integer) 구현.
-    ' boundaryMode : useMiddle = False (All 모드) 일 경우 적용할 경계 처리 방식.
+    ' boundaryMode : useMiddle = False (AllMedian 모드) 일 경우 적용할 경계 처리 방식.
     ' ---------------------------------------------------------------
     Private Sub ComputeMediansByRadius(
     useMiddle As Boolean,
@@ -2621,6 +2621,7 @@ Public Class FrmMain
 #End Region
 
 End Class
+
 
 
 
