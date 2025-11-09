@@ -256,7 +256,8 @@ Public Class FrmMain
     ' borderCount     : Middle 모드에서 양쪽 경계 밖에 그대로 남겨 둘 항목의 개수.
     ' progress        : 진행 상황을 보고하기 위한 IProgress(Of Integer).
     ' boundaryMode    : 경계 처리 모드 (useMiddle = False 일 경우에만 사용).
-    ' ---------------------------------------------------------------         
+    ' ---------------------------------------------------------------
+
     Private Sub ComputeMedians(
     useMiddle As Boolean,
     kernelSize As Integer,
@@ -368,7 +369,7 @@ Public Class FrmMain
     ' 내부 메서드 <see cref="ComputeMedians"/> 를 호출하는 간단한 Wrapper 입니다
     ' useMiddle    : True 이면 Middle 모드로 양쪽에서 <paramref name="borderCount"/> 개 항목을 원본 그대로 둡니다.
     ' radius       : 커널 반지름 값. 실제 윈도우 길이는 (2 * radius) + 1 로 변환됩니다.
-    ' borderCount  : Middle 모드에서 양쪽 경계에 보존할 항목 개수.
+    ' borderCount  : Middle 모드에서 양쪽 경계에 보존할 원소 개수.
     ' progress     : 진행 상황을 보고할 IProgress(Of Integer) 구현.
     ' boundaryMode : useMiddle = False (AllMedian 모드) 일 경우 적용할 경계 처리 방식.
     ' ---------------------------------------------------------------
@@ -407,7 +408,7 @@ Public Class FrmMain
         End If
     End Function
 
-    Private Sub txtInitAdd_Click(sender As Object, e As EventArgs) Handles btnInitAdd.Click
+    Private Sub btnInitAdd_Click(sender As Object, e As EventArgs) Handles btnInitAdd.Click
         Dim inputText = txtInitAdd.Text
         Dim v As Double
 
@@ -1238,10 +1239,8 @@ Public Class FrmMain
             btnInitSelectAll.PerformClick()
         End If
 
-        If (e.KeyData = Keys.F2) Then
-            If lbInitData.SelectedItems.Count >= 0 Then
-                FrmModify.ShowDialog(Me)
-            End If
+        If e.KeyData = Keys.F2 AndAlso lbInitData.SelectedItems.Count > 0 Then
+            FrmModify.ShowDialog(Me)
         End If
 
         If e.KeyData = Keys.Escape Then
@@ -1251,9 +1250,7 @@ Public Class FrmMain
         lblInitCnt.Text = "Count : " & lbInitData.Items.Count
     End Sub
 
-
     Private Sub lbRefinedData_KeyDown(sender As Object, e As KeyEventArgs) Handles lbRefinedData.KeyDown
-
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.C Then
             e.Handled = True
             btnRefCopy.PerformClick()
@@ -1261,6 +1258,7 @@ Public Class FrmMain
 
         If (e.Modifiers And Keys.Control) = Keys.Control AndAlso e.KeyCode = Keys.A Then
             e.Handled = True
+            btnRefSelectAll.PerformClick()
             UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
         End If
 
@@ -1316,7 +1314,7 @@ Public Class FrmMain
 
         Await ClearSelectionWithProgress(lbInitData, pbMain, lblInitCnt)
 
-        slblDesc.Text = $"Deselected {deselectedCount} selected item{If(Not deselectedCount = 1, "s", "")} from Refined Dataset."
+        slblDesc.Text = $"Deselected {deselectedCount} selected item{If(Not deselectedCount = 1, "s", "")} from Initial Dataset."
         slblDesc.Visible = True
     End Sub
 
@@ -1446,7 +1444,7 @@ Public Class FrmMain
             Return
         End If
 
-        ' Validate for both modes before computing
+        ' 계산을 수행하기에 앞서, 두 가지 모드 (All-Median, Middle-Median) 를 모두 확인해야 합니다.
         If Not ValidateSmoothingParametersCanonical(n, kernelRadius, borderCount, True) Then Return
         If Not ValidateSmoothingParametersCanonical(n, kernelRadius, borderCount, False) Then Return
 
@@ -2369,10 +2367,10 @@ Public Class FrmMain
         slblDesc.Visible = True
 
         slblDesc.Text = If(selCount = 0 OrElse selCount = totalCount,
-                       $"Copy all {totalCount} items from the Refined Dataset to the clipboard.",
+                       $"Copy all {totalCount} items from the Initial Dataset to the clipboard.",
                        If(selCount = 1,
-                          "Copy the selected item from the Refined Dataset to the clipboard.",
-                          $"Copy {selCount} selected items from the Refined Dataset to the clipboard."))
+                          "Copy the selected item from the Initial Dataset to the clipboard.",
+                          $"Copy {selCount} selected items from the Initial Dataset to the clipboard."))
     End Sub
 
     Private Sub btnInitCopy_MouseLeave(sender As Object, e As EventArgs) Handles btnInitCopy.MouseLeave
@@ -2603,7 +2601,7 @@ Public Class FrmMain
 
     Private Sub lblBoundaryMethod_MouseHover(sender As Object, e As EventArgs) Handles lblBoundaryMethod.MouseHover
         slblDesc.Visible = True
-        slblDesc.Text = "Specifies how edge data points are treated during smoothing : Symmetric, Replicate, Adaptive, or Zero-Pad."
+        slblDesc.Text = "Specifies how edge data points are treated during smoothing : Symmetric, Replicate, Adaptive, or Zero Padding."
     End Sub
 
     Private Sub cbxBoundaryMethod_MouseLeave(sender As Object, e As EventArgs) Handles cbxBoundaryMethod.MouseLeave
@@ -2612,7 +2610,7 @@ Public Class FrmMain
 
     Private Sub cbxBoundaryMethod_MouseHover(sender As Object, e As EventArgs) Handles cbxBoundaryMethod.MouseHover
         slblDesc.Visible = True
-        slblDesc.Text = "Specifies how edge data points are treated during smoothing : Symmetric, Replicate, Adaptive, or Zero-Pad."
+        slblDesc.Text = "Specifies how edge data points are treated during smoothing : Symmetric, Replicate, Adaptive, or Zero Padding."
     End Sub
 
     Private Sub lblBoundaryMethod_MouseLeave(sender As Object, e As EventArgs) Handles lblBoundaryMethod.MouseLeave
@@ -2621,7 +2619,4 @@ Public Class FrmMain
 #End Region
 
 End Class
-
-
-
 
