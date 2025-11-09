@@ -251,11 +251,11 @@ Public Class FrmMain
     ' ---------------------------------------------------------------
     ' ComputeMedians  : initList에서 refinedList로 이동하며 실행 중간값을 계산합니다.
     ' useMiddle       : True일 경우, 처음과 끝의 'borderCount' 개 요소는 원래 값 그대로 유지합니다.
-    ' kernelSize      : 중간값 커널의 윈도우 길이(보통 홀수). 반지름 r이 있으면
+    ' kernelSize      : 중간값 커널의 윈도우 길이 (보통 홀수). 반지름 r 이 있으면
     '                   kernelSize = (2 * r) + 1 로 계산합니다.
     ' borderCount     : Middle 모드에서 양쪽 경계에 그대로 남겨둘 요소의 개수.
     ' progress        : 진행 상황을 보고하기 위한 IProgress(Of Integer).
-    ' boundaryMode    : 경계 처리 모드 (useMiddle = False일 때만 사용).
+    ' boundaryMode    : 경계 처리 모드 (useMiddle = False 인 경우에만 사용).
     ' ---------------------------------------------------------------
 
     Private Sub ComputeMedians(
@@ -2622,4 +2622,5 @@ Public Class FrmMain
 #End Region
 
 End Class
+
 
