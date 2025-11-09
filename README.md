@@ -22,13 +22,35 @@ By removing noise, AvocadoSmoothie breathes clarity and energy into your analysi
 ## Project Overview
 This AvocadoSmoothie project delivers a highly optimized running median filter on numeric data held in a `ListBox`. Users pick a `kernel radius` and `border count`, then choose between two modes :<br><br>
 
-- **AllMedian** : applies the median filter at every index, clamping the window at the ends for out-of-range safety.<br>
-- **MiddleMedian** : preserves the specified number of leading and trailing values, filtering only the central section.<br><br>
+AvocadoSmoothie now supports configurable boundary handling during full-range smoothing : <br><br>
 
-Data can be entered one value at a time, bulk-pasted from the clipboard, or drag-and-dropped (with HTML-aware parsing). Internally, each sliding window is copied into a thread-local buffer, sorted via a recursive Quicksort, and its median extracted. Filtering is parallelized across CPU cores using `Parallel.For` for maximum throughput.<br><br>
+- AllMedian (Full Median) : Applies the median filter at every index using a fixed kernel of width (2 × radius + 1). Out-of-range indices are synthesized according to the selected Boundary Mode (Symmetric reflection, Replicate, Zero Padding, or Adaptive). Adaptive mode shortens to a contiguous in-bounds window when the full kernel would extend past edges.  
+- MiddleMedian : Preserves the first and last Border Count items verbatim and applies the same windowed median only to the interior region. Boundary modes are not applied because the preserved edges eliminate the need for synthetic padding.<br><br>
+
+Thread-local window buffers, `Parallel.For`, and an allocation-minimized median routine deliver high throughput. A unified `ComputeMedians` method orchestrates both modes.<br><br>
+
+Data can be entered one value at a time, bulk-pasted from the clipboard, or drag-and-dropped (with HTML-aware parsing). Internally, each sliding window is copied into a thread-local buffer and its median is obtained by Array.Sort on a temporary slice (legacy Quicksort remains in code but is not used on the median path). Filtering is parallelized across CPU cores using `Parallel.For` for maximum throughput.<br><br>
 A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, select-all, paste) are batched with `BeginUpdate` / `EndUpdate` to eliminate flicker. After each run, source and result lists are reset to guarantee repeatable behavior, making it effortless to visualize noise reduction or signal smoothing on the fly.<br><br>
 
 > **Disclaimer :** This implementation uses a plain (equal-weight) median filter. For weighted-median calculations and a wider range of smoothing / correction methods, please refer to the **[SonataSmooth](https://github.com/happybono/SonataSmooth)** project. 
+
+### Boundary Modes
+| Mode | Behavior | Use Case |
+|------|----------|----------|
+| Symmetric | Mirrors indices past edges (reflective) | Smooth continuity at boundaries |
+| Replicate | Clamps to nearest valid endpoint | Preserves plateaus / avoids mirror artifacts |
+| Zero Padding | Treats out-of-range as 0.0 | Emphasize contrast; dampen edge influence |
+| Adaptive | Crops window to fit entirely in-bounds (W = min(kernelSize, n)) | Small datasets; prevents synthetic sampling |
+
+#### Index Mapping Examples
+| Index i (outside) | Symmetric Example | Replicate Example | Zero Padding Example | Adaptive Example |
+|-------------------|-------------------|-------------------|------------------|------------------|
+| -1                | maps to 1 (mirror) | maps to 0         | 0.0              | window cropped; value excluded |
+| n                 | maps to n-2       | maps to n - 1       | 0.0              | window cropped; value excluded |
+
+Implementation details :
+- Non-Adaptive modes always build a full kernel-size window, synthesizing each out-of-range slot via `GetValueWithBoundary`.
+- Adaptive computes a contiguous slice : start = clamped(i - offsetLow), then median of W = min(kernelSize, n).
 
 <br>
 
@@ -58,20 +80,20 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 ### v2.0.0.0
 #### July 20, 2025
 > Overhauled the graphical user interface.<br><br>
-> Configurable `kernel width` and `border count` (combo‐boxes).<br><br>
+> Configurable `kernel radius` and `border count` (combo‐boxes).<br><br>
 > Regex utilities for numeric / HTML parsing.<br><br>
 > Progress reporting via `ProgressBar` and `IProgress(Of Integer)`.<br><br>
 > Async UI integration (`Async / Await` + `Task.Run`).<br><br>
 > Thread‐local buffers and parallel loops (`Parallel.For`).<br><br>
 > Replaced hard‐coded 5-point windows with parameterized `ComputeMedians`.<br><br>
 > Switched from single‐threaded loops to `Parallel.For`.<br><br>
-> Unified median logic : introduced `MedianOf5`, `GetWindowMedian`.<br><br>
+> Unified median logic : introduced `GetWindowMedian` with `Array.Sort`.<br><br>
 > Bulk result population with `ListBox.Items.AddRange`.<br><br>
 > Selection handlers to enable / disable edit, copy, delete and clear buttons.<br><br>
 > Fully non-blocking median computation.<br><br>
 > Dynamic window size reduces overhead.<br><br>
 > Real‐time progress feedback (`ProgressBar`).<br><br>
-> `StatusStrip` shows mode, `kernel width` and `border count`.
+> `StatusStrip` shows mode, `kernel radius` and `border count`.
 
 ### v2.1.1.0
 #### July 21, 2025
@@ -88,8 +110,8 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 
 ### v2.2.3.0
 #### July 22, 2025
-> Refactored the pasteButton_Click handler to use PLINQ-based parallel parsing.<br><br>
-> Optimized bulk insertion by replacing per-item adds with ListBox1.Items.AddRange.<br><br>
+> Refactored the btnInitPaste_Click handler to use PLINQ-based parallel parsing.<br><br>
+> Optimized bulk insertion by replacing per-item adds with lbInitData.Items.AddRange.<br><br>
 > Removed Task.Yield calls to eliminate unnecessary context switches.<br><br>
 > Updated progress bar steps to 0 → 10 → 30 → 70 → 100 for clearer feedback.<br><br>
 > Added enable / disable logic for Calculate, Copy, and Delete buttons to boost UI responsiveness and overall performance.
@@ -176,8 +198,8 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 
 ### v5.0.0.0
 #### November 8, 2025
-> Added boundary handling options : `Symmetric` (Mirror), `Adaptive`, `Replicate` (Nearest), `Zero-Pad`.<br><br>
-> `ComputeMedians` method was updated to support the 'All Median' mode, while `BoundaryMode` enum and `GetValueWithBoundary` function remain unchanged."<br><br>
+> Added boundary handling options : `Symmetric` (Mirror), `Adaptive`, `Replicate` (Nearest), `Zero Padding`.<br><br>
+> Extended `ComputeMedians` to integrate boundary synthesis for AllMedian mode; introduced `BoundaryMode` enum and `GetValueWithBoundary` for edge sampling.<br><br>
 > Minor bug fixes, performance improvements, and user interface enhancements.
 
 ## Required Components & Setup
@@ -203,7 +225,7 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 ## Execution Instructions
 1. **Launch the Application** : Run the compiled `.exe` file or start the project from Visual Studio.
 2. **Input Data** : Enter numeric values manually, paste from clipboard, or drag-and-drop text / HTML.
-3. **Select Filter** : Choose a smoothing algorithm and configure kernel width and border count.
+3. **Select Filter** : Choose a smoothing algorithm and configure kernel radius and border count.
 4. **Calibrate** : Click the 'Calibrate' button to apply the selected filter.
 5. **Review Results** : View the smoothed output in the second listbox.
 6. **Export** : Click Export to save results as `.CSV` or `Excel (.xlsx)`, with optional chart visualization.
@@ -247,44 +269,73 @@ Depending on the field, practitioners choose based on context :
 
 ## Features
 - Import numeric data effortlessly via copy / paste or drag-and-drop from Excel and other spreadsheet apps (HTML / text parsing built-in).
-- Choose kernel width and border count, then click `Calculate` button to apply the running median filter.
+- Choose kernel radius and border count, then click the `Calibrate` button to apply the running median filter.
 - Two filter modes : **MiddleMedian** (preserve first / last values) or **AllMedian** (full-range smoothing).
-- High-performance parallel processing with a thread-local buffer and recursive `QuickSort`.
+- High-performance parallel processing with a thread-local buffer and `Array.Sort`-based median selection (`GetWindowMedian`).
 - Real-time `ProgressBar` feedback and flicker-free UI updates using `BeginUpdate` / `EndUpdate.`
 - Source and result lists reset after each run for consistent, repeatable behavior.
 
 ## Features & Algorithms
 ### 1. Initialization & Input Processing
 #### How it works
-When the application starts, users can input numeric data through various methods : direct text entry, clipboard paste, or drag-and-drop. The input values are parsed and stored in the internal sourceList, and displayed in ListBox1 for review and editing.
+When the application starts, users can input numeric data through various methods : direct text entry, clipboard paste, or drag-and-drop. The input values are parsed and stored in the internal initList, and displayed in lbInitData for review and editing.
 
 #### Principle
--	Input data is added to `ListBox1` and internally stored in the sourceList list.
+-	Input data is added to `lbInitData` and internally stored in the initList list.
 -	Input can be received via the textbox, clipboard, or drag-and-drop.
 -	Only numeric values are extracted using regular expressions for robust parsing.
 
 #### Code Implementation
 ```vbnet
 ' Add value from TextBox
-Private Sub addButton_Click(sender As Object, e As EventArgs) Handles addButton.Click
-    ListBox1.Items.Add(Val(TextBox1.Text))
-    TextBox1.Text = String.Empty
-    lblCnt1.Text = "Count : " & ListBox1.Items.Count
-    copyButton1.Enabled = ListBox1.Items.Count > 0
+Private Sub btnInitAdd_Click(sender As Object, e As EventArgs) Handles btnInitAdd.Click
+    Dim v As Double
+    If Double.TryParse(txtInitAdd.Text, v) Then
+        lbInitData.Items.Add(v)
+        lblInitCnt.Text = $"Count : {lbInitData.Items.Count}"
+    End If
+    txtInitAdd.Clear()
 End Sub
 
-' Paste from clipboard
-Private Async Sub pasteButton_Click(sender As Object, e As EventArgs) Handles pasteButton.Click
-    Dim raw = My.Computer.Clipboard.GetText()
-    Dim nums = Await Task.Run(Function()
-        Return regexNumbers.Matches(raw).Cast(Of Match)().Select(Function(m) Double.Parse(m.Value)).ToArray()
+' Paste from clipboard (parallel parse)
+Private Async Sub btnInitPaste_Click(sender As Object, e As EventArgs) Handles btnInitPaste.Click
+    Dim text As String = Clipboard.GetText()
+    Dim matches = regexNumbers.Matches(text).Cast(Of Match)().Where(Function(m) m.Value <> "").ToArray()
+    Dim values As Double() = Await Task.Run(Function()
+        Return matches.AsParallel().
+            WithDegreeOfParallelism(Environment.ProcessorCount).
+            Select(Function(m) Double.Parse(m.Value, Globalization.NumberStyles.Any, Globalization.CultureInfo.InvariantCulture)).
+            ToArray()
     End Function)
-    ' ... (Add to ListBox1)
+    If values.Length = 0 Then Return
+    lbInitData.BeginUpdate()
+    lbInitData.Items.AddRange(values.Cast(Of Object).ToArray())
+    lbInitData.EndUpdate()
+    lblInitCnt.Text = $"Count : {lbInitData.Items.Count}"
 End Sub
 
-' Drag-and-drop input
-Private Async Sub ListBox1_DragDrop(sender As Object, e As DragEventArgs) Handles ListBox1.DragDrop
-    ' ... (Extract numbers from HTML / Text and add to ListBox1)
+' Drag & drop (HTML aware)
+Private Async Sub lbInitData_DragDrop(sender As Object, e As DragEventArgs) Handles lbInitData.DragDrop
+    Dim raw As String = If(e.Data.GetDataPresent("HTML Format"),
+                           regexStripTags.Replace(e.Data.GetData("HTML Format").ToString(), ""),
+                           e.Data.GetData(DataFormats.Text).ToString())
+    Dim parsed As Double() = Await Task.Run(Function()
+        Return regexNumbers.Matches(raw).
+            Cast(Of Match)().
+            AsParallel().AsOrdered().
+            Select(Function(m)
+                       Dim tok = m.Value.Replace(",", "").Trim()
+                       Dim d As Double
+                       Return If(Double.TryParse(tok, Globalization.NumberStyles.Any, Globalization.CultureInfo.InvariantCulture, d), d, Double.NaN)
+                   End Function).
+            Where(Function(d) Not Double.IsNaN(d)).
+            ToArray()
+    End Function)
+    If parsed.Length = 0 Then Return
+    lbInitData.BeginUpdate()
+    lbInitData.Items.AddRange(parsed.Cast(Of Object).ToArray())
+    lbInitData.EndUpdate()
+    lblInitCnt.Text = $"Count : {lbInitData.Items.Count}"
 End Sub
 ```
 
@@ -306,7 +357,7 @@ $$
 \text{kernelWidth} = 2 \times 2 + 1 = 5
 $$
 
-Therefore, the kernel width is **5**.
+Therefore, the kernel width (computed from the radius) is **5**.
 
 #### Meaning
 - The filter includes the current element plus `kernelRadius` elements before it and after it.
@@ -318,63 +369,73 @@ Therefore, the kernel width is **5**.
 
 ### 3. AllMedian Calculation
 #### How it works
-AllMedian applies a median filter across every data point in the source list using a symmetric window of size `2 × kernelRadius + 1`. Internally it invokes a single routine, `ComputeMedians(useMiddle:=False, ...)`, which :
-
-- Spawns a thread-local buffer for the sliding window
-- Parallelizes each index's window extraction and median computation
-- Reports progress back to the UI
+For each index i, a window of size (2 × radius + 1) is populated. Out-of-range positions are resolved via the selected Boundary Mode (except Adaptive, which shortens the window). Parallel threads reuse thread-local buffers to avoid allocations.
 
 #### Principle
-- Compute window parameters :
-  - kernelWidth = 2 * kernelRadius + 1
-  - offsetLow = (kernelWidth - 1) \ 2
-  - offsetHigh = (kernelWidth - 1) - offsetLow
-- For each index i in [0 … n - 1] :
-  1. iMin = Max(0, i - offsetLow) iMax = Min(n - 1, i + offsetHigh)
-  2. Copy arr(iMin … iMax) into a thread-local array win
-  3. Sort the slice and pick its median via GetWindowMedian
-      - Odd-length windows → middle element
-      - Even-length windows → average of two middle values
+1. Compute offsets :
+   offsetLow = (kernelSize - 1) \ 2
+   offsetHigh = (kernelSize - 1) - offsetLow
+2. If boundaryMode = Adaptive :
+   - W = min(kernelSize, n)
+   - Determine a valid contiguous start
+   - Copy W in-bounds values
+3. Else :
+   - For each relative position k :
+     win[k] = GetValueWithBoundary(arr, i + k - offsetLow, boundaryMode)
+4. Median = GetWindowMedian(win, effectiveLength)
+
+#### Key Distinction
+Edge indices no longer "shrink" by clamping; synthetic sampling abstracts the boundary so every window (except Adaptive) stays full-sized.
 
 #### Code Implementation
 ```vbnet
-' All-points median smoothing
+' All-points median smoothing example (boundary mode explicitly provided)
 ComputeMedians(useMiddle:=False,
-               KernelRadius:=kernelWidth,
+               kernelSize:=2 * radius + 1,
                borderCount:=0,
-               progress:=progress)
+               progress:=progress,
+               boundaryMode:=BoundaryMode.Symmetric)
 
 Private Sub ComputeMedians(useMiddle As Boolean,
-                           KernelRadius As Integer,
+                           kernelSize As Integer,
                            borderCount As Integer,
-                           progress As IProgress(Of Integer))
-    Dim n = sourceList.Count
+                           progress As IProgress(Of Integer),
+                           Optional boundaryMode As BoundaryMode = BoundaryMode.Symmetric)
+    Dim n = initList.Count
     If n = 0 Then progress.Report(0) : Return
 
-    Dim arr = sourceList.ToArray()
+    Dim arr = initList.ToArray()
     Dim buffer(n - 1) As Double
-    Dim offsetLow  = (KernelRadius - 1) \ 2
-    Dim offsetHigh = (KernelRadius - 1) - offsetLow
+    Dim offsetLow  = (kernelSize - 1) \ 2
+    Dim offsetHigh = (kernelSize - 1) - offsetLow
 
     ' Thread-local buffer to avoid per-iteration allocations
     Dim localWin As New ThreadLocal(Of Double())(
-        Function() New Double(KernelRadius - 1) {})
+        Function() New Double(KernelSize - 1) {})
 
     Parallel.For(0, n, Sub(i)
-        Dim win    = localWin.Value
-        Dim iMin   = Math.Max(0, i - offsetLow)
-        Dim iMax   = Math.Min(n - 1, i + offsetHigh)
-        Dim length = iMax - iMin + 1
-
-        For k = 0 To length - 1
-            win(k) = arr(iMin + k)
-        Next
-
-        buffer(i) = GetWindowMedian(win, length)
+        Dim win = localWin.Value
+        If boundaryMode = BoundaryMode.Adaptive Then
+            Dim desiredW As Integer = kernelSize
+            Dim W As Integer = Math.Min(desiredW, n)
+            Dim start As Integer = i - offsetLow
+            If start < 0 Then start = 0
+            If start > n - W Then start = n - W
+            For pos As Integer = 0 To W - 1
+                win(pos) = arr(start + pos)
+            Next
+            buffer(i) = GetWindowMedian(win, W)
+        Else
+            For pos As Integer = 0 To kernelSize - 1
+                Dim k As Integer = pos - offsetLow
+                win(pos) = GetValueWithBoundary(arr, i + k, boundaryMode)
+            Next
+            buffer(i) = GetWindowMedian(win, kernelSize)
+        End If
     End Sub)
 
-    medianList.Clear()
-    medianList.AddRange(buffer)
+    refinedList.Clear()
+    refinedList.AddRange(buffer)
 End Sub
 
 Private Function GetWindowMedian(win() As Double, length As Integer) As Double
@@ -404,24 +465,33 @@ Filtering logic and median selection are identical to `AllMedian`
 
 #### Code Implementation
 ```vbnet
-' Inner-region median smoothing
 ComputeMedians(useMiddle:=True,
-               KernelRadius:=kernelWidth,
+               kernelSize:=2 * radius + 1,
                borderCount:=borderCount,
                progress:=progress)
 
-' Inside ComputeMedians :
+' Inside ComputeMedians (simplified):
 If useMiddle Then
     For i = 0 To borderCount - 1
-        buffer(i)               = arr(i)
-        buffer(n - 1 - i)       = arr(n - 1 - i)
+        buffer(i) = arr(i)
+        buffer(n - 1 - i) = arr(n - 1 - i)
     Next
 End If
 
-' Then the Parallel.For loop runs from
-'   startIdx = borderCount
-'   endIdx   = n - borderCount - 1
-' to compute medians on the inner slice only.
+startIdx = borderCount
+endIdx   = n - borderCount - 1
+
+Parallel.For(startIdx, endIdx + 1, Sub(i)
+    ' Legacy edge behavior: variable effective length near borders
+    Dim iMin = Math.Max(0, i - offsetLow)
+    Dim iMax = Math.Min(n - 1, i + offsetHigh)
+    Dim length = iMax - iMin + 1
+    Dim win = localWin.Value
+    For k = 0 To length - 1
+        win(k) = arr(iMin + k)
+    Next
+    buffer(i) = GetWindowMedian(win, length)
+End Sub)
 ```
 
 ### 5. Border Count
@@ -458,78 +528,109 @@ Preserved by Border Count :   [x₀, x₁, x₂]                [x₇, x₈, x�
 Filtered by Running Median :              [x₃, x₄, x₅, x₆]
 ```
 
+### Enhanced Parameter Validation & Single-Display Error Gating
+`ValidateSmoothingParametersCanonical` builds a radius-derived window size and enforces:
+- windowSize ≤ dataCount
+- borderCount ≤ dataCount
+- (Middle mode) 2 × borderCount < windowSize
+
+Errors use standardized builders :
+- BuildParamErrorWindowTooLarge
+- BuildParamErrorBorderTooLarge
+- BuildParamErrorBorderWidth
+
+Duplicate dialog spam is prevented with `MessageOnceGate`, allowing the same message only once within a timed interval.
+
+Rules Summary :
+- windowSize = (2 × radius) + 1
+- Middle mode border width = 2 × borderCount
+- Require : windowSize ≤ dataCount AND borderCount ≤ dataCount AND (Middle) 2 × borderCount < windowSize
+
+### Dataset Title Validation
+Titles must:
+- Be non-empty (placeholder replaced on first edit)
+- ≤ 31 characters
+- Exclude : \ / ? * [ ] and any Windows invalid filename chars
+- Avoid reserved names (CON, PRN, AUX, NUL, COM1 … LPT9)
+
+On invalid input :
+- Title reverts to placeholder
+- A single warning dialog appears (duplicate suppression via internal gating).
+
 ### Results Aggregation & UI Update
 #### How it works
 Once `ComputeMedians` completes on a background thread, the UI thread :
-Clears and repopulates `ListBox2` in one batch
-Scrolls `ListBox2` so the last element is visible
+Clears and repopulates `lbRefinedData` in one batch
+Scrolls `lbRefinedData` so the last element is visible
 Updates count labels, summary labels, and button states
 Shows a brief 200 ms delay before resetting the progress bar to 0
 
 #### Principle
-- Repopulate ListBox2 using AddRange(medianList)
-- Set ListBox2.TopIndex to the last item index
+- Repopulate lbRefinedData using AddRange(refinedList)
+- Set lbRefinedData.TopIndex to the last item index
 - Update :
-    - `lblCnt1` and `lblCnt2` with total and refined counts
+    - `lblInitCnt` and `lblRefCnt` with total and refined counts
     - `slblCalibratedType` to "Middle Median" or "All Median"
-    - `slblKernelWidth` with the chosen radius
+    - `slblKernelRadius` with the chosen radius
     - `slblBorderCount` with the border count (visible only in middle‐median mode)
   - Toggle visibility of `slblBorderCount`, `tlblBorderCount` and `slblSeparator2` based on mode
-  - Refresh button states via `UpdateListBox1ButtonsState` and `UpdateListBox2ButtonsState`
-  - Delay 200 ms to let users see "100% complete", then reset `progressBar1.Value`
+  - Refresh button states via `UpdatelbInitDataButtonsState` and `UpdatelbRefinedDataButtonsState`
+  - Delay 200 ms to let users see "100% complete", then reset `pbMain.Value`
 
 #### Code Implementation
 ```vbnet
-Private Async Sub calcButton_Click(sender As Object, e As EventArgs) Handles calcButton.Click
-    ' ... (prepare sourceList, parameters, progressBar)
+Private Async Sub btnCalibrate_Click(sender As Object, e As EventArgs) Handles btnCalibrate.Click
+    ' ... prepare initList, parameters, and pbMain
     
     Await Task.Run(Sub()
-        ComputeMedians(useMiddle, KernelRadius, borderCount, progress)
+        ' kernelWidth = 2 * radius + 1
+        ComputeMedians(useMiddle, kernelWidth, borderCount, progress,
+                       If(useMiddle, BoundaryMode.Symmetric, GetSelectedBoundaryMode()))
     End Sub)
 
-    ' Refresh ListBox2
-    ListBox2.BeginUpdate()
-    ListBox2.Items.Clear()
-    ListBox2.Items.AddRange(medianList.Cast(Of Object).ToArray())
-    ListBox2.EndUpdate()
+    ' Refresh lbRefinedData
+    lbRefinedData.BeginUpdate()
+    lbRefinedData.Items.Clear()
+    lbRefinedData.Items.AddRange(refinedList.Cast(Of Object).ToArray())
+    lbRefinedData.EndUpdate()
 
     ' Scroll to last item
-    ListBox2.TopIndex = ListBox2.Items.Count - 1
+    lbRefinedData.TopIndex = lbRefinedData.Items.Count - 1
 
     ' Update count labels
-    lblCnt1.Text = $"Count : {sourceList.Count}"
-    lblCnt2.Text = $"Count : {medianList.Count}"
+    lblInitCnt.Text = $"Count : {total}"
+    lblRefCnt.Text = $"Count : {refinedList.Count}"
 
     ' Update summary labels
     slblCalibratedType.Text = If(useMiddle, "Middle Median", "All Median")
-    slblKernelWidth.Text     = Integer.Parse(cbxKernelRadius.Text)
-    slblBorderCount.Text     = $"{borderCount}"
+    slblKernelRadius.Text = Integer.Parse(cbxKernelRadius.Text)
+    slblBorderCount.Text = $"{borderCount}"
 
     ' Toggle visibility of border‐related labels
-    slblBorderCount.Visible  = useMiddle
-    tlblBorderCount.Visible   = useMiddle
-    slblSeparator2.Visible    = useMiddle
+    slblBorderCount.Visible = useMiddle
+    tlblBorderCount.Visible = useMiddle
+    slblSeparator2.Visible = useMiddle
 
     ' Refresh UI button states
-    UpdateListBox1ButtonsState(Nothing, EventArgs.Empty)
-    UpdateListBox2ButtonsState(Nothing, EventArgs.Empty)
+    UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
+    UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
 
     ' Brief UX pause, then reset progress bar
     Await Task.Delay(200)
-    progressBar1.Value = 0
+    pbMain.Value = 0
 End Sub
 ```
 
 ### Implementation Details
 #### Input Handling
 - Manual Entry  
-  The `addButton_Click` handler and `TextBox1_KeyDown` allow users to type a numeric value into `TextBox1` and press Enter or click Add. Valid numbers are parsed via `Double.TryParse` and appended to `ListBox1`.
+  The `btnInitAdd_Click` handler and `txtInitAdd_KeyDown` allow users to type a numeric value into `txtInitAdd` and press Enter or click Add. Valid numbers are parsed via `Double.TryParse` and appended to `lbInitData`.
   
 - Clipboard Paste  
-  The `pasteButton_Click` event reads `Clipboard.GetText()`, uses `regexNumbers` to match numeric tokens, then parses them in parallel (`AsParallel().WithDegreeOfParallelism`) before adding to `ListBox1` in a batch (`BeginUpdate` / `EndUpdate`).
+  The `btnInitPaste_Click` event reads `Clipboard.GetText()`, uses `regexNumbers` to match numeric tokens, then parses them in parallel (`AsParallel().WithDegreeOfParallelism`) before adding to `lbInitData` in a batch (`BeginUpdate` / `EndUpdate`).
 
 - Drag & Drop  
-  The `ListBox1_DragDrop` handler checks for "HTML Format" or plain text, strips tags via `regexStripTags`, extracts numbers via `regexNumbers.Matches`, parses in a background task, and calls `AddItemsInBatches` to insert items with incremental progress.
+  The `lbInitData_DragDrop` handler checks for "HTML Format" or plain text, strips tags via `regexStripTags`, extracts numbers via `regexNumbers.Matches`, parses in a background task, and calls `AddItemsInBatches` to insert items with incremental progress.
 
 - Regex-Based Filtering  
   Two compiled regexes are used :  
@@ -537,73 +638,96 @@ End Sub
   - `regexNumbers` to find `"[+-]?(\\d+(,\\d{3})*|(?=\\.\\d))((\\.\\d+([eE][+-]\\d+)?)|)"` and extract numeric substrings.
 
 #### Smoothing Workflow
-When the user clicks **Calibrate** (`calcButton_Click`) :
+When the user clicks **Calibrate** (`btnCalibrate_Click`) :
 
-1. Convert each `ListBox1.Items` entry to `Double` and store in `sourceList`.  
-2. Read `cbxKernelRadius` (radius) and compute `KernelRadius = 2 * radius + 1`.  
-3. Read `cbxBorderCount` and parse `borderCount`.  
-4. Validate parameters with `ValidateSmoothingParameters(dataCount, KernelRadius, borderCount, useMiddle)`.  
-5. Initialize `progressBar1` (min = 0, max = total count) and create `Progress(Of Integer)` to update it.  
-6. Run `ComputeMedians(useMiddle, KernelRadius, borderCount, progress)` on the thread pool.  
-7. Populate `ListBox2` with the resulting `medianList`, update labels (`lblCnt1`, `lblCnt2`, `slblCalibratedType`, `slblKernelWidth`, `slblBorderCount`), then reset the progress bar.
+1. Convert each lbInitData.Items entry to Double and store in initList.
+2. Read cbxKernelRadius (radius) and compute kernelWidth = (2 × radius) + 1.
+3. Read cbxBorderCount and parse borderCount.
+4. Validate parameters with ValidateSmoothingParametersCanonical(n, radius, borderCount, useMiddle).
+5. Initialize pbMain and create Progress(Of Integer) to update it.
+6. Run ComputeMedians(useMiddle, kernelWidth, borderCount, progress,
+   If(useMiddle, BoundaryMode.Symmetric, GetSelectedBoundaryMode())) on the thread pool.
+7. Populate lbRefinedData with refinedList, update labels (lblInitCnt, lblRefCnt, slblCalibratedType, slblKernelRadius, slblBorderCount), then reset pbMain.
 
 #### Filter Algorithm Implementation
 ##### Core Routine : ComputeMedians
-- Middle-Median (`useMiddle = True)` Copies the first and last `borderCount` points unmodified to buffer. Applies a sliding window of width `KernelRadius` only to indices [borderCount … n-borderCount-1].
+- Middle-Median (`useMiddle = True)` Copies the first and last `borderCount` points unmodified to buffer. Applies a sliding window of width `KernelRadius` only to indices [borderCount … n - borderCount - 1].
 
-- All-Median (`useMiddle = False`) Applies the sliding window at every index; windows at edges automatically shrink to available data.
+- All-Median (`useMiddle = False`) Applies the sliding window at every index using boundary synthesis to keep a full fixed-size window (Symmetric / Replicate / Zero Padding); Adaptive crops to a contiguous in-bounds window.
 
 Both modes share :
-1. A thread-local win() buffer (`ThreadLocal(Of Double())`) to avoid per-iteration allocations.
-2. A `Parallel.For` loop distributing indices across CPU cores.
-3. For each index, copy the window slice from `arr(iMin … iMax)` into win, then compute the median via `GetWindowMedian(win, length)` (which uses `Array.Sort` on the slice and returns either the middle element or the average of the two middle elements).
+1. A thread-local window buffer (ThreadLocal(Of Double())) to avoid per-iteration allocations.
+2. A Parallel.For loop distributing indices across CPU cores.
+3. Median selection via GetWindowMedian : Array.Sort a slice; odd → middle element, even → average of two middles.
+
+Edge handling differs :
+- MiddleMedian (useMiddle = True) : copies preserved borders; interior windows use clamped iMin / iMax (variable length).
+- AllMedian (useMiddle = False) : builds a full fixed-size window using BoundaryMode synthesis (Symmetric, Replicate, Zero Padding). With Adaptive, it crops to a contiguous in-bounds window of size W = min(kernelSize, n).
 
 ##### Core Median Functions  
 - `GetWindowMedian(win() As Double, length As Integer)` Creates a temporary slice of length elements from win, sorts with Array.Sort, and returns :
     - `slice(mid)` if `length` is odd
-    - `(slice(mid-1) + slice(mid)) / 2.0` if even
+    - `(slice(mid - 1) + slice(mid)) / 2.0` if even
 - `Quicksort(list() As Double, min As Integer, max As Integer)` remains in the codebase but is no longer used by ComputeMedians.
  
 #### Parallel Processing & UI Responsiveness
 - Median computation leverages `Parallel.For` with thread-local buffers.
 - Text parsing uses PLINQ (`.AsParallel().WithDegreeOfParallelism(Environment.ProcessorCount)`).
-- Progress updates flow through `IProgress(Of Integer)` into `progressBar1`.
+- Progress updates flow through `IProgress(Of Integer)` into `pbMain`.
 - `BeginUpdate` / `EndUpdate` on both listboxes prevent repaint flicker.
 - Background work is offloaded via `Task.Run` / `Await`; small `Task.Delay(1)` calls within batch routines yield to the UI thread.
 - Deletion and selection routines use `Application.DoEvents()` to process pending Windows messages during lengthy operations.
 
+#### Legacy Quicksort
+Internally, each sliding window is copied into a thread-local buffer and its median is extracted using Array.Sort over a temporary slice. A legacy Quicksort implementation remains in code for reference but is not used on the median path.
 
 #### Export Functionality
-##### CSV & Excel Export
-- CSV (`ExportCsvAsync`)  
-  • Parses `kernelRadius` and `borderCount` from `cbxKernelRadius` / `cbxBorderCount`.  
-  • Loads initial data from `ListBox1` into a `Double()` array.  
-  • Runs `ComputeMedians(True, …)` and `ComputeMedians(False, …)` to produce middle-median and all-median arrays.  
-  • Splits output into chunks of up to 1 048 576 rows (Excel's row limit minus header lines).  
-  • Writes UTF-8 CSV files with dataset title, "Part X of Y", smoothing parameters, timestamp, and three columns : `Initial Data`, `MiddleMedian`, `AllMedian`.  
-  • Opens each CSV via `Process.Start(UseShellExecute = True)`, falling back to `rundll32 shell32.dll,OpenAs_RunDLL` if needed.
+##### General Export Settings
+- Choose format via `rbtnCSV` or `rbtnXLSX`.
+- `cbxKernelRadius` and `cbxBorderCount` must parse to valid integers before export.
+- Dataset title is taken from `txtDatasetTitle` (placeholder is shown until edited).
 
-- Excel (`btnExport_Click` with `rbtnXLSX`)  
-  • Validates and reads the same parameters and initial data array, then computes both median arrays.  
-  • Creates a new Excel `Application`, adds a `Workbook` and gets its first `Worksheet`.  
-  • Writes the dataset title and smoothing parameters into rows 1 - 6.  
-  • Uses a `WriteDistributed` helper to dump each series into adjacent columns : splitting across columns if a series exceeds Excel's 1,048,576-row cap.  
-  • Inserts a line chart (`XlChartType.xlLine`) plotting all three series, sets chart title and axis labels ("Value" vs "Sequence Number").  
-  • Makes Excel visible, enables alerts, and releases all COM objects to avoid leaks.
+##### CSV Export (`ExportCsvAsync`)
+- Loads initial data from `lbInitData` into a `Double()` array.
+- Computes both series : MiddleMedian (`ComputeMedians(True, …)`) and AllMedian (`ComputeMedians(False, …)`).
+- Splits output into multiple files when rows exceed Excel’s 1,048,576 limit (reserving 12 header lines).
+- Writes UTF-8 CSV with :
+  - Title
+  - Part X of Y
+  - Smoothing parameters (Kernel Radius, Kernel Width, Border Count, Boundary Method)
+  - Timestamp
+  - Header line : `Initial Data,MiddleMedian,AllMedian`
+- Robustness :
+  - Retry loop on `IOException` (file in use) with Retry / Cancel.
+  - Auto-opens each generated file; falls back to `rundll32 shell32.dll,OpenAs_RunDLL` if no association.
 
-##### Export Settings
-- Format selected via `rbtnCSV` or `rbtnXLSX`.  
-- `cbxKernelRadius` and `cbxBorderCount` must parse to valid integers before export.  
-- Dataset title comes from `txtDatasetTitle` (starts with a placeholder until edited).
-
+##### Excel Export (`btnExport_Click` with `rbtnXLSX`)
+- Validates and reads parameters and initial data, then computes MiddleMedian and AllMedian.
+- Creates Excel `Application` → `Workbook` → first `Worksheet`.
+- Writes sheet header :
+  - A1 : dataset title
+  - Row 3 : "Smoothing Parameters"
+  - Rows 4 – 7 : Kernel Radius, Kernel Width, Border Count, Boundary Method
+- Writes data with `WriteDistributed` :
+  - Splits each series across adjacent columns when exceeding 1,048,576 rows per column.
+- Visualization :
+  - Inserts a line chart (`xlLine`) with three series (Initial, MiddleMedian, AllMedian), titled and labeled axes.
+- Document metadata :
+  - Built-in properties (Title, Category, Subject, Author, Last Author, Keywords, Comments).
+  - Flavor-themed comments with "achievement" tiers by dataset size.
+- Cleanup :
+  - Explicit COM release via a stack and `Marshal.FinalReleaseComObject`.
+  - Double GC pass to avoid lingering Excel processes.
+  - Makes Excel visible and enables alerts.
+ 
 #### Keyboard Shortcuts
-- Ctrl + C – Copy selected or all items to clipboard.  
-- Ctrl + V – Paste numeric data from clipboard.  
-- Ctrl + A – Select all items.  
-- Delete – Delete selected items (`deleteButtonX`).  
-- Ctrl + Delete – Clear all items (`clearButtonX`).  
-- F2 – Edit selected item(s) (`FrmModify`).  
-- Esc – Deselect selection (`sClrButtonX`).
+- Ctrl + C – Copy selected or all items to clipboard (Initial and Refined).
+- Ctrl + V – Paste numeric data into Initial dataset.
+- Ctrl + A – Select all items (Initial and Refined).
+- Delete – Delete selected items in Initial dataset.
+- Ctrl + Delete – Clear all items (Initial → Initial dataset, Refined → Refined dataset).
+- F2 – Edit selected item(s) (FrmModify) in Initial dataset.
+- Esc – Deselect selection (Initial and Refined).
 
 ### Data Handling and Processing
 - Efficiently processes numeric data for running median calculations
@@ -614,14 +738,12 @@ Both modes share :
 - Validates numeric values using regular expressions
 - Stores data as a list of doubles for high-precision calculations
 - Provides two types of running median filters :
-  - `AllMedian` :
-    - Calculates median at every position using a sliding window
-    - Automatically adjusts at dataset boundaries
-  - `MiddleMedian` :
-    - Applies median only to the inner region of data
-    - Leaves a user-defined number of boundary elements untouched
-- Implements parallel processing for fast performance on large datasets
-- Results stored separately for review, copy, or export
+  - AllMedian :
+    - Calculates a median at every position using a sliding window
+    - Uses Boundary Modes (Symmetric / Replicate / Zero Padding) for synthetic edge sampling; Adaptive crops the window in-bounds
+  - MiddleMedian :
+    - Applies the median filter only to interior indices
+    - Preserves a user-defined number of edge elements (border count) unchanged
 
 ### User Interface and Interaction
 - Main window includes :
@@ -635,16 +757,22 @@ Both modes share :
 - Interface dynamically enables / disables controls based on context to prevent errors
 
 ### Customization and Configuration
-- `Kernel (window) width` adjustable for filtering
+- Kernel radius adjustable for filtering (kernel width = 2 × radius + 1)
 - Boundary exclusion configurable when using MiddleMedian
 - Filter type (`AllMedian` or `MiddleMedian`) can be switched using radio buttons
 - Interface auto-adjusts available settings to match selected filter
 - All settings applied instantly for immediate data visualization and experimentation
 
+### Contextual UX Enhancements
+- Dynamic status label (`slblDesc`) with singular / plural grammar and contextual verbs.
+- Tooltip-like hover behavior implemented through event handlers rather than static ToolTip control.
+- Selection synchronization buttons (`btnInitSelectSync`, `btnRefSelectSync`) mirror selected indices across datasets.
+- ProgressBar reused uniformly for paste, drag-drop, deletion, selection-all, calibration, and export for consistent user mental model.
+
 ## Conclusion
 AvocadoSmoothie delivers a seamless, high-performance Windows Forms experience for running median calculations on numeric datasets. It combines flexible data ingestion (manual entry, clipboard paste, drag-and-drop) with two smoothing modes : Middle Median (preserving edge values) and All Median (adaptive windowing) : to transform noisy signals into clear, consistent outputs.
 
-Key highlights:
+Key highlights :
 - Robust border handling that avoids edge artifacts without dropping data points.
 - Multithreaded execution via `Parallel.For`, PLINQ and asynchronous UI updates for maximum throughput.
 - Real-time progress reporting and flicker-free batch rendering to keep users informed and the interface smooth.
