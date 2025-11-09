@@ -194,13 +194,18 @@ Implementation details :
 #### September 7, 2025
 > With the transition to ARM64 native based on `.NET Framework 4.8.1`, PCs running in this environment now deliver improved performance.<br><br>
 > Since version `v4.6.3.8`, the correction value miscalculated when selecting the MiddleMedian method has been fixed to calculate correctly.
-</details>
 
 ### v5.0.0.0
 #### November 8, 2025
 > Added boundary handling options : `Symmetric` (Mirror), `Adaptive`, `Replicate` (Nearest), `Zero Padding`.<br><br>
 > Extended `ComputeMedians` to integrate boundary synthesis for AllMedian mode; introduced `BoundaryMode` enum and `GetValueWithBoundary` for edge sampling.<br><br>
 > Minor bug fixes, performance improvements, and user interface enhancements.
+</details>
+
+### v5.0.1.0
+#### November 9, 2025
+> Revised and updated `README.md` documentation.<br><br>
+> Minor bugs fixed.
 
 ## Required Components & Setup
 ### Prerequisites
