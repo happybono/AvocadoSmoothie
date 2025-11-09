@@ -83,7 +83,7 @@ Adaptive computes the median over a contiguous in‑bounds slice:
 ### v2.0.0.0
 #### July 20, 2025
 > Overhauled the graphical user interface.<br><br>
-> Configurable `kernel radius` and `border count` (combo‐boxes).<br><br>
+> Configurable `kernel width` and `border count` (combo‐boxes).<br><br>
 > Regex utilities for numeric / HTML parsing.<br><br>
 > Progress reporting via `ProgressBar` and `IProgress(Of Integer)`.<br><br>
 > Async UI integration (`Async / Await` + `Task.Run`).<br><br>
@@ -96,7 +96,7 @@ Adaptive computes the median over a contiguous in‑bounds slice:
 > Fully non-blocking median computation.<br><br>
 > Dynamic window size reduces overhead.<br><br>
 > Real‐time progress feedback (`ProgressBar`).<br><br>
-> `StatusStrip` shows mode, `kernel radius` and `border count`.
+> `StatusStrip` shows mode, `kernel width` and `border count`.
 
 ### v2.1.1.0
 #### July 21, 2025
