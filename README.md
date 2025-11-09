@@ -51,7 +51,9 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 
 Implementation details :
 - Non-Adaptive modes always build a full kernel-size window, synthesizing each out-of-range slot via `GetValueWithBoundary`.
-- Adaptive computes a contiguous slice : start = clamped(i - offsetLow), then median of W = min(kernelSize, n).
+Adaptive computes the median over a contiguous in‑bounds slice:
+  - start = clamp(i - offsetLow, 0, n - W)
+  - W = min(kernelSize, n)
 
 <br>
 
