@@ -40,13 +40,14 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 | Symmetric | Mirrors indices past edges (reflective) | Smooth continuity at boundaries |
 | Replicate | Clamps to nearest valid endpoint | Preserves plateaus / avoids mirror artifacts |
 | Zero Padding | Treats out-of-range as 0.0 | Emphasize contrast; dampen edge influence |
-| Adaptive | Crops window to fit entirely in-bounds (W = min(kernelSize, n)) | Small datasets; prevents synthetic sampling |
+| Adaptive | Crops the window so it stays fully within the dataset (effective W = min(kernelSize, n)) | Best for small datasets; avoids synthetic values by using only real data |
 
 #### Index Mapping Examples
-| Index i (outside) | Symmetric Example | Replicate Example | Zero Padding Example | Adaptive Example |
-|-------------------|-------------------|-------------------|------------------|------------------|
-| -1                | maps to 1 (mirror) | maps to 0         | 0.0              | window cropped; value excluded |
-| n                 | maps to n - 2      | maps to n - 1     | 0.0              | window cropped; value excluded |
+| Index (outside) | Symmetric            | Replicate        | Zero Padding | Adaptive                                |
+|-----------------|----------------------|------------------|--------------|-----------------------------------------|
+| -1              | maps to 1 (mirror)  | maps to 0        | 0.0          | Window cropped; out-of-range excluded   |
+| n               | maps to n - 2       | maps to n - 1    | 0.0          | Window cropped; out-of-range excluded   |
+
 
 Implementation details :
 - Non-Adaptive modes always build a full kernel-size window, synthesizing each out-of-range slot via `GetValueWithBoundary`.
