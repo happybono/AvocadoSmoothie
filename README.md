@@ -559,7 +559,7 @@ Titles must:
 - Be non-empty (placeholder replaced on first edit)
 - ≤ 31 characters
 - Exclude : \ / ? * [ ] and any Windows invalid filename chars
-- Avoid reserved names (CON, PRN, AUX, NUL, COM1 … LPT9)
+- Avoid reserved names (CON, PRN, AUX, NUL, COM1 – COM9, LPT1 – LPT9)
 
 On invalid input :
 - Title reverts to placeholder
