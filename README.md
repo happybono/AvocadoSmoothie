@@ -212,7 +212,7 @@ Adaptive computes the median over a contiguous in‑bounds slice:
 
 ## Required Components & Setup
 ### Prerequisites
-- [.NET Framework 4.7.2](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net472) or later ([.NET Framework 4.8](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) recommended)
+- [.NET Framework 4.8](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net48) or 4.8.1 (target build uses 4.8.1; ARM64-compatible; earlier versions are not tested)
 - Windows Operating System (Windows 10 or later recommended)
 - [Visual Studio 2019 or newer](https://visualstudio.microsoft.com/) (for development)
 - [Microsoft Office (Excel)](https://www.microsoft.com/en/microsoft-365/) - **Required for Microsoft Excel export functionality** via `Interop`
