@@ -251,7 +251,7 @@ Adaptive computes the median over a contiguous in‑bounds slice:
 - The **Pascal theory based weighted median** shines when the data has meaningful local structure, like time series that need trend preservation.
 
 ### Why Is the Pascal Triangle Weighted Median More Sensitive to Noise?
-A **Pascal triangle–based weighted median** assigns weights to each element : typically giving higher weight to values near the center of the window.
+A **Pascal triangle-based weighted median** assigns weights to each element : typically giving higher weight to values near the center of the window.
 
 - Advantage : Better preserves local trends within the data.
 - Downside : Noisy spikes near the center get too much influence, leading to distortion.
@@ -517,7 +517,7 @@ When you apply the Running Median filter, the **Border Count** parameter lets yo
 #### Notes
 
 - If your series length is less than 2 × Border Count, the filter will skip processing entirely.  
-- Choose a small k (e.g. 1 – 5) when you trust your edge data but still need robust spike suppression in the center.
+- Choose a small k (e.g. 1 - 5) when you trust your edge data but still need robust spike suppression in the center.
 
 #### Behavior
 
@@ -559,7 +559,7 @@ Titles must:
 - Be non-empty (placeholder replaced on first edit)
 - ≤ 31 characters
 - Exclude : \ / ? * [ ] and any Windows invalid filename chars
-- Avoid reserved names (CON, PRN, AUX, NUL, COM1 – COM9, LPT1 – LPT9)
+- Avoid reserved names (CON, PRN, AUX, NUL, COM1 - COM9, LPT1 - LPT9)
 
 On invalid input :
 - Title reverts to placeholder
@@ -715,7 +715,7 @@ Internally, each sliding window is copied into a thread-local buffer and its med
 - Writes sheet header :
   - A1 : dataset title
   - Row 3 : "Smoothing Parameters"
-  - Rows 4 – 7 : Kernel Radius, Kernel Width, Border Count, Boundary Method
+  - Rows 4 - 7 : Kernel Radius, Kernel Width, Border Count, Boundary Method
 - Writes data with `WriteDistributed` :
   - Splits each series across adjacent columns when exceeding 1,048,576 rows per column.
 - Visualization :
@@ -729,13 +729,13 @@ Internally, each sliding window is copied into a thread-local buffer and its med
   - Makes Excel visible and enables alerts.
  
 #### Keyboard Shortcuts
-- Ctrl + C – Copy selected or all items to clipboard (Initial and Refined).
-- Ctrl + V – Paste numeric data into Initial dataset.
-- Ctrl + A – Select all items (Initial and Refined).
-- Delete – Delete selected items in Initial dataset.
-- Ctrl + Delete – Clear all items (Initial → Initial dataset, Refined → Refined dataset).
-- F2 – Edit selected item(s) (FrmModify) in Initial dataset.
-- Esc – Deselect selection (Initial and Refined).
+- Ctrl + C - Copy selected or all items to clipboard (Initial and Refined).
+- Ctrl + V - Paste numeric data into Initial dataset.
+- Ctrl + A - Select all items (Initial and Refined).
+- Delete - Delete selected items in Initial dataset.
+- Ctrl + Delete - Clear all items (Initial → Initial dataset, Refined → Refined dataset).
+- F2 - Edit selected item(s) (FrmModify) in Initial dataset.
+- Esc - Deselect selection (Initial and Refined).
 
 ### Data Handling and Processing
 - Efficiently processes numeric data for running median calculations
