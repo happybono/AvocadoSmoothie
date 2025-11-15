@@ -600,13 +600,19 @@ Public Class FrmMain
         lblInitCnt.Text = $"Count : {total}"
         lblRefCnt.Text = $"Count : {refinedList.Count}"
         slblCalibratedType.Text = If(useMiddle, "Middle Median", "All Median")
-        slblKernelRadius.Text = Integer.Parse(cbxKernelRadius.Text) ' 화면엔 radius 그대로 표기
+        slblBoundaryMethod.Text = If(useMiddle, "N/A", cbxBoundaryMethod.Text)
+        slblKernelRadius.Text = Integer.Parse(cbxKernelRadius.Text)
         slblBorderCount.Text = $"{borderCount}"
 
-        ' Middle 모드일 때만 Border UI 표시
+        ' All 모드일 경우에만 Boundary Handling UI 표시
+        tlblBoundaryMethod.Visible = Not useMiddle
+        slblBoundaryMethod.Visible = Not useMiddle
+        slblSeparator2.Visible = Not useMiddle
+
+        ' Middle 모드일 경우에만 Border UI 표시
         slblBorderCount.Visible = useMiddle
         tlblBorderCount.Visible = useMiddle
-        slblSeparator2.Visible = useMiddle
+        slblSeparator3.Visible = useMiddle
 
         ' 버튼 재활성화
         slblDesc.Visible = False
@@ -767,7 +773,7 @@ Public Class FrmMain
         tlblBorderCount.Visible = False
         slblBorderCount.Visible = False
 
-        slblSeparator2.Visible = False
+        slblSeparator3.Visible = False
 
         lblInitCnt.Text = "Count : " & lbInitData.Items.Count
         lblRefCnt.Text = "Count : " & lbRefinedData.Items.Count
@@ -817,7 +823,7 @@ Public Class FrmMain
         tlblBorderCount.Visible = False
         slblBorderCount.Visible = False
 
-        slblSeparator2.Visible = False
+        slblSeparator3.Visible = False
 
         slblDesc.Text = $"Deleted all {itemCount} item{If(itemCount <> 1, "s", "")} from Refined Dataset."
         slblDesc.Visible = True
@@ -929,7 +935,7 @@ Public Class FrmMain
             tlblBorderCount.Visible = False
             slblBorderCount.Visible = False
 
-            slblSeparator2.Visible = False
+            slblSeparator3.Visible = False
 
             UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
             UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
