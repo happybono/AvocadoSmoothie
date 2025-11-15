@@ -208,11 +208,15 @@ Adaptive computes the median over a contiguous in‑bounds slice:
 #### November 9, 2025
 > Revised and updated `README.md` documentation.<br><br>
 > Minor bugs fixed.
-</details>
 
 ### v5.1.2.0
 #### November 15, 2025
 > `StatusBar` now shows `Boundary Handling` options when using `All Median` mode.<br><br>
+> Minor bugs fixed.
+</details>
+
+### v5.1.3.0
+#### November 15, 2025
 > Minor bugs fixed.
 
 ## Required Components & Setup
