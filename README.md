@@ -216,7 +216,7 @@ Adaptive computes the median over a contiguous in‑bounds slice:
 </details>
 
 ### v5.1.3.0
-#### November 15, 2025
+#### November 16, 2025
 > Minor bugs fixed.
 
 ## Required Components & Setup
