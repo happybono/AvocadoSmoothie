@@ -165,7 +165,7 @@ Public Class FrmModify
         btnOK.Enabled = txtInitEdit.Text.Length > 0 AndAlso Double.TryParse(txtInitEdit.Text, Nothing)
     End Sub
 
-    Private Sub btnCancel_Click(sender As Object, e As EventArgs)
+    Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
         Me.Close()
     End Sub
 

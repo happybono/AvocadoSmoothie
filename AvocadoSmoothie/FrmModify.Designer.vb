@@ -38,9 +38,10 @@ Partial Class FrmModify
         Me.sstripModify.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.sstripModify.ImageScalingSize = New System.Drawing.Size(32, 32)
         Me.sstripModify.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.slblModify})
-        Me.sstripModify.Location = New System.Drawing.Point(0, 119)
+        Me.sstripModify.Location = New System.Drawing.Point(0, 238)
         Me.sstripModify.Name = "sstripModify"
-        Me.sstripModify.Size = New System.Drawing.Size(438, 24)
+        Me.sstripModify.Padding = New System.Windows.Forms.Padding(2, 0, 28, 0)
+        Me.sstripModify.Size = New System.Drawing.Size(876, 48)
         Me.sstripModify.SizingGrip = False
         Me.sstripModify.TabIndex = 28
         Me.sstripModify.Text = "StatusStrip1"
@@ -52,24 +53,26 @@ Partial Class FrmModify
         Me.slblModify.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!)
         Me.slblModify.ForeColor = System.Drawing.Color.White
         Me.slblModify.Name = "slblModify"
-        Me.slblModify.Size = New System.Drawing.Size(437, 19)
+        Me.slblModify.Size = New System.Drawing.Size(437, 38)
         Me.slblModify.Text = "Modifying 2147483647 selected items... "
         Me.slblModify.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'txtInitEdit
         '
         Me.txtInitEdit.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 9.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtInitEdit.Location = New System.Drawing.Point(14, 81)
+        Me.txtInitEdit.Location = New System.Drawing.Point(28, 162)
+        Me.txtInitEdit.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.txtInitEdit.Name = "txtInitEdit"
-        Me.txtInitEdit.Size = New System.Drawing.Size(411, 25)
+        Me.txtInitEdit.Size = New System.Drawing.Size(818, 42)
         Me.txtInitEdit.TabIndex = 1
         '
         'btnCancel
         '
         Me.btnCancel.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCancel.Location = New System.Drawing.Point(340, 53)
+        Me.btnCancel.Location = New System.Drawing.Point(680, 106)
+        Me.btnCancel.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.btnCancel.Name = "btnCancel"
-        Me.btnCancel.Size = New System.Drawing.Size(85, 24)
+        Me.btnCancel.Size = New System.Drawing.Size(170, 48)
         Me.btnCancel.TabIndex = 3
         Me.btnCancel.Text = ""
         Me.btnCancel.UseVisualStyleBackColor = True
@@ -77,9 +80,10 @@ Partial Class FrmModify
         'btnOK
         '
         Me.btnOK.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnOK.Location = New System.Drawing.Point(340, 7)
+        Me.btnOK.Location = New System.Drawing.Point(680, 14)
+        Me.btnOK.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.btnOK.Name = "btnOK"
-        Me.btnOK.Size = New System.Drawing.Size(85, 44)
+        Me.btnOK.Size = New System.Drawing.Size(170, 88)
         Me.btnOK.TabIndex = 2
         Me.btnOK.Text = ""
         Me.btnOK.UseVisualStyleBackColor = True
@@ -89,36 +93,39 @@ Partial Class FrmModify
         Me.lblModifyDscr.AutoSize = True
         Me.lblModifyDscr.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblModifyDscr.ImeMode = System.Windows.Forms.ImeMode.NoControl
-        Me.lblModifyDscr.Location = New System.Drawing.Point(12, 39)
+        Me.lblModifyDscr.Location = New System.Drawing.Point(24, 78)
+        Me.lblModifyDscr.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblModifyDscr.Name = "lblModifyDscr"
-        Me.lblModifyDscr.Size = New System.Drawing.Size(270, 34)
+        Me.lblModifyDscr.Size = New System.Drawing.Size(531, 70)
         Me.lblModifyDscr.TabIndex = 24
         Me.lblModifyDscr.Text = "Apply changes to the selected items. " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Enter the numeric value you would like to " &
     "set :"
         '
         'pbModify
         '
-        Me.pbModify.Location = New System.Drawing.Point(0, 114)
+        Me.pbModify.Location = New System.Drawing.Point(0, 228)
+        Me.pbModify.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.pbModify.Name = "pbModify"
-        Me.pbModify.Size = New System.Drawing.Size(438, 5)
+        Me.pbModify.Size = New System.Drawing.Size(876, 10)
         Me.pbModify.TabIndex = 29
         '
         'lblModifyTtl
         '
         Me.lblModifyTtl.AutoSize = True
         Me.lblModifyTtl.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblModifyTtl.Location = New System.Drawing.Point(9, 7)
+        Me.lblModifyTtl.Location = New System.Drawing.Point(18, 14)
+        Me.lblModifyTtl.Margin = New System.Windows.Forms.Padding(6, 0, 6, 0)
         Me.lblModifyTtl.Name = "lblModifyTtl"
-        Me.lblModifyTtl.Size = New System.Drawing.Size(214, 26)
+        Me.lblModifyTtl.Size = New System.Drawing.Size(432, 51)
         Me.lblModifyTtl.TabIndex = 30
         Me.lblModifyTtl.Text = "Modify Selected Entries"
         '
         'FrmModify
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(192.0!, 192.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
-        Me.ClientSize = New System.Drawing.Size(438, 143)
+        Me.ClientSize = New System.Drawing.Size(876, 286)
         Me.Controls.Add(Me.lblModifyTtl)
         Me.Controls.Add(Me.sstripModify)
         Me.Controls.Add(Me.txtInitEdit)
@@ -128,6 +135,7 @@ Partial Class FrmModify
         Me.Controls.Add(Me.pbModify)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.Margin = New System.Windows.Forms.Padding(6, 6, 6, 6)
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "FrmModify"
