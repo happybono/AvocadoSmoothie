@@ -210,7 +210,7 @@ Adaptive computes the median over a contiguous in‑bounds slice:
 > Minor bugs fixed.
 </details>
 
-### v5.1.3.0
+### v5.1.2.0
 #### November 15, 2025
 > StatusBar now shows `Boundary Handling` options when using `All Median` mode.<br><br>
 > Minor bugs fixed.
