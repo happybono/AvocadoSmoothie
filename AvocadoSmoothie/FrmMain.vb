@@ -1531,7 +1531,7 @@ Public Class FrmMain
                         sw.WriteLine()
                         sw.WriteLine($"Generated : {DateTime.Now.ToString("G", CultureInfo.CurrentCulture)}")
                         sw.WriteLine()
-                        sw.WriteLine("Initial Data,MiddleMedian,AllMedian")
+                        sw.WriteLine("Initial Data,Middle Median,All Median")
 
                         ' 데이터 쓰기
                         For i = startIdx To startIdx + count - 1
@@ -1940,9 +1940,9 @@ Public Class FrmMain
                 ' 각 Median 결과를 엑셀에 분산 저장
                 Dim initialRanges = WriteDistributed(initialData, 3, "Initial Data")
                 pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(30, pbMain.Maximum))
-                Dim middleRanges = WriteDistributed(middleMedian, initialRanges.Last.Item1 + 2, "MiddleMedian")
+                Dim middleRanges = WriteDistributed(middleMedian, initialRanges.Last.Item1 + 2, "Middle Median")
                 pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(60, pbMain.Maximum))
-                Dim allRanges = WriteDistributed(allMedian, middleRanges.Last.Item1 + 2, "AllMedian")
+                Dim allRanges = WriteDistributed(allMedian, middleRanges.Last.Item1 + 2, "All Median")
                 pbMain.Value = Math.Max(pbMain.Minimum, Math.Min(80, pbMain.Maximum))
 
                 ' 차트 생성 (원본 로직 유지, 생성한 COM 은 추적)
