@@ -203,11 +203,16 @@ Adaptive computes the median over a contiguous in‑bounds slice:
 > Added boundary handling options : `Symmetric` (Mirror), `Adaptive`, `Replicate` (Nearest), `Zero Padding`.<br><br>
 > Extended `ComputeMedians` to integrate boundary synthesis for AllMedian mode; introduced `BoundaryMode` enum and `GetValueWithBoundary` for edge sampling.<br><br>
 > Minor bug fixes, performance improvements, and user interface enhancements.
-</details>
 
 ### v5.0.1.0
 #### November 9, 2025
 > Revised and updated `README.md` documentation.<br><br>
+> Minor bugs fixed.
+</details>
+
+### v5.1.3.0
+#### November 15, 2025
+> StatusBar now shows `Boundary Handling` options when using `All Median` mode.<br><br>
 > Minor bugs fixed.
 
 ## Required Components & Setup
