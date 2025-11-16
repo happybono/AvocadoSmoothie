@@ -747,7 +747,7 @@ Internally, each sliding window is copied into a thread-local buffer and its med
   - Part X of Y
   - Smoothing parameters (Kernel Radius, Kernel Width, Border Count, Boundary Method)
   - Timestamp
-  - Header line : `Initial Data,MiddleMedian,AllMedian`
+  - Header line : `Initial Data,Middle Median,All Median`
 - Robustness :
   - Retry loop on `IOException` (file in use) with Retry / Cancel.
   - Auto-opens each generated file; falls back to `rundll32 shell32.dll,OpenAs_RunDLL` if no association.
@@ -762,7 +762,7 @@ Internally, each sliding window is copied into a thread-local buffer and its med
 - Writes data with `WriteDistributed` :
   - Splits each series across adjacent columns when exceeding 1,048,576 rows per column.
 - Visualization :
-  - Inserts a line chart (`xlLine`) with three series (Initial, MiddleMedian, AllMedian), titled and labeled axes.
+  - Inserts a line chart (`xlLine`) with three series (Initial, Middle Median, All Median), titled and labeled axes.
 - Document metadata :
   - Built-in properties (Title, Category, Subject, Author, Last Author, Keywords, Comments).
   - Flavor-themed comments with "achievement" tiers by dataset size.
@@ -789,10 +789,10 @@ Internally, each sliding window is copied into a thread-local buffer and its med
 - Validates numeric values using regular expressions
 - Stores data as a list of doubles for high-precision calculations
 - Provides two types of running median filters :
-  - AllMedian :
+  - All Median :
     - Calculates a median at every position using a sliding window
     - Uses Boundary Modes (Symmetric / Replicate / Zero Padding) for synthetic edge sampling; Adaptive crops the window in-bounds
-  - MiddleMedian :
+  - Middle Median :
     - Applies the median filter only to interior indices
     - Preserves a user-defined number of edge elements (border count) unchanged
 
