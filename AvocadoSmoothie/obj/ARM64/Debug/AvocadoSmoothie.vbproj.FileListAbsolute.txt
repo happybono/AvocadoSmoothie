@@ -42,3 +42,4 @@ D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\obj\ARM64\Debug\AvocadoSmoothie.
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\obj\ARM64\Debug\AvocadoSmoothie.exe
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\obj\ARM64\Debug\AvocadoSmoothie.xml
 D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\obj\ARM64\Debug\AvocadoSmoothie.pdb
+D:\My Lifestyle\Products\VB.NET\AvocadoSmoothie\obj\ARM64\Debug\AvocadoSmoothie.exe.config
