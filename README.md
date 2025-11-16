@@ -60,34 +60,34 @@ AvocadoSmoothie is specialized for **1D numerical data smoothing and noise reduc
 Although limited to single‑dimension datasets, it can be applied in many domains where sequential numeric signals require preprocessing or refinement.
 
 ### 1. Machine Learning / Deep Learning Preprocessing
-- **Problem**: Training datasets often contain spikes, jitter, or irregular noise.  
-- **Solution**: Running Median filtering removes abrupt outliers while preserving meaningful patterns.  
-- **Impact**: Improves model stability, reduces overfitting, and enhances generalization.
+- **Problem** : Training datasets often contain spikes, jitter, or irregular noise.  
+- **Solution** : Running Median filtering removes abrupt outliers while preserving meaningful patterns.  
+- **Impact** : Improves model stability, reduces overfitting, and enhances generalization.
 
 ### 2. IoT & Sensor Data Stabilization
-- **Problem**: Sensor outputs (temperature, vibration, humidity, etc.) are prone to random fluctuations.  
-- **Solution**: Adaptive boundary handling ensures smooth results even with small datasets.  
-- **Impact**: More reliable monitoring and higher accuracy in anomaly detection.
+- **Problem** : Sensor outputs (temperature, vibration, humidity, etc.) are prone to random fluctuations.  
+- **Solution** : Adaptive boundary handling ensures smooth results even with small datasets.  
+- **Impact** : More reliable monitoring and higher accuracy in anomaly detection.
 
 ### 3. Financial & Economic Time Series
-- **Problem**: Stock prices, exchange rates, and transaction volumes show high short‑term volatility.  
-- **Solution**: Median filtering dampens extreme spikes while retaining long‑term trends.  
-- **Impact**: Provides stable input for forecasting models and improves simulation reliability.
+- **Problem** : Stock prices, exchange rates, and transaction volumes show high short‑term volatility.  
+- **Solution** : Median filtering dampens extreme spikes while retaining long‑term trends.  
+- **Impact** : Provides stable input for forecasting models and improves simulation reliability.
 
 ### 4. Scientific & Experimental Measurements
-- **Problem**: Laboratory and field data often suffer from instrument noise or environmental interference.  
-- **Solution**: Symmetric reflection and MiddleMedian modes refine data without distorting edge values.  
-- **Impact**: Enables clearer pattern detection and strengthens research validity.
+- **Problem** : Laboratory and field data often suffer from instrument noise or environmental interference.  
+- **Solution** : Symmetric reflection and MiddleMedian modes refine data without distorting edge values.  
+- **Impact** : Enables clearer pattern detection and strengthens research validity.
 
 ### 5. Audio / Signal Processing (1D only)
-- **Problem**: Single‑channel signals or audio waveforms are vulnerable to peak noise.  
-- **Solution**: Running Median removes salt‑and‑pepper style noise while preserving essential features.  
-- **Impact**: Enhances post‑processing quality and improves signal analysis accuracy.
+- **Problem** : Single‑channel signals or audio waveforms are vulnerable to peak noise.  
+- **Solution** : Running Median removes salt‑and‑pepper style noise while preserving essential features.  
+- **Impact** : Enhances post‑processing quality and improves signal analysis accuracy.
 
 ### 6. Data Visualization & Reporting
-- **Problem**: Noisy datasets produce cluttered and misleading charts.  
-- **Solution**: Median smoothing generates cleaner curves and more interpretable plots.  
-- **Impact**: Delivers clearer insights and supports better decision‑making in reports.
+- **Problem** : Noisy datasets produce cluttered and misleading charts.  
+- **Solution** : Median smoothing generates cleaner curves and more interpretable plots.  
+- **Impact** : Delivers clearer insights and supports better decision‑making in reports.
 
 <br>
 
