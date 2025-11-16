@@ -57,7 +57,7 @@ Adaptive computes the median over a contiguous in‑bounds slice:
 
 ## Use Cases
 AvocadoSmoothie is specialized for **1D numerical data smoothing and noise reduction**.  
-Although limited to single‑dimension datasets, it can be applied in many domains where sequential numeric signals require preprocessing or refinement.
+Although limited to single‑dimension datasets, it can be applied in many domains where sequential numeric signals require pre-processing or refinement.
 
 ### 1. Machine Learning / Deep Learning Pre-processing
 - **Problem** : Training datasets often contain spikes, jitter, or irregular noise.  
