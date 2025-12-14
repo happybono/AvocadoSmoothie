@@ -251,13 +251,18 @@ Although limited to single‑dimension datasets, it can be applied in many domai
 ### v5.1.3.0
 #### November 16, 2025
 > Minor bugs fixed.
-</details>
-
+ 
 ### v5.2.0.0  
 #### December 01, 2025  
 > Newly introduced `.slnx` format : enhanced scalability and compatibility compared to the traditional `.sln`, supporting large‑scale project management and multi‑platform build environments.<br><br>
 > Motivation : to maintain a consistent project structure across diverse runtime / plugin environments and minimize format conflicts during team collaboration.<br><br> 
-> Purpose : to unify solution definitions under a single format, improving maintenance efficiency and enabling smoother integration with future automation pipelines and cloud workflows.  
+> Purpose : to unify solution definitions under a single format, improving maintenance efficiency and enabling smoother integration with future automation pipelines and cloud workflows.
+</details>
+
+### v5.3.0.0
+#### December 15, 2025
+> Application preferences are now automatically saved when the `AvocadoSmoothie` application closes. These values are seamlessly reloaded at startup, allowing users to continue their work without interruption and ensuring a consistent environment across sessions.<br><br>
+> Minor bugs fixed.
 
 ## Required Components & Setup
 ### Prerequisites
