@@ -53,6 +53,78 @@ Namespace My
                 Return defaultInstance
             End Get
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("5")>  _
+        Public Property KernelRadius() As Integer
+            Get
+                Return CType(Me("KernelRadius"),Integer)
+            End Get
+            Set
+                Me("KernelRadius") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Symmetric")>  _
+        Public Property BoundaryMethod() As String
+            Get
+                Return CType(Me("BoundaryMethod"),String)
+            End Get
+            Set
+                Me("BoundaryMethod") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("4")>  _
+        Public Property BorderCount() As Integer
+            Get
+                Return CType(Me("BorderCount"),Integer)
+            End Get
+            Set
+                Me("BorderCount") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Middle")>  _
+        Public Property SmoothingMethod() As String
+            Get
+                Return CType(Me("SmoothingMethod"),String)
+            End Get
+            Set
+                Me("SmoothingMethod") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("CSV")>  _
+        Public Property ExportFileFormat() As String
+            Get
+                Return CType(Me("ExportFileFormat"),String)
+            End Get
+            Set
+                Me("ExportFileFormat") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("True")>  _
+        Public Property HasUpgradedSettings() As Boolean
+            Get
+                Return CType(Me("HasUpgradedSettings"),Boolean)
+            End Get
+            Set
+                Me("HasUpgradedSettings") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
