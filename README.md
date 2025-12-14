@@ -262,6 +262,7 @@ Although limited to single‑dimension datasets, it can be applied in many domai
 ### v5.3.0.0
 #### December 15, 2025
 > Application preferences are now automatically saved when the `AvocadoSmoothie` application closes. These values are seamlessly reloaded at startup, allowing users to continue their work without interruption and ensuring a consistent environment across sessions.<br><br>
+> CSV export UX improved : progress bar switches to marquee while the Save dialog is open.<br><br>
 > Minor bugs fixed.
 
 ## Required Components & Setup
