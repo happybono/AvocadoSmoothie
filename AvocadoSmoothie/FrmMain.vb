@@ -10,6 +10,8 @@ Imports System.Windows.Forms.Application
 Imports Excel = Microsoft.Office.Interop.Excel
 
 Public Class FrmMain
+    Private _didSettingsUpgrade As Boolean
+
     Private isRefinedLoading As Boolean = False
 
     Dim borderCount As Integer
@@ -466,7 +468,7 @@ Public Class FrmMain
                 If hi <= lo Then Exit Do
             Loop
 
-           ' 포인터가 교차되는 지점이 Pivot 위치
+            ' 포인터가 교차되는 지점이 Pivot 위치
             If hi <= lo Then
                 list(lo) = med_value
                 Exit Do
@@ -492,10 +494,10 @@ Public Class FrmMain
             ' 큰 값을 오른쪽으로 이동                                    
             list(hi) = list(lo)
         Loop
-                                            
+
         ' Pivot 을 기준으로 왼쪽 구간 정렬
         Quicksort(list, min, lo - 1)
-                                            
+
         ' Pivot 을 기준으로 오른쪽 구간 정렬
         Quicksort(list, lo + 1, max)
     End Sub
@@ -1337,8 +1339,42 @@ Public Class FrmMain
         btnInitAdd.Enabled = CBool(txtInitAdd.TextLength) AndAlso CBool(IsNumeric(txtInitAdd.Text))
     End Sub
 
+    Private Sub FrmMain_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        ' 현재 UI 선택 항목을 설정에 저장
+        Try
+            Dim parsedRadius As Integer
+            If Integer.TryParse(Convert.ToString(cbxKernelRadius.SelectedItem, CultureInfo.InvariantCulture), parsedRadius) AndAlso parsedRadius > 0 Then
+                My.Settings.KernelRadius = parsedRadius
+            End If
+
+            Dim parsedBorder As Integer
+            If Integer.TryParse(Convert.ToString(cbxBorderCount.SelectedItem, CultureInfo.InvariantCulture), parsedBorder) AndAlso parsedBorder >= 0 Then
+                My.Settings.BorderCount = parsedBorder
+            End If
+
+            Dim boundaryText As String = Convert.ToString(cbxBoundaryMethod.SelectedItem, CultureInfo.InvariantCulture)
+            Select Case boundaryText
+                Case "Symmetric", "Replicate", "Adaptive" : My.Settings.BoundaryMethod = boundaryText
+                Case "Zero Padding" : My.Settings.BoundaryMethod = "ZeroPad"
+                Case Else : My.Settings.BoundaryMethod = "Symmetric"
+            End Select
+
+            My.Settings.SmoothingMethod = If(rbtnAllMedian.Checked, "All", "Middle")
+            My.Settings.ExportFileFormat = If(rbtnXLSX.Checked, "XLSX", "CSV")
+
+            ' Migration 실행이 완료된 후에는 'False' 상태로 유지
+            If _didSettingsUpgrade Then
+                My.Settings.HasUpgradedSettings = False
+            End If
+
+            My.Settings.Save()
+        Catch
+            ' 종료 후 다음 실행 시 최종 저장 값 또는 기본 값 사용.
+        End Try
+    End Sub
+
     Private Sub FrmMain_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        cbxBorderCount.SelectedIndex = 0
+        cbxBorderCount.SelectedItem = "4"
         cbxKernelRadius.SelectedItem = "5"
         If cbxBoundaryMethod.SelectedIndex < 0 Then cbxBoundaryMethod.SelectedIndex = 0
 
@@ -1352,6 +1388,54 @@ Public Class FrmMain
         AddHandler lbInitData.SelectedIndexChanged, AddressOf UpdatelbInitDataButtonsState
         AddHandler lbRefinedData.SelectedIndexChanged, AddressOf UpdatelbRefinedDataButtonsState
 
+        ' 설정을 불러오고 Migration 을 시도하며, 문제가 생기면 기본값으로 대체
+        ' 개발자가 새 버전에 대해 HasUpgradedSettings = True 로 설정하면 1 회에 한해 Migration 수행
+        Try
+            If My.Settings.HasUpgradedSettings Then
+                My.Settings.Upgrade()
+                _didSettingsUpgrade = True
+                My.Settings.HasUpgradedSettings = False
+                My.Settings.Save()
+            End If
+
+            My.Settings.Reload()
+
+            Dim kernelRadius As Integer = If(My.Settings.KernelRadius > 0, My.Settings.KernelRadius, 5)
+            cbxKernelRadius.SelectedItem = kernelRadius.ToString(CultureInfo.InvariantCulture)
+
+            Dim bc As Integer = If(My.Settings.BorderCount >= 0, My.Settings.BorderCount, 4)
+            cbxBorderCount.SelectedItem = bc.ToString(CultureInfo.InvariantCulture)
+
+            ' 경계 처리 방식 처리
+            Dim method As String = If(String.IsNullOrWhiteSpace(My.Settings.BoundaryMethod), "Symmetric", My.Settings.BoundaryMethod)
+            Select Case method.ToLowerInvariant()
+                Case "symmetric" : cbxBoundaryMethod.SelectedItem = "Symmetric"
+                Case "replicate" : cbxBoundaryMethod.SelectedItem = "Replicate"
+                Case "adaptive" : cbxBoundaryMethod.SelectedItem = "Adaptive"
+                Case "zeropad", "zero padding" : cbxBoundaryMethod.SelectedItem = "Zero Padding"
+                Case Else : cbxBoundaryMethod.SelectedItem = "Symmetric"
+            End Select
+
+            ' 보정 방식
+            Dim smoothing As String = If(String.IsNullOrWhiteSpace(My.Settings.SmoothingMethod), "Middle", My.Settings.SmoothingMethod)
+            If String.Equals(smoothing, "All", StringComparison.OrdinalIgnoreCase) Then
+                rbtnAllMedian.Checked = True
+            Else
+                rbtnMidMedian.Checked = True
+            End If
+
+            ' 내보내기 파일 형식
+            Dim exportFmt As String = If(String.IsNullOrWhiteSpace(My.Settings.ExportFileFormat), "CSV", My.Settings.ExportFileFormat)
+            If String.Equals(exportFmt, "XLSX", StringComparison.OrdinalIgnoreCase) Then
+                rbtnXLSX.Checked = True
+            Else
+                rbtnCSV.Checked = True
+            End If
+        Catch
+            ' 불러오기 / Migration 실패 시 설정된 기본값 유지
+        End Try
+
+        ' 초기 버튼 상태 반영
         UpdatelbInitDataButtonsState(Nothing, EventArgs.Empty)
         UpdatelbRefinedDataButtonsState(Nothing, EventArgs.Empty)
     End Sub
@@ -1481,11 +1565,32 @@ Public Class FrmMain
             dlg.Filter = "CSV files (*.csv)|*.csv"
             dlg.DefaultExt = "csv"
             dlg.AddExtension = True
-            If dlg.ShowDialog(Me) <> DialogResult.OK Then
+
+            ' SaveFileDialog 대기 중에는 Marquee 로 표시
+            pbMain.Style = ProgressBarStyle.Marquee
+            pbMain.MarqueeAnimationSpeed = 30
+            pbMain.Visible = True
+            pbMain.Refresh()
+
+            Try
+                Dim res = dlg.ShowDialog(Me)
+
+                If res <> DialogResult.OK Then
+                    basePath = Nothing
+                Else
+                    basePath = dlg.FileName
+                End If
+            Finally
+                ' 대화 상자가 닫힌 후 Continuous 로 복원
+                pbMain.MarqueeAnimationSpeed = 0
+                pbMain.Style = ProgressBarStyle.Continuous
                 pbMain.Value = 0
+                pbMain.Refresh()
+            End Try
+
+            If String.IsNullOrEmpty(basePath) Then
                 Return
             End If
-            basePath = dlg.FileName
         End Using
 
         ' 분할 저장 설정
@@ -2622,6 +2727,7 @@ Public Class FrmMain
     Private Sub lblBoundaryMethod_MouseLeave(sender As Object, e As EventArgs) Handles lblBoundaryMethod.MouseLeave
         MouseLeaveHandler(sender, e)
     End Sub
+
 #End Region
 
 End Class
