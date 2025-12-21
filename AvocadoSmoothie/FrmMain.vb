@@ -1939,23 +1939,30 @@ Public Class FrmMain
 
 
                 Catch ex As Exception
-                    ' Excel Interop 에서 발생할 수 있는 주요 예외를 구분하여 처리
+                    ' Excel Interop에서 발생할 수 있는 주요 예외를 구분하여 처리
                     If TypeOf ex Is System.Runtime.InteropServices.COMException Then
                         Dim comEx As System.Runtime.InteropServices.COMException = DirectCast(ex, System.Runtime.InteropServices.COMException)
-                        ' COM 예외 : Excel 이 설치되어 있지 않거나, 권한 문제, 속성 이름 오탈자 등
-                        MessageBox.Show(
-                            "Failed to set Excel document properties (COM error)." & vbCrLf & vbCrLf &
-                            "Excel may not be installed, the property name may be incorrect, or there may be a permissions issue." & vbCrLf & vbCrLf &
-                            "Details : " & comEx.Message,
-                            "Excel Property Error",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Warning
+                        If IsExcelNotInstalled(comEx) Then
+                            ' Excel 미설치 또는 COM 등록 누락
+                            Dim msg As String = "Microsoft Excel is not installed (or its COM registration is missing)." & vbCrLf & vbCrLf &
+                                                "Would you like to open the Microsoft Office download page now?"
+                            Dim result = MessageBox.Show(msg, "Excel Not Installed", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2)
+                            If result = DialogResult.Yes Then
+                                OpenOfficeDownloadPage()
+                            End If
+                        Else
+                            ' 기타 COM 예외
+                            MessageBox.Show(
+                                "Failed to set Excel document properties (COM error)." & vbCrLf & vbCrLf &
+                                "Excel may not be installed, the property name may be incorrect, or there may be a permissions issue." & vbCrLf & vbCrLf &
+                                "Details : " & comEx.Message,
+                                "Excel Property Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning
                             )
-                        ' 필요 시 로그 : Debug.WriteLine(comEx)
-
+                        End If
                     ElseIf TypeOf ex Is ArgumentException Then
                         Dim argEx As ArgumentException = DirectCast(ex, ArgumentException)
-                        ' 잘못된 속성 이름 등
                         MessageBox.Show(
                             "Failed to set Excel document properties (Argument error)." & vbCrLf & vbCrLf &
                             "The built-in property name is incorrect, or an unsupported value has been assigned." & vbCrLf & vbCrLf &
@@ -1963,11 +1970,9 @@ Public Class FrmMain
                             "Excel Property Error",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Warning
-                            )
-
+                        )
                     ElseIf TypeOf ex Is InvalidCastException Then
                         Dim castEx As InvalidCastException = DirectCast(ex, InvalidCastException)
-                        ' 잘못된 타입으로 값 할당 시
                         MessageBox.Show(
                             "Failed to set Excel document properties (Type error)." & vbCrLf & vbCrLf &
                             "The type of value assigned to the property is invalid." & vbCrLf & vbCrLf &
@@ -1975,11 +1980,9 @@ Public Class FrmMain
                             "Excel Property Error",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Warning
-                            )
-
+                        )
                     ElseIf TypeOf ex Is System.UnauthorizedAccessException Then
                         Dim unauthEx As System.UnauthorizedAccessException = DirectCast(ex, System.UnauthorizedAccessException)
-                        ' 파일 또는 속성에 대한 권한 부족
                         MessageBox.Show(
                             "Failed to set Excel document properties (Access denied)." & vbCrLf & vbCrLf &
                             "You do not have sufficient permissions for the Excel file or its properties." & vbCrLf & vbCrLf &
@@ -1988,18 +1991,15 @@ Public Class FrmMain
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Warning
                         )
-
                     Else
-                        ' 기타 예외 처리
                         MessageBox.Show(
                             "An unexpected error occurred while setting Excel document properties." & vbCrLf & vbCrLf &
                             "Details :  " & ex.Message,
                             "Excel Property Error",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Warning
-                            )
+                        )
                     End If
-
                     ' 필요 시 상세 로그 표시
                     ' System.Diagnostics.Debug.WriteLine(ex.ToString())
                 End Try
@@ -2128,17 +2128,17 @@ Public Class FrmMain
                 excel.DisplayAlerts = True
 
             Catch ex As System.Runtime.InteropServices.COMException
-                Dim msg As String = "Excel interop error: " & ex.Message & vbCrLf & vbCrLf &
-                    "Microsoft Excel does not appear to be installed, or there was a problem starting Excel." & vbCrLf &
-                    "If Excel is not installed, you can visit the Microsoft Office website to purchase or install Office." & vbCrLf & vbCrLf &
-                    "Would you like to open the Microsoft Office download page now?"
-                Dim result = MessageBox.Show(msg, "Export Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button2)
-                If result = DialogResult.Yes Then
-                    Try
-                        Process.Start(New ProcessStartInfo("https://www.microsoft.com/microsoft-365/buy/compare-all-microsoft-365-products") With {.UseShellExecute = True})
-                    Catch
-                        Exit Sub
-                    End Try
+                Dim msg As String
+                If IsExcelNotInstalled(ex) Then
+                    msg = "Microsoft Excel is not installed (or its COM registration is missing)." & vbCrLf & vbCrLf &
+              "Would you like to open the Microsoft Office download page now?"
+                    Dim result = MessageBox.Show(msg, "Excel Not Installed", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2)
+                    If result = DialogResult.Yes Then
+                        OpenOfficeDownloadPage()
+                    End If
+                Else
+                    msg = "Excel export failed due to an Excel interop error." & vbCrLf & vbCrLf & ex.Message
+                    MessageBox.Show(msg, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 End If
             Catch ex As AggregateException
                 Dim allMessages = String.Join(Environment.NewLine, ex.InnerExceptions.Select(Function(inner) inner.Message))
@@ -2153,13 +2153,30 @@ Public Class FrmMain
                 MessageBox.Show("Not enough memory to complete the export. Try closing other applications.", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Catch ex As System.BadImageFormatException
                 MessageBox.Show("Excel (Office) bitness (32-bit / 64-bit) or Interop DLL mismatch. Please check your Office installation.", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Catch ex As System.UnauthorizedAccessException
+                MessageBox.Show("You do not have permission to save to this location. Please choose a different path.", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Catch ex As Exception
                 MessageBox.Show("An unexpected error occurred: " & ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Finally
+                ' 프로그래스 바 안전 초기화 (폼 종료 중 예외 무시)
+                Try
+                    If pbMain.InvokeRequired Then
+                        pbMain.Invoke(Sub()
+                                          pbMain.Value = 0
+                                          pbMain.Style = ProgressBarStyle.Continuous
+                                          pbMain.Refresh()
+                                      End Sub)
+                    Else
+                        pbMain.Value = 0
+                        pbMain.Style = ProgressBarStyle.Continuous
+                        pbMain.Refresh()
+                    End If
+                Catch
+                    ' 폼이 종료 중인 경우 무시
+                End Try
+
                 ' 생성한 COM 참조를 역순으로 해제
                 ReleaseAll(coms)
-
-                ' RCW Finalizer 보장을 위해 2 회 GC
                 GC.Collect()
                 GC.WaitForPendingFinalizers()
                 GC.Collect()
@@ -2184,6 +2201,21 @@ Public Class FrmMain
         While stack.Count > 0
             FinalRelease(stack.Pop())
         End While
+    End Sub
+
+    ' Excel 설치 여부 확인 (COMException HResult 검사)
+    Private Shared Function IsExcelNotInstalled(ex As System.Runtime.InteropServices.COMException) As Boolean
+        Const REGDB_E_CLASSNOTREG As Integer = &H80040154
+        Return ex.HResult = REGDB_E_CLASSNOTREG
+    End Function
+
+    ' Office 다운로드 페이지 열기
+    Private Shared Sub OpenOfficeDownloadPage()
+        Try
+            Process.Start(New ProcessStartInfo("https://www.microsoft.com/microsoft-365/buy/compare-all-microsoft-365-products") With {.UseShellExecute = True})
+        Catch
+            ' 브라우저 실행 실패는 무시
+        End Try
     End Sub
 
     Private Sub btnInfo_Click(sender As Object, e As EventArgs) Handles btnInfo.Click
