@@ -257,12 +257,17 @@ Although limited to single‑dimension datasets, it can be applied in many domai
 > Newly introduced `.slnx` format : enhanced scalability and compatibility compared to the traditional `.sln`, supporting large‑scale project management and multi‑platform build environments.<br><br>
 > Motivation : to maintain a consistent project structure across diverse runtime / plugin environments and minimize format conflicts during team collaboration.<br><br> 
 > Purpose : to unify solution definitions under a single format, improving maintenance efficiency and enabling smoother integration with future automation pipelines and cloud workflows.
-</details>
 
 ### v5.3.0.0
 #### December 15, 2025
 > Application preferences are now automatically saved when the `AvocadoSmoothie` application closes. These values are seamlessly reloaded at startup, allowing users to continue their work without interruption and ensuring a consistent environment across sessions.<br><br>
 > CSV export UX improved : progress bar switches to marquee while the Save dialog is open.<br><br>
+> Minor bugs fixed.
+</details>
+
+### v5.4.0.0
+#### December 23, 2025
+> Improved Excel export error handling: now distinguishes between Excel not installed, COM activation failure, and other interop errors, providing more specific user guidance.<br><br>
 > Minor bugs fixed.
 
 ## Required Components & Setup
