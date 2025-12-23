@@ -188,7 +188,7 @@ Although limited to single‑dimension datasets, it can be applied in many domai
 > Updated UI labels by replacing "Kernel Width" with the more precise "Kernel Radius".<br><br>
 > Refactored variable names and code references to use "Kernel Radius (r)" instead of "Kernel Width (w)".<br><br>
 > Removed unnecessary `Task.Yield` calls to eliminate extra context switches and improve execution efficiency.<br><br>
-> Improved Microsoft Office (Excel) installation detection and exception handling robustness.
+> Improved Microsoft Office (Excel) installation detection and exception handling robustness.<br><br>
 > Minor bugs fixed.
 
 ### v4.3.0.0
