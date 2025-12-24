@@ -3,7 +3,7 @@
 **AvocadoSmoothie** captures the essence of nature's avocado and the softness of a smoothie. Built on the running median algorithm, this project carefully extracts true signals from noisy data : just as only the pit remains at the center of a ripe avocado, leaving behind rough skins and excess in the blender.
 
 **Key components**
-- **Avocado** : Symbolizes a careful approach that targets only the central values of data, much like the dense seed hidden deep inside the fruit.
+- **Avocado** : Symbolizes a careful approach that targets only the central values of data, much like the dense seed hidden deep inside the fruit.<br>
 - **Smoothie** : Represents the graceful flow of an algorithm that blends complexity into a seamless whole, just like diverse ingredients harmonizing into one smooth drink.
 
 **Technical Aesthetics**
@@ -24,7 +24,8 @@ This AvocadoSmoothie project delivers a highly optimized running median filter o
 
 AvocadoSmoothie now supports configurable boundary handling during full-range smoothing : <br><br>
 
-- **AllMedian (Full Median)** : Applies the median filter at every index using a fixed kernel of width (2 × radius + 1). Out-of-range indices are synthesized according to the selected Boundary Mode (Symmetric reflection, Replicate, Zero Padding, or Adaptive). Adaptive mode shortens to a contiguous in-bounds window when the full kernel would extend past edges. <br>
+- **AllMedian (Full Median)** : Applies the median filter at every index using a fixed kernel of width (2 × radius + 1). Out-of-range indices are synthesized according to the selected Boundary Mode (Symmetric reflection, Replicate, Zero Padding, or Adaptive). Adaptive mode shortens to a contiguous in-bounds window when the full kernel would extend past edges.<br>
+
 - **MiddleMedian** : Preserves the first and last Border Count items verbatim and applies the same windowed median only to the interior region. Boundary modes are not applied because the preserved edges eliminate the need for synthetic padding.<br><br>
 
 Thread-local window buffers, `Parallel.For`, and an allocation-minimized median routine deliver high throughput. A unified `ComputeMedians` method orchestrates both modes.<br><br>
