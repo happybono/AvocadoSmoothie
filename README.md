@@ -97,6 +97,7 @@ Although limited to single‑dimension datasets, it can be applied in many domai
 <img alt="GitHub Repo Size" src="https://img.shields.io/github/repo-size/happybono/AvocadoSmoothie">
 <img alt="GitHub Repo Languages" src="https://img.shields.io/github/languages/count/happybono/AvocadoSmoothie">
 <img alt="GitHub Top Languages" src="https://img.shields.io/github/languages/top/happybono/AvocadoSmoothie">
+<img alt="Nuget Downloads" src="https://img.shields.io/nuget/dt/AvocadoSmoothie.Barista?logo=nuget&link=https%3A%2F%2Fwww.nuget.org%2Fpackages%2FAvocadoSmoothie.Barista%2F">
 </div>
 
 <br>
