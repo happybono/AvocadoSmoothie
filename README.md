@@ -880,4 +880,4 @@ Together, these features empower users to interactively refine their data, fine-
 This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ## Copyright 
-Copyright ⓒ HappyBono 2022 - 2025. All Rights Reserved.
+Copyright ⓒ HappyBono 2022 - 2026. All Rights Reserved.
