@@ -7,7 +7,7 @@
   <Folder Name="/Solution Items/">
     <File Path="../Readme.md" />
   </Folder>
-  <Project Path="AvocadoSmoothie.vbproj">
+  <Project Path="AvocadoSmoothie.vbproj" Id="6c629b0d-a568-4f6a-bef5-04c78db51453">
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="*|x64" Project="x64" />
   </Project>

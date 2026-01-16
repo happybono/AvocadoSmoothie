@@ -57,6 +57,9 @@ Partial Class FrmMain
         Me.slblSeparator1 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tlblKernelRadius = New System.Windows.Forms.ToolStripStatusLabel()
         Me.slblKernelRadius = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.slblSeparator2 = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.tlblBoundaryMethod = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.slblBoundaryMethod = New System.Windows.Forms.ToolStripStatusLabel()
         Me.slblSeparator3 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.tlblBorderCount = New System.Windows.Forms.ToolStripStatusLabel()
         Me.slblBorderCount = New System.Windows.Forms.ToolStripStatusLabel()
@@ -74,9 +77,6 @@ Partial Class FrmMain
         Me.gbExportOpts = New System.Windows.Forms.GroupBox()
         Me.rbtnCSV = New System.Windows.Forms.RadioButton()
         Me.rbtnXLSX = New System.Windows.Forms.RadioButton()
-        Me.slblSeparator2 = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.tlblBoundaryMethod = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.slblBoundaryMethod = New System.Windows.Forms.ToolStripStatusLabel()
         Me.gbInitData.SuspendLayout()
         Me.gbRefinedData.SuspendLayout()
         Me.sstripMain.SuspendLayout()
@@ -449,7 +449,7 @@ Partial Class FrmMain
         Me.slblCalibratedType.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblCalibratedType.ForeColor = System.Drawing.Color.White
         Me.slblCalibratedType.Name = "slblCalibratedType"
-        Me.slblCalibratedType.Size = New System.Drawing.Size(17, 19)
+        Me.slblCalibratedType.Size = New System.Drawing.Size(17, 16)
         Me.slblCalibratedType.Text = "--"
         '
         'slblSeparator1
@@ -457,7 +457,7 @@ Partial Class FrmMain
         Me.slblSeparator1.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblSeparator1.ForeColor = System.Drawing.Color.White
         Me.slblSeparator1.Name = "slblSeparator1"
-        Me.slblSeparator1.Size = New System.Drawing.Size(10, 19)
+        Me.slblSeparator1.Size = New System.Drawing.Size(10, 16)
         Me.slblSeparator1.Text = " "
         '
         'tlblKernelRadius
@@ -465,7 +465,7 @@ Partial Class FrmMain
         Me.tlblKernelRadius.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tlblKernelRadius.ForeColor = System.Drawing.Color.White
         Me.tlblKernelRadius.Name = "tlblKernelRadius"
-        Me.tlblKernelRadius.Size = New System.Drawing.Size(173, 19)
+        Me.tlblKernelRadius.Size = New System.Drawing.Size(173, 16)
         Me.tlblKernelRadius.Text = "Noise Reduction Kernel Radius :"
         '
         'slblKernelRadius
@@ -473,15 +473,42 @@ Partial Class FrmMain
         Me.slblKernelRadius.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblKernelRadius.ForeColor = System.Drawing.Color.White
         Me.slblKernelRadius.Name = "slblKernelRadius"
-        Me.slblKernelRadius.Size = New System.Drawing.Size(17, 19)
+        Me.slblKernelRadius.Size = New System.Drawing.Size(17, 16)
         Me.slblKernelRadius.Text = "--"
+        '
+        'slblSeparator2
+        '
+        Me.slblSeparator2.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.slblSeparator2.ForeColor = System.Drawing.Color.White
+        Me.slblSeparator2.Name = "slblSeparator2"
+        Me.slblSeparator2.Size = New System.Drawing.Size(10, 16)
+        Me.slblSeparator2.Text = " "
+        Me.slblSeparator2.Visible = False
+        '
+        'tlblBoundaryMethod
+        '
+        Me.tlblBoundaryMethod.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.tlblBoundaryMethod.ForeColor = System.Drawing.Color.White
+        Me.tlblBoundaryMethod.Name = "tlblBoundaryMethod"
+        Me.tlblBoundaryMethod.Size = New System.Drawing.Size(108, 16)
+        Me.tlblBoundaryMethod.Text = "Boundary Method :"
+        Me.tlblBoundaryMethod.Visible = False
+        '
+        'slblBoundaryMethod
+        '
+        Me.slblBoundaryMethod.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.slblBoundaryMethod.ForeColor = System.Drawing.Color.White
+        Me.slblBoundaryMethod.Name = "slblBoundaryMethod"
+        Me.slblBoundaryMethod.Size = New System.Drawing.Size(17, 16)
+        Me.slblBoundaryMethod.Text = "--"
+        Me.slblBoundaryMethod.Visible = False
         '
         'slblSeparator3
         '
         Me.slblSeparator3.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblSeparator3.ForeColor = System.Drawing.Color.White
         Me.slblSeparator3.Name = "slblSeparator3"
-        Me.slblSeparator3.Size = New System.Drawing.Size(10, 19)
+        Me.slblSeparator3.Size = New System.Drawing.Size(10, 16)
         Me.slblSeparator3.Text = " "
         Me.slblSeparator3.Visible = False
         '
@@ -490,7 +517,7 @@ Partial Class FrmMain
         Me.tlblBorderCount.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tlblBorderCount.ForeColor = System.Drawing.Color.White
         Me.tlblBorderCount.Name = "tlblBorderCount"
-        Me.tlblBorderCount.Size = New System.Drawing.Size(83, 19)
+        Me.tlblBorderCount.Size = New System.Drawing.Size(83, 16)
         Me.tlblBorderCount.Text = "Border Count :"
         Me.tlblBorderCount.Visible = False
         '
@@ -499,7 +526,7 @@ Partial Class FrmMain
         Me.slblBorderCount.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.slblBorderCount.ForeColor = System.Drawing.Color.White
         Me.slblBorderCount.Name = "slblBorderCount"
-        Me.slblBorderCount.Size = New System.Drawing.Size(17, 19)
+        Me.slblBorderCount.Size = New System.Drawing.Size(17, 16)
         Me.slblBorderCount.Text = "--"
         Me.slblBorderCount.Visible = False
         '
@@ -663,33 +690,6 @@ Partial Class FrmMain
         Me.rbtnXLSX.Text = "Open in Excel"
         Me.rbtnXLSX.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         Me.rbtnXLSX.UseVisualStyleBackColor = True
-        '
-        'slblSeparator2
-        '
-        Me.slblSeparator2.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.slblSeparator2.ForeColor = System.Drawing.Color.White
-        Me.slblSeparator2.Name = "slblSeparator2"
-        Me.slblSeparator2.Size = New System.Drawing.Size(10, 19)
-        Me.slblSeparator2.Text = " "
-        Me.slblSeparator2.Visible = False
-        '
-        'tlblBoundaryMethod
-        '
-        Me.tlblBoundaryMethod.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.tlblBoundaryMethod.ForeColor = System.Drawing.Color.White
-        Me.tlblBoundaryMethod.Name = "tlblBoundaryMethod"
-        Me.tlblBoundaryMethod.Size = New System.Drawing.Size(108, 19)
-        Me.tlblBoundaryMethod.Text = "Boundary Method :"
-        Me.tlblBoundaryMethod.Visible = False
-        '
-        'slblBoundaryMethod
-        '
-        Me.slblBoundaryMethod.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.slblBoundaryMethod.ForeColor = System.Drawing.Color.White
-        Me.slblBoundaryMethod.Name = "slblBoundaryMethod"
-        Me.slblBoundaryMethod.Size = New System.Drawing.Size(17, 19)
-        Me.slblBoundaryMethod.Text = "--"
-        Me.slblBoundaryMethod.Visible = False
         '
         'FrmMain
         '
