@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("AvocadoSmoothie uses a running median filter to smooth numerical data with dual modes, parallel processing, and flexible input options including HTML parsing.")>
 <Assembly: AssemblyCompany("Codies")>
 <Assembly: AssemblyProduct("AvocadoSmoothie")>
-<Assembly: AssemblyCopyright("Copyright © HappyBono 2025")>
+<Assembly: AssemblyCopyright("Copyright © HappyBono 2025 -2026")>
 <Assembly: AssemblyTrademark("AvocadoSmoothie")>
 
 <Assembly: ComVisible(False)>
@@ -28,5 +28,5 @@ Imports System.Runtime.InteropServices
 '      Revision
 '
 
-<Assembly: AssemblyVersion("5.4.0.0")>
-<Assembly: AssemblyFileVersion("5.4.0.0")>
+<Assembly: AssemblyVersion("5.5.0.0")>
+<Assembly: AssemblyFileVersion("5.5.0.0")>
