@@ -95,7 +95,7 @@ Partial Class FrmMain
         Me.lbInitData.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.lbInitData.Name = "lbInitData"
         Me.lbInitData.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.lbInitData.Size = New System.Drawing.Size(294, 514)
+        Me.lbInitData.Size = New System.Drawing.Size(334, 412)
         Me.lbInitData.TabIndex = 4
         '
         'lbRefinedData
@@ -107,16 +107,16 @@ Partial Class FrmMain
         Me.lbRefinedData.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.lbRefinedData.Name = "lbRefinedData"
         Me.lbRefinedData.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.lbRefinedData.Size = New System.Drawing.Size(294, 514)
+        Me.lbRefinedData.Size = New System.Drawing.Size(334, 412)
         Me.lbRefinedData.TabIndex = 21
         '
         'btnCalibrate
         '
         Me.btnCalibrate.Font = New System.Drawing.Font("Segoe Fluent Icons", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCalibrate.Location = New System.Drawing.Point(14, 807)
+        Me.btnCalibrate.Location = New System.Drawing.Point(15, 760)
         Me.btnCalibrate.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnCalibrate.Name = "btnCalibrate"
-        Me.btnCalibrate.Size = New System.Drawing.Size(466, 30)
+        Me.btnCalibrate.Size = New System.Drawing.Size(506, 30)
         Me.btnCalibrate.TabIndex = 19
         Me.btnCalibrate.Text = ""
         Me.ttipMain.SetToolTip(Me.btnCalibrate, "Calibrate")
@@ -126,10 +126,10 @@ Partial Class FrmMain
         '
         Me.rbtnMidMedian.Appearance = System.Windows.Forms.Appearance.Button
         Me.rbtnMidMedian.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
-        Me.rbtnMidMedian.Location = New System.Drawing.Point(175, 31)
+        Me.rbtnMidMedian.Location = New System.Drawing.Point(196, 37)
         Me.rbtnMidMedian.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.rbtnMidMedian.Name = "rbtnMidMedian"
-        Me.rbtnMidMedian.Size = New System.Drawing.Size(150, 30)
+        Me.rbtnMidMedian.Size = New System.Drawing.Size(176, 40)
         Me.rbtnMidMedian.TabIndex = 15
         Me.rbtnMidMedian.Text = "Middle Median"
         Me.rbtnMidMedian.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -140,10 +140,10 @@ Partial Class FrmMain
         Me.rbtnAllMedian.Appearance = System.Windows.Forms.Appearance.Button
         Me.rbtnAllMedian.Checked = True
         Me.rbtnAllMedian.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
-        Me.rbtnAllMedian.Location = New System.Drawing.Point(19, 31)
+        Me.rbtnAllMedian.Location = New System.Drawing.Point(13, 37)
         Me.rbtnAllMedian.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.rbtnAllMedian.Name = "rbtnAllMedian"
-        Me.rbtnAllMedian.Size = New System.Drawing.Size(150, 30)
+        Me.rbtnAllMedian.Size = New System.Drawing.Size(176, 40)
         Me.rbtnAllMedian.TabIndex = 14
         Me.rbtnAllMedian.TabStop = True
         Me.rbtnAllMedian.Text = "All Median"
@@ -153,17 +153,17 @@ Partial Class FrmMain
         'txtInitAdd
         '
         Me.txtInitAdd.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
-        Me.txtInitAdd.Location = New System.Drawing.Point(26, 16)
+        Me.txtInitAdd.Location = New System.Drawing.Point(26, 17)
         Me.txtInitAdd.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtInitAdd.Name = "txtInitAdd"
-        Me.txtInitAdd.Size = New System.Drawing.Size(262, 25)
+        Me.txtInitAdd.Size = New System.Drawing.Size(302, 25)
         Me.txtInitAdd.TabIndex = 1
         '
         'btnInitAdd
         '
         Me.btnInitAdd.Enabled = False
         Me.btnInitAdd.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.btnInitAdd.Location = New System.Drawing.Point(292, 14)
+        Me.btnInitAdd.Location = New System.Drawing.Point(332, 14)
         Me.btnInitAdd.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnInitAdd.Name = "btnInitAdd"
         Me.btnInitAdd.Size = New System.Drawing.Size(67, 30)
@@ -176,7 +176,7 @@ Partial Class FrmMain
         '
         Me.btnInitCopy.Enabled = False
         Me.btnInitCopy.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.btnInitCopy.Location = New System.Drawing.Point(307, 65)
+        Me.btnInitCopy.Location = New System.Drawing.Point(347, 65)
         Me.btnInitCopy.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnInitCopy.Name = "btnInitCopy"
         Me.btnInitCopy.Size = New System.Drawing.Size(30, 30)
@@ -193,7 +193,7 @@ Partial Class FrmMain
         Me.cbxBorderCount.FormattingEnabled = True
         Me.cbxBorderCount.IntegralHeight = False
         Me.cbxBorderCount.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"})
-        Me.cbxBorderCount.Location = New System.Drawing.Point(225, 115)
+        Me.cbxBorderCount.Location = New System.Drawing.Point(245, 146)
         Me.cbxBorderCount.Name = "cbxBorderCount"
         Me.cbxBorderCount.Size = New System.Drawing.Size(103, 25)
         Me.cbxBorderCount.TabIndex = 18
@@ -201,7 +201,7 @@ Partial Class FrmMain
         'btnInitClear
         '
         Me.btnInitClear.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.btnInitClear.Location = New System.Drawing.Point(307, 31)
+        Me.btnInitClear.Location = New System.Drawing.Point(347, 31)
         Me.btnInitClear.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnInitClear.Name = "btnInitClear"
         Me.btnInitClear.Size = New System.Drawing.Size(30, 30)
@@ -213,7 +213,7 @@ Partial Class FrmMain
         'btnRefClear
         '
         Me.btnRefClear.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.btnRefClear.Location = New System.Drawing.Point(307, 31)
+        Me.btnRefClear.Location = New System.Drawing.Point(347, 31)
         Me.btnRefClear.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnRefClear.Name = "btnRefClear"
         Me.btnRefClear.Size = New System.Drawing.Size(30, 30)
@@ -225,7 +225,7 @@ Partial Class FrmMain
         'btnInitDelete
         '
         Me.btnInitDelete.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.btnInitDelete.Location = New System.Drawing.Point(307, 167)
+        Me.btnInitDelete.Location = New System.Drawing.Point(347, 167)
         Me.btnInitDelete.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnInitDelete.Name = "btnInitDelete"
         Me.btnInitDelete.Size = New System.Drawing.Size(30, 30)
@@ -237,7 +237,7 @@ Partial Class FrmMain
         'btnInitPaste
         '
         Me.btnInitPaste.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.btnInitPaste.Location = New System.Drawing.Point(307, 99)
+        Me.btnInitPaste.Location = New System.Drawing.Point(347, 99)
         Me.btnInitPaste.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnInitPaste.Name = "btnInitPaste"
         Me.btnInitPaste.Size = New System.Drawing.Size(30, 30)
@@ -250,7 +250,7 @@ Partial Class FrmMain
         '
         Me.btnRefCopy.Enabled = False
         Me.btnRefCopy.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.btnRefCopy.Location = New System.Drawing.Point(307, 65)
+        Me.btnRefCopy.Location = New System.Drawing.Point(347, 65)
         Me.btnRefCopy.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnRefCopy.Name = "btnRefCopy"
         Me.btnRefCopy.Size = New System.Drawing.Size(30, 30)
@@ -262,7 +262,7 @@ Partial Class FrmMain
         'btnInitSelectAll
         '
         Me.btnInitSelectAll.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.btnInitSelectAll.Location = New System.Drawing.Point(307, 201)
+        Me.btnInitSelectAll.Location = New System.Drawing.Point(347, 201)
         Me.btnInitSelectAll.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnInitSelectAll.Name = "btnInitSelectAll"
         Me.btnInitSelectAll.Size = New System.Drawing.Size(30, 30)
@@ -274,7 +274,7 @@ Partial Class FrmMain
         'btnRefSelectAll
         '
         Me.btnRefSelectAll.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.btnRefSelectAll.Location = New System.Drawing.Point(307, 99)
+        Me.btnRefSelectAll.Location = New System.Drawing.Point(347, 99)
         Me.btnRefSelectAll.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnRefSelectAll.Name = "btnRefSelectAll"
         Me.btnRefSelectAll.Size = New System.Drawing.Size(30, 30)
@@ -285,9 +285,9 @@ Partial Class FrmMain
         '
         'gbInitData
         '
+        Me.gbInitData.Controls.Add(Me.lblInitCnt)
         Me.gbInitData.Controls.Add(Me.btnInitSelectSync)
         Me.gbInitData.Controls.Add(Me.btnInitEdit)
-        Me.gbInitData.Controls.Add(Me.lblInitCnt)
         Me.gbInitData.Controls.Add(Me.btnInitSelectClr)
         Me.gbInitData.Controls.Add(Me.btnInitSelectAll)
         Me.gbInitData.Controls.Add(Me.btnInitPaste)
@@ -300,7 +300,7 @@ Partial Class FrmMain
         Me.gbInitData.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.gbInitData.Name = "gbInitData"
         Me.gbInitData.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.gbInitData.Size = New System.Drawing.Size(344, 586)
+        Me.gbInitData.Size = New System.Drawing.Size(384, 477)
         Me.gbInitData.TabIndex = 3
         Me.gbInitData.TabStop = False
         Me.gbInitData.Text = "Initial Dataset"
@@ -308,7 +308,7 @@ Partial Class FrmMain
         'btnInitSelectSync
         '
         Me.btnInitSelectSync.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!)
-        Me.btnInitSelectSync.Location = New System.Drawing.Point(307, 269)
+        Me.btnInitSelectSync.Location = New System.Drawing.Point(347, 269)
         Me.btnInitSelectSync.Name = "btnInitSelectSync"
         Me.btnInitSelectSync.Size = New System.Drawing.Size(30, 30)
         Me.btnInitSelectSync.TabIndex = 12
@@ -320,7 +320,7 @@ Partial Class FrmMain
         '
         Me.btnInitEdit.Enabled = False
         Me.btnInitEdit.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnInitEdit.Location = New System.Drawing.Point(307, 133)
+        Me.btnInitEdit.Location = New System.Drawing.Point(347, 133)
         Me.btnInitEdit.Margin = New System.Windows.Forms.Padding(2)
         Me.btnInitEdit.Name = "btnInitEdit"
         Me.btnInitEdit.Size = New System.Drawing.Size(30, 30)
@@ -333,7 +333,7 @@ Partial Class FrmMain
         '
         Me.lblInitCnt.AutoSize = True
         Me.lblInitCnt.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
-        Me.lblInitCnt.Location = New System.Drawing.Point(7, 555)
+        Me.lblInitCnt.Location = New System.Drawing.Point(7, 449)
         Me.lblInitCnt.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblInitCnt.Name = "lblInitCnt"
         Me.lblInitCnt.Size = New System.Drawing.Size(65, 19)
@@ -343,7 +343,7 @@ Partial Class FrmMain
         'btnInitSelectClr
         '
         Me.btnInitSelectClr.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.btnInitSelectClr.Location = New System.Drawing.Point(307, 235)
+        Me.btnInitSelectClr.Location = New System.Drawing.Point(347, 235)
         Me.btnInitSelectClr.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnInitSelectClr.Name = "btnInitSelectClr"
         Me.btnInitSelectClr.Size = New System.Drawing.Size(30, 30)
@@ -362,11 +362,11 @@ Partial Class FrmMain
         Me.gbRefinedData.Controls.Add(Me.btnRefClear)
         Me.gbRefinedData.Controls.Add(Me.lbRefinedData)
         Me.gbRefinedData.Font = New System.Drawing.Font("Segoe UI Variable Display Semil", 11.25!)
-        Me.gbRefinedData.Location = New System.Drawing.Point(376, 52)
+        Me.gbRefinedData.Location = New System.Drawing.Point(416, 52)
         Me.gbRefinedData.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.gbRefinedData.Name = "gbRefinedData"
         Me.gbRefinedData.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.gbRefinedData.Size = New System.Drawing.Size(344, 586)
+        Me.gbRefinedData.Size = New System.Drawing.Size(384, 477)
         Me.gbRefinedData.TabIndex = 20
         Me.gbRefinedData.TabStop = False
         Me.gbRefinedData.Text = "Refined Dataset"
@@ -374,7 +374,7 @@ Partial Class FrmMain
         'btnRefSelectSync
         '
         Me.btnRefSelectSync.Font = New System.Drawing.Font("Segoe Fluent Icons", 11.25!)
-        Me.btnRefSelectSync.Location = New System.Drawing.Point(307, 167)
+        Me.btnRefSelectSync.Location = New System.Drawing.Point(347, 167)
         Me.btnRefSelectSync.Name = "btnRefSelectSync"
         Me.btnRefSelectSync.Size = New System.Drawing.Size(30, 30)
         Me.btnRefSelectSync.TabIndex = 26
@@ -386,7 +386,7 @@ Partial Class FrmMain
         '
         Me.lblRefCnt.AutoSize = True
         Me.lblRefCnt.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
-        Me.lblRefCnt.Location = New System.Drawing.Point(7, 555)
+        Me.lblRefCnt.Location = New System.Drawing.Point(7, 449)
         Me.lblRefCnt.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblRefCnt.Name = "lblRefCnt"
         Me.lblRefCnt.Size = New System.Drawing.Size(65, 19)
@@ -396,7 +396,7 @@ Partial Class FrmMain
         'btnRefSelectClr
         '
         Me.btnRefSelectClr.Font = New System.Drawing.Font("Segoe Fluent Icons", 12.75!)
-        Me.btnRefSelectClr.Location = New System.Drawing.Point(307, 133)
+        Me.btnRefSelectClr.Location = New System.Drawing.Point(347, 133)
         Me.btnRefSelectClr.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnRefSelectClr.Name = "btnRefSelectClr"
         Me.btnRefSelectClr.Size = New System.Drawing.Size(30, 30)
@@ -407,9 +407,9 @@ Partial Class FrmMain
         '
         'pbMain
         '
-        Me.pbMain.Location = New System.Drawing.Point(0, 842)
+        Me.pbMain.Location = New System.Drawing.Point(0, 796)
         Me.pbMain.Name = "pbMain"
-        Me.pbMain.Size = New System.Drawing.Size(734, 5)
+        Me.pbMain.Size = New System.Drawing.Size(814, 5)
         Me.pbMain.Style = System.Windows.Forms.ProgressBarStyle.Continuous
         Me.pbMain.TabIndex = 28
         '
@@ -419,9 +419,9 @@ Partial Class FrmMain
         Me.sstripMain.BackColor = System.Drawing.Color.FromArgb(CType(CType(0, Byte), Integer), CType(CType(64, Byte), Integer), CType(CType(0, Byte), Integer))
         Me.sstripMain.ImageScalingSize = New System.Drawing.Size(32, 32)
         Me.sstripMain.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.slblDesc, Me.tlblCalibratedType, Me.slblCalibratedType, Me.slblSeparator1, Me.tlblKernelRadius, Me.slblKernelRadius, Me.slblSeparator2, Me.tlblBoundaryMethod, Me.slblBoundaryMethod, Me.slblSeparator3, Me.tlblBorderCount, Me.slblBorderCount})
-        Me.sstripMain.Location = New System.Drawing.Point(0, 847)
+        Me.sstripMain.Location = New System.Drawing.Point(0, 801)
         Me.sstripMain.Name = "sstripMain"
-        Me.sstripMain.Size = New System.Drawing.Size(734, 24)
+        Me.sstripMain.Size = New System.Drawing.Size(814, 24)
         Me.sstripMain.SizingGrip = False
         Me.sstripMain.TabIndex = 29
         Me.sstripMain.Text = "statusStrip1"
@@ -432,7 +432,7 @@ Partial Class FrmMain
         Me.slblDesc.Font = New System.Drawing.Font("Segoe UI Variable Display", 9.0!)
         Me.slblDesc.ForeColor = System.Drawing.Color.White
         Me.slblDesc.Name = "slblDesc"
-        Me.slblDesc.Size = New System.Drawing.Size(731, 19)
+        Me.slblDesc.Size = New System.Drawing.Size(812, 19)
         Me.slblDesc.Text = "To calibrate, add data to the Initial Dataset, choose a Calibration Method, set S" &
     "moothing Parameters."
         '
@@ -539,9 +539,9 @@ Partial Class FrmMain
         Me.gbSmoothParams.Controls.Add(Me.cbxKernelRadius)
         Me.gbSmoothParams.Controls.Add(Me.lblKernelRadius)
         Me.gbSmoothParams.Font = New System.Drawing.Font("Segoe UI Variable Display Semil", 11.25!)
-        Me.gbSmoothParams.Location = New System.Drawing.Point(376, 644)
+        Me.gbSmoothParams.Location = New System.Drawing.Point(416, 535)
         Me.gbSmoothParams.Name = "gbSmoothParams"
-        Me.gbSmoothParams.Size = New System.Drawing.Size(344, 157)
+        Me.gbSmoothParams.Size = New System.Drawing.Size(384, 219)
         Me.gbSmoothParams.TabIndex = 16
         Me.gbSmoothParams.TabStop = False
         Me.gbSmoothParams.Text = "Signal Smoothing Parameters"
@@ -555,7 +555,7 @@ Partial Class FrmMain
         Me.cbxBoundaryMethod.IntegralHeight = False
         Me.cbxBoundaryMethod.ItemHeight = 17
         Me.cbxBoundaryMethod.Items.AddRange(New Object() {"Symmetric", "Adaptive", "Replicate", "Zero Padding"})
-        Me.cbxBoundaryMethod.Location = New System.Drawing.Point(225, 76)
+        Me.cbxBoundaryMethod.Location = New System.Drawing.Point(245, 107)
         Me.cbxBoundaryMethod.Name = "cbxBoundaryMethod"
         Me.cbxBoundaryMethod.Size = New System.Drawing.Size(103, 25)
         Me.cbxBoundaryMethod.TabIndex = 25
@@ -563,7 +563,7 @@ Partial Class FrmMain
         'lblBoundaryMethod
         '
         Me.lblBoundaryMethod.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
-        Me.lblBoundaryMethod.Location = New System.Drawing.Point(25, 79)
+        Me.lblBoundaryMethod.Location = New System.Drawing.Point(45, 110)
         Me.lblBoundaryMethod.Name = "lblBoundaryMethod"
         Me.lblBoundaryMethod.Size = New System.Drawing.Size(183, 19)
         Me.lblBoundaryMethod.TabIndex = 24
@@ -574,7 +574,7 @@ Partial Class FrmMain
         Me.lblBorderCount.AutoSize = True
         Me.lblBorderCount.Enabled = False
         Me.lblBorderCount.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
-        Me.lblBorderCount.Location = New System.Drawing.Point(76, 118)
+        Me.lblBorderCount.Location = New System.Drawing.Point(96, 149)
         Me.lblBorderCount.Name = "lblBorderCount"
         Me.lblBorderCount.Size = New System.Drawing.Size(98, 19)
         Me.lblBorderCount.TabIndex = 20
@@ -589,7 +589,7 @@ Partial Class FrmMain
         Me.cbxKernelRadius.IntegralHeight = False
         Me.cbxKernelRadius.ItemHeight = 17
         Me.cbxKernelRadius.Items.AddRange(New Object() {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"})
-        Me.cbxKernelRadius.Location = New System.Drawing.Point(225, 37)
+        Me.cbxKernelRadius.Location = New System.Drawing.Point(245, 68)
         Me.cbxKernelRadius.Margin = New System.Windows.Forms.Padding(2)
         Me.cbxKernelRadius.Name = "cbxKernelRadius"
         Me.cbxKernelRadius.Size = New System.Drawing.Size(103, 25)
@@ -599,7 +599,7 @@ Partial Class FrmMain
         '
         Me.lblKernelRadius.AutoSize = True
         Me.lblKernelRadius.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblKernelRadius.Location = New System.Drawing.Point(17, 40)
+        Me.lblKernelRadius.Location = New System.Drawing.Point(37, 71)
         Me.lblKernelRadius.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblKernelRadius.Name = "lblKernelRadius"
         Me.lblKernelRadius.Size = New System.Drawing.Size(201, 19)
@@ -611,9 +611,9 @@ Partial Class FrmMain
         Me.gbSmoothMtd.Controls.Add(Me.rbtnMidMedian)
         Me.gbSmoothMtd.Controls.Add(Me.rbtnAllMedian)
         Me.gbSmoothMtd.Font = New System.Drawing.Font("Segoe UI Variable Display Semil", 11.25!)
-        Me.gbSmoothMtd.Location = New System.Drawing.Point(15, 644)
+        Me.gbSmoothMtd.Location = New System.Drawing.Point(15, 549)
         Me.gbSmoothMtd.Name = "gbSmoothMtd"
-        Me.gbSmoothMtd.Size = New System.Drawing.Size(344, 77)
+        Me.gbSmoothMtd.Size = New System.Drawing.Size(384, 100)
         Me.gbSmoothMtd.TabIndex = 13
         Me.gbSmoothMtd.TabStop = False
         Me.gbSmoothMtd.Text = "Smoothing Methods"
@@ -621,9 +621,9 @@ Partial Class FrmMain
         'btnExport
         '
         Me.btnExport.Font = New System.Drawing.Font("Segoe Fluent Icons", 14.75!)
-        Me.btnExport.Location = New System.Drawing.Point(486, 807)
+        Me.btnExport.Location = New System.Drawing.Point(526, 760)
         Me.btnExport.Name = "btnExport"
-        Me.btnExport.Size = New System.Drawing.Size(234, 30)
+        Me.btnExport.Size = New System.Drawing.Size(274, 30)
         Me.btnExport.TabIndex = 31
         Me.btnExport.Tag = ""
         Me.btnExport.Text = ""
@@ -634,7 +634,7 @@ Partial Class FrmMain
         '
         Me.btnInfo.Font = New System.Drawing.Font("Segoe Fluent Icons", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnInfo.ForeColor = System.Drawing.Color.DarkOliveGreen
-        Me.btnInfo.Location = New System.Drawing.Point(689, 14)
+        Me.btnInfo.Location = New System.Drawing.Point(770, 14)
         Me.btnInfo.Margin = New System.Windows.Forms.Padding(2)
         Me.btnInfo.Name = "btnInfo"
         Me.btnInfo.Size = New System.Drawing.Size(30, 30)
@@ -646,9 +646,9 @@ Partial Class FrmMain
         'txtDatasetTitle
         '
         Me.txtDatasetTitle.Font = New System.Drawing.Font("Segoe UI Variable Display Semib", 10.125!, System.Drawing.FontStyle.Bold)
-        Me.txtDatasetTitle.Location = New System.Drawing.Point(385, 16)
+        Me.txtDatasetTitle.Location = New System.Drawing.Point(416, 17)
         Me.txtDatasetTitle.Name = "txtDatasetTitle"
-        Me.txtDatasetTitle.Size = New System.Drawing.Size(300, 25)
+        Me.txtDatasetTitle.Size = New System.Drawing.Size(349, 25)
         Me.txtDatasetTitle.TabIndex = 27
         '
         'gbExportOpts
@@ -656,9 +656,9 @@ Partial Class FrmMain
         Me.gbExportOpts.Controls.Add(Me.rbtnCSV)
         Me.gbExportOpts.Controls.Add(Me.rbtnXLSX)
         Me.gbExportOpts.Font = New System.Drawing.Font("Segoe UI Variable Display Semil", 11.25!)
-        Me.gbExportOpts.Location = New System.Drawing.Point(15, 724)
+        Me.gbExportOpts.Location = New System.Drawing.Point(15, 655)
         Me.gbExportOpts.Name = "gbExportOpts"
-        Me.gbExportOpts.Size = New System.Drawing.Size(344, 77)
+        Me.gbExportOpts.Size = New System.Drawing.Size(384, 100)
         Me.gbExportOpts.TabIndex = 28
         Me.gbExportOpts.TabStop = False
         Me.gbExportOpts.Text = "Data Export Options"
@@ -668,10 +668,10 @@ Partial Class FrmMain
         Me.rbtnCSV.Appearance = System.Windows.Forms.Appearance.Button
         Me.rbtnCSV.Checked = True
         Me.rbtnCSV.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
-        Me.rbtnCSV.Location = New System.Drawing.Point(175, 31)
+        Me.rbtnCSV.Location = New System.Drawing.Point(196, 37)
         Me.rbtnCSV.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.rbtnCSV.Name = "rbtnCSV"
-        Me.rbtnCSV.Size = New System.Drawing.Size(150, 30)
+        Me.rbtnCSV.Size = New System.Drawing.Size(176, 40)
         Me.rbtnCSV.TabIndex = 30
         Me.rbtnCSV.TabStop = True
         Me.rbtnCSV.Text = "Save as CSV"
@@ -682,10 +682,10 @@ Partial Class FrmMain
         '
         Me.rbtnXLSX.Appearance = System.Windows.Forms.Appearance.Button
         Me.rbtnXLSX.Font = New System.Drawing.Font("Segoe UI Variable Display", 10.125!)
-        Me.rbtnXLSX.Location = New System.Drawing.Point(19, 31)
+        Me.rbtnXLSX.Location = New System.Drawing.Point(13, 37)
         Me.rbtnXLSX.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.rbtnXLSX.Name = "rbtnXLSX"
-        Me.rbtnXLSX.Size = New System.Drawing.Size(150, 30)
+        Me.rbtnXLSX.Size = New System.Drawing.Size(176, 40)
         Me.rbtnXLSX.TabIndex = 29
         Me.rbtnXLSX.Text = "Open in Excel"
         Me.rbtnXLSX.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -696,7 +696,7 @@ Partial Class FrmMain
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi
         Me.BackColor = System.Drawing.Color.White
-        Me.ClientSize = New System.Drawing.Size(734, 871)
+        Me.ClientSize = New System.Drawing.Size(814, 825)
         Me.Controls.Add(Me.gbExportOpts)
         Me.Controls.Add(Me.btnInfo)
         Me.Controls.Add(Me.btnExport)

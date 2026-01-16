@@ -64,7 +64,7 @@ Partial Class AboutBox
         Me.slblCopyright.Name = "slblCopyright"
         Me.slblCopyright.Size = New System.Drawing.Size(352, 24)
         Me.slblCopyright.Spring = True
-        Me.slblCopyright.Text = "ⓒ 2025 HappyBono. All rights reserved."
+        Me.slblCopyright.Text = "ⓒ 2025 - 2026 HappyBono. All rights reserved."
         '
         'lblLicenseTerms
         '

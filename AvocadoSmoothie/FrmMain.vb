@@ -1383,7 +1383,15 @@ Public Class FrmMain
             txtDatasetTitle.ForeColor = Color.Gray
         End If
 
-        slblDesc.Size = New Size(731 * dpiX / 96, 19 * dpiY / 96)
+        pbMain.Size = New Size(
+                (814 * dpiX / 96),
+                (5 * dpiY / 96)
+                )
+
+        slblDesc.Size = New Size(
+            (812 * dpiX / 96),
+            (19 * dpiY / 96)
+            )
 
         AddHandler lbInitData.SelectedIndexChanged, AddressOf UpdatelbInitDataButtonsState
         AddHandler lbRefinedData.SelectedIndexChanged, AddressOf UpdatelbRefinedDataButtonsState
