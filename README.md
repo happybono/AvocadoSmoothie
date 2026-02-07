@@ -33,7 +33,8 @@ Thread-local window buffers, `Parallel.For`, and an allocation-minimized median 
 Data can be entered one value at a time, bulk-pasted from the clipboard, or drag-and-dropped (with HTML-aware parsing). Internally, each sliding window is copied into a thread-local buffer and its median is obtained by Array.Sort on a temporary slice (legacy Quicksort remains in code but is not used on the median path). Filtering is parallelized across CPU cores using `Parallel.For` for maximum throughput.<br><br>
 A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, select-all, paste) are batched with `BeginUpdate` / `EndUpdate` to eliminate flicker. After each run, source and result lists are reset to guarantee repeatable behavior, making it effortless to visualize noise reduction or signal smoothing on the fly.<br><br>
 
-> **Disclaimer :** This implementation uses a plain (equal-weight) median filter. For weighted-median calculations and a wider range of smoothing / correction methods, please refer to the **[SonataSmooth](https://github.com/happybono/SonataSmooth)** project. 
+> [!Important]
+> This implementation uses a plain (equal-weight) median filter. For weighted-median calculations and a wider range of smoothing / correction methods, please refer to the **[SonataSmooth](https://github.com/happybono/SonataSmooth)** project. 
 
 ### Boundary Modes
 | Mode | Behavior | Use Case |
