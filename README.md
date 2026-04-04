@@ -24,7 +24,7 @@ This AvocadoSmoothie project delivers a highly optimized running median filter o
 
 AvocadoSmoothie now supports configurable boundary handling during full-range smoothing : <br><br>
 
-- **AllMedian (Full Median)** : Applies the median filter at every index using a fixed kernel of width (2 × radius + 1). Out-of-range indices are synthesized according to the selected Boundary Mode (Symmetric reflection, Replicate, Zero Padding, or Adaptive). Adaptive mode shortens to a contiguous in-bounds window when the full kernel would extend past edges.<br>
+- **AllMedian (Full Median)** : Applies the median filter at every index using a fixed kernel of width (2 × radius + 1). Out-of-range indices are synthesized according to the selected Boundary Mode (Symmetric reflection, Replicate, Zero Padding, or Adaptive). Adaptive mode keeps the window centred on the current sample and symmetrically shrinks it near boundaries so that only real (in-range) data is used, eliminating phase shift.<br>
 
 - **MiddleMedian** : Preserves the first and last Border Count items verbatim and applies the same windowed median only to the interior region. Boundary modes are not applied because the preserved edges eliminate the need for synthetic padding.<br><br>
 
@@ -33,8 +33,7 @@ Thread-local window buffers, `Parallel.For`, and an allocation-minimized median 
 Data can be entered one value at a time, bulk-pasted from the clipboard, or drag-and-dropped (with HTML-aware parsing). Internally, each sliding window is copied into a thread-local buffer and its median is obtained by Array.Sort on a temporary slice (legacy Quicksort remains in code but is not used on the median path). Filtering is parallelized across CPU cores using `Parallel.For` for maximum throughput.<br><br>
 A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, select-all, paste) are batched with `BeginUpdate` / `EndUpdate` to eliminate flicker. After each run, source and result lists are reset to guarantee repeatable behavior, making it effortless to visualize noise reduction or signal smoothing on the fly.<br><br>
 
-> [!Important]
-> This implementation uses a plain (equal-weight) median filter. For weighted-median calculations and a wider range of smoothing / correction methods, please refer to the **[SonataSmooth](https://github.com/happybono/SonataSmooth)** project. 
+> **Disclaimer :** This implementation uses a plain (equal-weight) median filter. For weighted-median calculations and a wider range of smoothing / correction methods, please refer to the **[SonataSmooth](https://github.com/happybono/SonataSmooth)** project. 
 
 ### Boundary Modes
 | Mode | Behavior | Use Case |
@@ -42,20 +41,21 @@ A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, s
 | Symmetric | Mirrors indices past edges (reflective) | Smooth continuity at boundaries |
 | Replicate | Clamps to nearest valid endpoint | Preserves plateaus / avoids mirror artifacts |
 | Zero Padding | Treats out-of-range as 0.0 | Emphasize contrast; dampen edge influence |
-| Adaptive | Crops the window so it stays fully within the dataset (effective W = min(kernelSize, n)) | Best for small datasets; avoids synthetic values by using only real data |
+| Adaptive | Keeps the window centred on each sample and symmetrically shrinks it near edges (effective W = 2 × min(offsetLow, i, N−1−i) + 1) | Best for small datasets; avoids synthetic values and phase shift by using only real data |
 
 #### Index Mapping Examples
 | Index (outside) | Symmetric            | Replicate        | Zero Padding | Adaptive                                |
 |-----------------|----------------------|------------------|--------------|-----------------------------------------|
-| -1              | maps to 1 (mirror)  | maps to 0        | 0.0          | Window cropped; out-of-range excluded   |
-| n               | maps to n - 2       | maps to n - 1    | 0.0          | Window cropped; out-of-range excluded   |
+| -1              | maps to 1 (mirror)  | maps to 0        | 0.0          | Window symmetrically shrunk; index excluded |
+| n               | maps to n - 2       | maps to n - 1    | 0.0          | Window symmetrically shrunk; index excluded |
 
 
 Implementation details :
 - Non-Adaptive modes always build a full kernel-size window, synthesizing each out-of-range slot via `GetValueWithBoundary`.
-Adaptive computes the median over a contiguous in‑bounds slice:
-  - start = clamp(i - offsetLow, 0, n - W)
-  - W = min(kernelSize, n)
+- Adaptive keeps the window centred on each sample `i` and symmetrically reduces the reach near boundaries:
+  - reach = min(offsetLow, i, N − 1 − i)
+  - W = 2 × reach + 1
+  - Window spans arr(i − reach) … arr(i + reach), using only real in-range samples
 
 ## Use Cases
 AvocadoSmoothie is specialized for **1D numerical data smoothing and noise reduction**.  
@@ -98,7 +98,6 @@ Although limited to single‑dimension datasets, it can be applied in many domai
 <img alt="GitHub Repo Size" src="https://img.shields.io/github/repo-size/happybono/AvocadoSmoothie">
 <img alt="GitHub Repo Languages" src="https://img.shields.io/github/languages/count/happybono/AvocadoSmoothie">
 <img alt="GitHub Top Languages" src="https://img.shields.io/github/languages/top/happybono/AvocadoSmoothie">
-<img alt="Nuget Downloads" src="https://img.shields.io/nuget/dt/AvocadoSmoothie.Barista?logo=nuget&link=https%3A%2F%2Fwww.nuget.org%2Fpackages%2FAvocadoSmoothie.Barista%2F">
 </div>
 
 <br>
@@ -452,16 +451,16 @@ Therefore, the kernel width (computed from the radius) is **5**.
 
 ### 3. AllMedian Calculation
 #### How it works
-For each index i, a window of size (2 × radius + 1) is populated. Out-of-range positions are resolved via the selected Boundary Mode (except Adaptive, which shortens the window). Parallel threads reuse thread-local buffers to avoid allocations.
+For each index i, a window of size (2 × radius + 1) is populated. Out-of-range positions are resolved via the selected Boundary Mode (except Adaptive, which keeps the window centred on i and symmetrically shrinks it near boundaries). Parallel threads reuse thread-local buffers to avoid allocations.
 
 #### Principle
 1. Compute offsets :
    offsetLow = (kernelSize - 1) \ 2
    offsetHigh = (kernelSize - 1) - offsetLow
 2. If boundaryMode = Adaptive :
-   - W = min(kernelSize, n)
-   - Determine a valid contiguous start
-   - Copy W in-bounds values
+   - reach = min(offsetLow, i, N − 1 − i)
+   - W = 2 × reach + 1
+   - Copy W values centred on i : arr(i − reach) … arr(i + reach)
 3. Else :
    - For each relative position k :
      win[k] = GetValueWithBoundary(arr, i + k - offsetLow, boundaryMode)
@@ -499,14 +498,15 @@ Private Sub ComputeMedians(useMiddle As Boolean,
     Parallel.For(0, n, Sub(i)
         Dim win = localWin.Value
         If boundaryMode = BoundaryMode.Adaptive Then
-            Dim desiredW As Integer = kernelSize
-            Dim W As Integer = Math.Min(desiredW, n)
-            Dim start As Integer = i - offsetLow
-            If start < 0 Then start = 0
-            If start > n - W Then start = n - W
+            ' Symmetric shrinking: keep window centred on i,
+            ' reduce reach equally on both sides near edges.
+            Dim reach As Integer = Math.Min(offsetLow, Math.Min(i, n - 1 - i))
+            Dim W As Integer = 2 * reach + 1
+
             For pos As Integer = 0 To W - 1
-                win(pos) = arr(start + pos)
+                win(pos) = arr(i - reach + pos)
             Next
+
             buffer(i) = GetWindowMedian(win, W)
         Else
             For pos As Integer = 0 To kernelSize - 1
@@ -736,7 +736,7 @@ When the user clicks **Calibrate** (`btnCalibrate_Click`) :
 ##### Core Routine : ComputeMedians
 - Middle-Median (`useMiddle = True)` Copies the first and last `borderCount` points unmodified to buffer. Applies a sliding window of width `KernelRadius` only to indices [borderCount … n - borderCount - 1].
 
-- All-Median (`useMiddle = False`) Applies the sliding window at every index using boundary synthesis to keep a full fixed-size window (Symmetric / Replicate / Zero Padding); Adaptive crops to a contiguous in-bounds window.
+- All-Median (`useMiddle = False`) Applies the sliding window at every index using boundary synthesis to keep a full fixed-size window (Symmetric / Replicate / Zero Padding); Adaptive keeps the window centred on each sample and symmetrically shrinks it near edges to avoid phase shift.
 
 Both modes share :
 1. A thread-local window buffer (ThreadLocal(Of Double())) to avoid per-iteration allocations.
@@ -745,7 +745,7 @@ Both modes share :
 
 Edge handling differs :
 - MiddleMedian (useMiddle = True) : copies preserved borders; interior windows use clamped iMin / iMax (variable length).
-- AllMedian (useMiddle = False) : builds a full fixed-size window using BoundaryMode synthesis (Symmetric, Replicate, Zero Padding). With Adaptive, it crops to a contiguous in-bounds window of size W = min(kernelSize, n).
+- AllMedian (useMiddle = False) : builds a full fixed-size window using BoundaryMode synthesis (Symmetric, Replicate, Zero Padding). With Adaptive, it keeps the window centred on each sample and symmetrically shrinks it near edges (W = 2 × min(offsetLow, i, N−1−i) + 1), eliminating phase shift.
 
 ##### Core Median Functions  
 - `GetWindowMedian(win() As Double, length As Integer)` Creates a temporary slice of length elements from win, sorts with Array.Sort, and returns :
@@ -881,4 +881,4 @@ Together, these features empower users to interactively refine their data, fine-
 This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ## Copyright 
-Copyright ⓒ HappyBono 2022 - 2026. All Rights Reserved.
+Copyright ⓒ HappyBono 2022 - 2025. All Rights Reserved.
