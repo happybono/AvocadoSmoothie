@@ -276,7 +276,8 @@ Although limited to single‑dimension datasets, it can be applied in many domai
 
 ### v5.6.2.0
 #### April 4, 2026
-> Fixed Adaptive boundary mode phase shift in `ComputeMedians` by replacing window-shifting logic with symmetric shrinking centred on each sample (`reach = min(offsetLow, i, N − 1 − i)`, `W = 2 × reach + 1`), ensuring only real in-range data is used without positional bias.
+> Fixed Adaptive boundary mode phase shift in `ComputeMedians` by replacing window-shifting logic with symmetric shrinking centred on each sample (`reach = min(offsetLow, i, N − 1 − i)`, `W = 2 × reach + 1`), ensuring only real in-range data is used without positional bias.<br><br>
+> Minor bugs fixed.
 
 ## Required Components & Setup
 ### Prerequisites
