@@ -271,12 +271,12 @@ Although limited to single‑dimension datasets, it can be applied in many domai
 ### v5.4.0.0
 #### December 23, 2025
 > Improved Excel export error handling : now distinguishes between Excel not installed, COM activation failure, and other interop errors, providing more specific user guidance.<br><br>
-> Minor bugs fixed.<br><br>
+> Minor bugs fixed.
+</details>
 
 ### v5.4.1.0
 #### April 4, 2026
 > Fixed Adaptive boundary mode phase shift in `ComputeMedians` by replacing window-shifting logic with symmetric shrinking centred on each sample (`reach = min(offsetLow, i, N − 1 − i)`, `W = 2 × reach + 1`), ensuring only real in-range data is used without positional bias.
-</details>
 
 ## Required Components & Setup
 ### Prerequisites
