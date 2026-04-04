@@ -24,7 +24,7 @@ This AvocadoSmoothie project delivers a highly optimized running median filter o
 
 AvocadoSmoothie now supports configurable boundary handling during full-range smoothing : <br><br>
 
-- **AllMedian (Full Median)** : Applies the median filter at every index using a fixed kernel of width (2 × radius + 1). Out-of-range indices are synthesized according to the selected Boundary Mode (Symmetric reflection, Replicate, Zero Padding, or Adaptive). Adaptive mode keeps the window centred on the current sample and symmetrically shrinks it near boundaries so that only real (in-range) data is used, eliminating phase shift.<br>
+- **AllMedian (Full Median)** : Applies the median filter at every index using a fixed kernel of width (2 × radius + 1). Out-of-range indices are synthesized according to the selected Boundary Mode (Symmetric reflection, Replicate, Zero Padding, or Adaptive). Adaptive mode keeps the window centred on each sample and symmetrically shrinks it near boundaries so that only real (in-range) data is used, eliminating phase shift.<br>
 
 - **MiddleMedian** : Preserves the first and last Border Count items verbatim and applies the same windowed median only to the interior region. Boundary modes are not applied because the preserved edges eliminate the need for synthetic padding.<br><br>
 
@@ -33,7 +33,8 @@ Thread-local window buffers, `Parallel.For`, and an allocation-minimized median 
 Data can be entered one value at a time, bulk-pasted from the clipboard, or drag-and-dropped (with HTML-aware parsing). Internally, each sliding window is copied into a thread-local buffer and its median is obtained by Array.Sort on a temporary slice (legacy Quicksort remains in code but is not used on the median path). Filtering is parallelized across CPU cores using `Parallel.For` for maximum throughput.<br><br>
 A real-time ProgressBar keeps the user informed, and UI updates (copy, delete, select-all, paste) are batched with `BeginUpdate` / `EndUpdate` to eliminate flicker. After each run, source and result lists are reset to guarantee repeatable behavior, making it effortless to visualize noise reduction or signal smoothing on the fly.<br><br>
 
-> **Disclaimer :** This implementation uses a plain (equal-weight) median filter. For weighted-median calculations and a wider range of smoothing / correction methods, please refer to the **[SonataSmooth](https://github.com/happybono/SonataSmooth)** project. 
+> [!Important]
+> This implementation uses a plain (equal-weight) median filter. For weighted-median calculations and a wider range of smoothing / correction methods, please refer to the **[SonataSmooth](https://github.com/happybono/SonataSmooth)** project. 
 
 ### Boundary Modes
 | Mode | Behavior | Use Case |
@@ -98,6 +99,7 @@ Although limited to single‑dimension datasets, it can be applied in many domai
 <img alt="GitHub Repo Size" src="https://img.shields.io/github/repo-size/happybono/AvocadoSmoothie">
 <img alt="GitHub Repo Languages" src="https://img.shields.io/github/languages/count/happybono/AvocadoSmoothie">
 <img alt="GitHub Top Languages" src="https://img.shields.io/github/languages/top/happybono/AvocadoSmoothie">
+<img alt="Nuget Downloads" src="https://img.shields.io/nuget/dt/AvocadoSmoothie.Barista?logo=nuget&link=https%3A%2F%2Fwww.nuget.org%2Fpackages%2FAvocadoSmoothie.Barista%2F">
 </div>
 
 <br>
@@ -265,12 +267,16 @@ Although limited to single‑dimension datasets, it can be applied in many domai
 > Application preferences are now automatically saved when the `AvocadoSmoothie` application closes. These values are seamlessly reloaded at startup, allowing users to continue their work without interruption and ensuring a consistent environment across sessions.<br><br>
 > CSV export UX improved : progress bar switches to marquee while the Save dialog is open.<br><br>
 > Minor bugs fixed.
-</details>
 
 ### v5.4.0.0
 #### December 23, 2025
 > Improved Excel export error handling : now distinguishes between Excel not installed, COM activation failure, and other interop errors, providing more specific user guidance.<br><br>
-> Minor bugs fixed.
+> Minor bugs fixed.<br><br>
+
+### v5.4.1.0
+#### April 4, 2026
+> Fixed Adaptive boundary mode phase shift in `ComputeMedians` by replacing window-shifting logic with symmetric shrinking centred on each sample (`reach = min(offsetLow, i, N − 1 − i)`, `W = 2 × reach + 1`), ensuring only real in-range data is used without positional bias.
+</details>
 
 ## Required Components & Setup
 ### Prerequisites
@@ -736,7 +742,7 @@ When the user clicks **Calibrate** (`btnCalibrate_Click`) :
 ##### Core Routine : ComputeMedians
 - Middle-Median (`useMiddle = True)` Copies the first and last `borderCount` points unmodified to buffer. Applies a sliding window of width `KernelRadius` only to indices [borderCount … n - borderCount - 1].
 
-- All-Median (`useMiddle = False`) Applies the sliding window at every index using boundary synthesis to keep a full fixed-size window (Symmetric / Replicate / Zero Padding); Adaptive keeps the window centred on each sample and symmetrically shrinks it near edges to avoid phase shift.
+- All-Median (`useMiddle = False`) Applies the sliding window at every index using boundary synthesis to keep a full fixed-size window (Symmetric / Replicate / Zero Padding); Adaptive keeps the window centred on each sample and symmetrically shrinks it near edges so that only real data is used.
 
 Both modes share :
 1. A thread-local window buffer (ThreadLocal(Of Double())) to avoid per-iteration allocations.
@@ -823,7 +829,7 @@ Internally, each sliding window is copied into a thread-local buffer and its med
 - Provides two types of running median filters :
   - All Median :
     - Calculates a median at every position using a sliding window
-    - Uses Boundary Modes (Symmetric / Replicate / Zero Padding) for synthetic edge sampling; Adaptive crops the window in-bounds
+    - Uses Boundary Modes (Symmetric / Replicate / Zero Padding) for synthetic edge sampling; Adaptive symmetrically shrinks the window near edges using only real in-range data
   - Middle Median :
     - Applies the median filter only to interior indices
     - Preserves a user-defined number of edge elements (border count) unchanged
@@ -881,4 +887,4 @@ Together, these features empower users to interactively refine their data, fine-
 This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ## Copyright 
-Copyright ⓒ HappyBono 2022 - 2025. All Rights Reserved.
+Copyright ⓒ HappyBono 2022 - 2026. All Rights Reserved.
