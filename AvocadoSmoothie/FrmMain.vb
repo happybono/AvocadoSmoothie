@@ -335,15 +335,15 @@ Public Class FrmMain
                                                Else
                                                    ' AllMedian: BoundaryMode 적용
                                                    If boundaryMode = BoundaryMode.Adaptive Then
-                                                       Dim desiredW As Integer = kernelSize
-                                                       Dim W As Integer = Math.Min(desiredW, n)
-                                                       Dim start As Integer = i - offsetLow
-                                                       If start < 0 Then start = 0
-                                                       If start > n - W Then start = n - W
-                                                       If start < 0 Then start = 0
+                                                       ' 대칭적 축소 : i 를 중심에 유지하고,
+                                                       ' 가장자리 근처에서는 양쪽 범위를 동일하게 줄여서 가능한 최대 범위로 윈도우를 구성
+                                                       Dim reach As Integer = Math.Min(offsetLow, Math.Min(i, n - 1 - i))
+                                                       Dim W As Integer = 2 * reach + 1
+
                                                        For pos As Integer = 0 To W - 1
-                                                           win(pos) = arr(start + pos)
+                                                           win(pos) = arr(i - reach + pos)
                                                        Next
+
                                                        buffer(i) = GetWindowMedian(win, W)
                                                    Else
                                                        For pos As Integer = 0 To kernelSize - 1
